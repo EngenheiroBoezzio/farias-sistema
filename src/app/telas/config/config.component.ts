@@ -58,6 +58,11 @@ export class ConfigComponent implements OnInit {
     this.mudarAparencia();
   }
 
+  selecionarTipoGrafico(tipo: TipoGrafico): void {
+    this.f.tipoGrafico = tipo;
+    this.mudarAparencia();
+  }
+
   mudarAparencia(): void {
     this.cfg.salvar({
       tamanhoFonte: this.f.tamanhoFonte,

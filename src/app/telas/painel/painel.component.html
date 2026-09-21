@@ -91,36 +91,10 @@
 
       <div class="grid two">
         <div class="panel">
-          <div class="panel-h" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+          <div class="panel-h">
             <div>
               <h2>Entrada mensal</h2>
               <span class="meta">últimos {{ d.serie.length }} meses</span>
-            </div>
-            <div class="tipo-grafico-selector" role="group" aria-label="Tipo de gráfico">
-              <button type="button" class="btn-tipo-grafico"
-                      [class.ativo]="tipoGrafico() === 'linha'"
-                      (click)="selecionarTipoGrafico('linha')"
-                      title="Gráfico de Linha">
-                📈 Linha
-              </button>
-              <button type="button" class="btn-tipo-grafico"
-                      [class.ativo]="tipoGrafico() === 'barras'"
-                      (click)="selecionarTipoGrafico('barras')"
-                      title="Gráfico de Barras">
-                📊 Barras
-              </button>
-              <button type="button" class="btn-tipo-grafico"
-                      [class.ativo]="tipoGrafico() === 'pizza'"
-                      (click)="selecionarTipoGrafico('pizza')"
-                      title="Gráfico de Pizza / Rosca">
-                🍩 Pizza
-              </button>
-              <button type="button" class="btn-tipo-grafico"
-                      [class.ativo]="tipoGrafico() === 'area'"
-                      (click)="selecionarTipoGrafico('area')"
-                      title="Gráfico de Área">
-                📉 Área
-              </button>
             </div>
           </div>
           <div class="panel-b">

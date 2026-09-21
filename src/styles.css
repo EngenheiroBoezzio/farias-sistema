@@ -791,50 +791,292 @@ router-outlet { display: none; }
 .modal-box p { font-size: 13px; color: var(--tx-2); margin: 0 0 18px; line-height: 1.5; }
 
 /* ===========================================================
-   Seletor de Tipo de Gráfico (Chart.js)
+   Seletor e Visualizador 3D de Tipo de Gráfico
    =========================================================== */
-.tipo-grafico-selector {
-  display: inline-flex;
-  align-items: center;
-  background: var(--surface-2);
-  border: 1px solid var(--bd-strong);
-  border-radius: var(--r-sm);
-  padding: 3px;
-  gap: 3px;
+.grafico-3d-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
 }
-.btn-tipo-grafico {
-  background: transparent;
-  border: 0;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--tx-2);
-  padding: 5px 11px;
-  border-radius: 5px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: all .12s ease;
-  white-space: nowrap;
-}
-.btn-tipo-grafico:hover {
-  color: var(--tx);
-  background: rgba(0, 0, 0, 0.05);
-}
-:root[data-theme="dark"] .btn-tipo-grafico:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-.btn-tipo-grafico.ativo {
+.grafico-3d-card {
   background: var(--surface);
-  color: var(--b-700);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0,0,0,.10);
+  border: 2px solid var(--bd);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all .24s cubic-bezier(.16,1,.3,1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
 }
-:root[data-theme="dark"] .btn-tipo-grafico.ativo {
-  background: var(--n-100);
+.grafico-3d-card:hover {
+  border-color: var(--bd-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px -6px rgba(0,0,0,.12);
+}
+.grafico-3d-card.ativo {
+  border-color: var(--b-700);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--b-700), 0 12px 28px -6px rgba(185, 28, 28, 0.22);
+}
+.grafico-3d-card-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.grafico-3d-card-h b {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.grafico-3d-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--tx-2);
+  border: 1px solid var(--bd);
+  transition: all .2s ease;
+}
+.grafico-3d-card.ativo .grafico-3d-badge {
+  background: var(--b-600);
   color: #fff;
+  border-color: var(--b-700);
+  box-shadow: 0 2px 6px rgba(185, 28, 28, .35);
 }
+
+/* Palco de Renderização Tridimensional */
+.grafico-3d-stage {
+  height: 135px;
+  width: 100%;
+  border-radius: var(--r-md);
+  background: radial-gradient(circle at 50% 30%, #262120 0%, #141110 100%);
+  position: relative;
+  perspective: 750px;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+}
+:root[data-theme="dark"] .grafico-3d-stage {
+  background: radial-gradient(circle at 50% 30%, #1F1B1A 0%, #0D0B0A 100%);
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* Grid Isométrico de Piso */
+.stage-grid-floor {
+  position: absolute;
+  width: 160px;
+  height: 120px;
+  bottom: 8px;
+  transform: rotateX(60deg) rotateZ(-20deg);
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* --- 1. Gráfico 3D Linha Neon --- */
+.stage-3d-line-wrap {
+  width: 150px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(48deg) rotateZ(-18deg);
+  transition: transform .4s ease;
+}
+.grafico-3d-card:hover .stage-3d-line-wrap {
+  transform: rotateX(42deg) rotateZ(-12deg) scale(1.06);
+}
+.stage-3d-svg-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 12px rgba(220, 38, 38, 0.75));
+}
+.stage-3d-pillar {
+  position: absolute;
+  width: 2px;
+  bottom: 12px;
+  background: linear-gradient(to top, rgba(245, 158, 11, 0.1), rgba(220, 38, 38, 0.8));
+  box-shadow: 0 0 6px rgba(220, 38, 38, 0.6);
+  border-radius: 1px;
+}
+.stage-3d-node {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FFF;
+  border: 2px solid var(--b-500);
+  box-shadow: 0 0 10px #FFF, 0 0 16px var(--b-500);
+  transform: translate(-50%, -50%);
+}
+.stage-3d-node.highlight {
+  background: var(--gold-light);
+  border-color: var(--gold);
+  box-shadow: 0 0 14px var(--gold), 0 0 20px var(--gold-dark);
+}
+
+/* --- 2. Gráfico 3D Barras / Colunas Isométricas --- */
+.stage-3d-bars-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  width: 160px;
+  height: 90px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(54deg) rotateZ(-22deg);
+  transition: transform .4s ease;
+}
+.grafico-3d-card:hover .stage-3d-bars-wrap {
+  transform: rotateX(46deg) rotateZ(-16deg) scale(1.06);
+}
+.iso-bar {
+  width: 20px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: height .3s ease;
+}
+.iso-bar-front {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #DC2626, #8B0000);
+  border-radius: 2px 0 0 0;
+}
+.iso-bar-top {
+  position: absolute;
+  top: -12px;
+  left: 6px;
+  width: 20px;
+  height: 12px;
+  background: #EF4444;
+  transform: skewX(-45deg);
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
+}
+.iso-bar-side {
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  width: 12px;
+  height: 100%;
+  background: #6B0808;
+  transform: skewY(-45deg);
+}
+/* Barra de Destaque Dourada */
+.iso-bar.gold .iso-bar-front {
+  background: linear-gradient(to bottom, #F59E0B, #B45309);
+}
+.iso-bar.gold .iso-bar-top {
+  background: #FDE68A;
+}
+.iso-bar.gold .iso-bar-side {
+  background: #92400E;
+}
+.iso-bar-shadow {
+  position: absolute;
+  bottom: -6px;
+  left: 6px;
+  width: 26px;
+  height: 12px;
+  background: rgba(0,0,0,0.55);
+  transform: skewX(-45deg);
+  filter: blur(2px);
+}
+
+/* --- 3. Gráfico 3D Donut / Disco Extrudado --- */
+.stage-3d-donut-wrap {
+  width: 110px;
+  height: 110px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(56deg) rotateZ(24deg);
+  transition: transform .4s ease;
+}
+.grafico-3d-card:hover .stage-3d-donut-wrap {
+  transform: rotateX(48deg) rotateZ(32deg) scale(1.08);
+}
+.stage-3d-donut-shadow {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.65);
+  transform: translateZ(-24px) scale(0.95);
+  filter: blur(8px);
+}
+.stage-3d-donut-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 
+    0 1px 0 #570000,
+    0 3px 0 #4a0000,
+    0 6px 0 #3d0000,
+    0 9px 0 #300000,
+    0 12px 0 #240000,
+    0 15px 0 #180000,
+    0 18px 12px rgba(0,0,0,0.8);
+  transform: translateZ(10px);
+}
+.stage-3d-donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: translateZ(12px);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+/* --- 4. Gráfico 3D Área / Topografia --- */
+.stage-3d-area-wrap {
+  width: 150px;
+  height: 95px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(50deg) rotateZ(-18deg);
+  transition: transform .4s ease;
+}
+.grafico-3d-card:hover .stage-3d-area-wrap {
+  transform: rotateX(44deg) rotateZ(-12deg) scale(1.06);
+}
+.stage-3d-area-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 16px rgba(185, 28, 28, 0.45));
+}
+
+.grafico-3d-desc {
+  font-size: 12px;
+  color: var(--tx-2);
+  line-height: 1.45;
+  margin: 0;
+}
+.grafico-3d-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--tx-3);
+  font-weight: 500;
+  margin-top: auto;
+}
+
 
 /* ===========================================================
    Cards de Pré-visualização Real do Tamanho da Fonte

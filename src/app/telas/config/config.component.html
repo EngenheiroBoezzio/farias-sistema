@@ -57,8 +57,8 @@
         </button>
       </div>
 
-      <div class="f-row c2" style="margin-top: 18px;">
-        <label class="f">
+      <div class="f-row" style="margin-top: 18px;">
+        <label class="f" style="max-width: 400px;">
           <span>Estilo e Tema de Cores</span>
           <select [(ngModel)]="f.tema" (ngModelChange)="mudarAparencia()" name="tema">
             <option value="adaptativo">Adaptativo (conforme o horário / sistema)</option>
@@ -66,21 +66,165 @@
             <option value="escuro">Tema Escuro (modo noturno)</option>
           </select>
         </label>
-
-        <label class="f">
-          <span>Gráfico Padrão do Painel</span>
-          <select [(ngModel)]="f.tipoGrafico" (ngModelChange)="mudarAparencia()" name="tipoGrafico">
-            <option value="linha">📈 Linha (Tendência mensal)</option>
-            <option value="barras">📊 Barras (Volume comparativo)</option>
-            <option value="pizza">🍩 Pizza / Rosca (Distribuição)</option>
-            <option value="area">📉 Área (Volume acumulado)</option>
-          </select>
-        </label>
       </div>
 
       <p class="hint" style="margin-top:10px">
         O tema adaptativo alterna automaticamente entre claro durante o dia e escuro no final da tarde/noite, facilitando a vista dos atendentes.
       </p>
+    </div>
+  </div>
+
+  <!-- Painel de Seleção e Visualização 3D do Gráfico -->
+  <div class="panel" style="margin-bottom:20px">
+    <div class="panel-h">
+      <b>Estilo Visual do Gráfico do Painel</b>
+      <span class="meta">visualização 3D interativa · escolha a melhor perspectiva visual dos dados da oficina</span>
+    </div>
+    <div class="panel-b">
+      <div class="grafico-3d-grid">
+        <!-- 1. Linha Contínua 3D -->
+        <button type="button" class="grafico-3d-card"
+                [class.ativo]="f.tipoGrafico === 'linha'"
+                (click)="selecionarTipoGrafico('linha')">
+          <div class="grafico-3d-card-h">
+            <b>📈 Linha Contínua</b>
+            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'linha' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
+          </div>
+          <div class="grafico-3d-stage">
+            <div class="stage-grid-floor"></div>
+            <div class="stage-3d-line-wrap">
+              <div class="stage-3d-pillar" style="left: 15px; height: 35px;"></div>
+              <div class="stage-3d-pillar" style="left: 55px; height: 55px;"></div>
+              <div class="stage-3d-pillar" style="left: 95px; height: 42px;"></div>
+              <div class="stage-3d-pillar" style="left: 135px; height: 75px;"></div>
+
+              <svg class="stage-3d-svg-line" viewBox="0 0 150 100" fill="none">
+                <path d="M 15 65 Q 35 45, 55 45 T 95 58 T 135 25" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 15 65 Q 35 45, 55 45 T 95 58 T 135 25" stroke="#FDE047" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+
+              <div class="stage-3d-node" style="left: 15px; top: 65px;"></div>
+              <div class="stage-3d-node" style="left: 55px; top: 45px;"></div>
+              <div class="stage-3d-node" style="left: 95px; top: 58px;"></div>
+              <div class="stage-3d-node highlight" style="left: 135px; top: 25px;"></div>
+            </div>
+          </div>
+          <p class="grafico-3d-desc">Linha contínua com suavização de curva e nós luminosos elevados. Ideal para acompanhar tendências de faturamento mês a mês.</p>
+          <div class="grafico-3d-meta">
+            <span>Modo: Curva de Tendência</span>
+          </div>
+        </button>
+
+        <!-- 2. Barras Isométricas 3D -->
+        <button type="button" class="grafico-3d-card"
+                [class.ativo]="f.tipoGrafico === 'barras'"
+                (click)="selecionarTipoGrafico('barras')">
+          <div class="grafico-3d-card-h">
+            <b>📊 Barras Isométricas</b>
+            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'barras' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
+          </div>
+          <div class="grafico-3d-stage">
+            <div class="stage-grid-floor"></div>
+            <div class="stage-3d-bars-wrap">
+              <div class="iso-bar" style="height: 42px;">
+                <div class="iso-bar-shadow"></div>
+                <div class="iso-bar-front"></div>
+                <div class="iso-bar-side"></div>
+                <div class="iso-bar-top"></div>
+              </div>
+              <div class="iso-bar" style="height: 65px;">
+                <div class="iso-bar-shadow"></div>
+                <div class="iso-bar-front"></div>
+                <div class="iso-bar-side"></div>
+                <div class="iso-bar-top"></div>
+              </div>
+              <div class="iso-bar" style="height: 50px;">
+                <div class="iso-bar-shadow"></div>
+                <div class="iso-bar-front"></div>
+                <div class="iso-bar-side"></div>
+                <div class="iso-bar-top"></div>
+              </div>
+              <div class="iso-bar gold" style="height: 80px;">
+                <div class="iso-bar-shadow"></div>
+                <div class="iso-bar-front"></div>
+                <div class="iso-bar-side"></div>
+                <div class="iso-bar-top"></div>
+              </div>
+            </div>
+          </div>
+          <p class="grafico-3d-desc">Colunas tridimensionais com faces sombreadas e topo iluminado. Destaque de volume mensal e último mês em aberto em dourado.</p>
+          <div class="grafico-3d-meta">
+            <span>Modo: Volume Comparativo</span>
+          </div>
+        </button>
+
+        <!-- 3. Donut / Disco 3D -->
+        <button type="button" class="grafico-3d-card"
+                [class.ativo]="f.tipoGrafico === 'pizza'"
+                (click)="selecionarTipoGrafico('pizza')">
+          <div class="grafico-3d-card-h">
+            <b>🍩 Disco / Donut 3D</b>
+            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'pizza' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
+          </div>
+          <div class="grafico-3d-stage">
+            <div class="stage-grid-floor"></div>
+            <div class="stage-3d-donut-wrap">
+              <div class="stage-3d-donut-shadow"></div>
+              <div class="stage-3d-donut-body"></div>
+              <svg class="stage-3d-donut-svg" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#B91C1C" stroke-width="18"
+                        stroke-dasharray="80 140" stroke-dashoffset="0" />
+                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#F59E0B" stroke-width="18"
+                        stroke-dasharray="55 165" stroke-dashoffset="-80" />
+                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#10B981" stroke-width="18"
+                        stroke-dasharray="45 175" stroke-dashoffset="-135" />
+                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#6366F1" stroke-width="18"
+                        stroke-dasharray="35 185" stroke-dashoffset="-180" />
+              </svg>
+            </div>
+          </div>
+          <p class="grafico-3d-desc">Cilindro volumétrico em perspectiva com anel segmentado. Ideal para ver a proporção de cada mês na receita total.</p>
+          <div class="grafico-3d-meta">
+            <span>Modo: Distribuição Circular</span>
+          </div>
+        </button>
+
+        <!-- 4. Relevo de Área 3D -->
+        <button type="button" class="grafico-3d-card"
+                [class.ativo]="f.tipoGrafico === 'area'"
+                (click)="selecionarTipoGrafico('area')">
+          <div class="grafico-3d-card-h">
+            <b>📉 Relevo de Área 3D</b>
+            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'area' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
+          </div>
+          <div class="grafico-3d-stage">
+            <div class="stage-grid-floor"></div>
+            <div class="stage-3d-area-wrap">
+              <svg class="stage-3d-area-svg" viewBox="0 0 150 95" fill="none">
+                <defs>
+                  <linearGradient id="areaGrad3d" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#DC2626" stop-opacity="0.85"/>
+                    <stop offset="60%" stop-color="#991B1B" stop-opacity="0.4"/>
+                    <stop offset="100%" stop-color="#7F1D1D" stop-opacity="0.05"/>
+                  </linearGradient>
+                  <linearGradient id="areaBackGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.4"/>
+                    <stop offset="100%" stop-color="#B45309" stop-opacity="0.02"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 10 75 Q 35 30, 60 55 T 110 35 T 145 20 L 145 85 L 10 85 Z" fill="url(#areaBackGrad)"/>
+                <path d="M 10 80 Q 40 40, 70 65 T 115 45 T 145 28 L 145 85 L 10 85 Z" fill="url(#areaGrad3d)"/>
+                <path d="M 10 80 Q 40 40, 70 65 T 115 45 T 145 28" stroke="#FCA5A5" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="145" cy="28" r="4" fill="#FDE047" stroke="#FFF" stroke-width="1.5"/>
+              </svg>
+            </div>
+          </div>
+          <p class="grafico-3d-desc">Superfície volumétrica contínua com curvas topográficas em profundidade. Excelente para sensação de volume acumulado.</p>
+          <div class="grafico-3d-meta">
+            <span>Modo: Volume e Relevo</span>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
 
