@@ -59,7 +59,7 @@ declare global {
       salvarConfig?(c: Partial<Config>): Promise<boolean>;
       versao?(): Promise<string>;
       origem?(): Promise<string>;
-      verificarAtualizacao?(): Promise<{ disponivel: boolean; versao?: string }>;
+      verificarAtualizacao?(): Promise<{ disponivel: boolean; versao?: string; motivo?: string }>;
     };
   }
 }

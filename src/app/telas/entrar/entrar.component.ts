@@ -22,6 +22,8 @@ export class EntrarComponent implements OnInit {
 
   usuario = '';
   senha = '';
+  lembrar = true;
+  mostrarSenha = signal(false);
   enviando = signal(false);
   splash = signal(false);
   erro = signal<string | null>(null);
@@ -29,6 +31,13 @@ export class EntrarComponent implements OnInit {
   expirou = signal(false);
 
   ngOnInit(): void {
+    // Se o usuário já estiver autenticado (ex: sessão persistida), abre direto o painel
+    if (this.auth.logado()) {
+      const volta = this.rota.snapshot.queryParamMap.get('volta');
+      this.router.navigateByUrl(volta && volta !== '/entrar' ? volta : '/painel');
+      return;
+    }
+
     this.expirou.set(this.rota.snapshot.queryParamMap.get('expirou') === '1');
     // se o servidor nem responde, dizer isso ANTES de a pessoa errar a senha
     this.cfg.testar().then(r => {
@@ -37,6 +46,10 @@ export class EntrarComponent implements OnInit {
         this.dica.set(`${r.erro} Endereço configurado: ${this.cfg.apiUrl}`);
       }
     });
+  }
+
+  alternarMostrarSenha(): void {
+    this.mostrarSenha.update(v => !v);
   }
 
   async entrar(): Promise<void> {
@@ -48,9 +61,9 @@ export class EntrarComponent implements OnInit {
     }
     this.enviando.set(true);
     try {
-      await this.auth.entrar(this.usuario.trim(), this.senha);
+      await this.auth.entrar(this.usuario.trim(), this.senha, this.lembrar);
       this.splash.set(true);
-      await new Promise(res => setTimeout(res, 1200));
+      await new Promise(res => setTimeout(res, 1000));
       const volta = this.rota.snapshot.queryParamMap.get('volta');
       this.router.navigateByUrl(volta && volta !== '/entrar' ? volta : '/painel');
     } catch (e) {

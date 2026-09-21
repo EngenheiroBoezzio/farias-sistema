@@ -99,9 +99,13 @@ export class ConfigComponent implements OnInit {
         return;
       }
       const r = await window.farias.verificarAtualizacao();
-      this.atualizacao.set(r.disponivel
-        ? `Há uma versão nova (${r.versao}). Ela será baixada e instalada ao fechar o programa.`
-        : 'Você já está na versão mais recente.');
+      if (r.disponivel) {
+        this.atualizacao.set(`Há uma versão nova (${r.versao}). Ela será baixada e instalada ao fechar o programa.`);
+      } else if (r.motivo && r.motivo !== 'em desenvolvimento') {
+        this.atualizacao.set(`Falha ao verificar: ${r.motivo}`);
+      } else {
+        this.atualizacao.set('Você já está na versão mais recente.');
+      }
     } catch {
       this.atualizacao.set('Não consegui verificar agora. Tente mais tarde.');
     }

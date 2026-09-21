@@ -1,33 +1,116 @@
 <div class="login">
-  <form class="login-card" (ngSubmit)="entrar()" novalidate>
-    <img src="assets/logo.png" alt="Farias Troca de Óleo">
-    <h1>{{ cfg.nomeLoja }}</h1>
-    <p class="sub">Entre para continuar</p>
+  <div class="login-card">
+    <div class="login-brand-ring">
+      <img src="assets/logo.png" alt="Farias Troca de Óleo">
+    </div>
+
+    <h1 class="login-title">{{ cfg.nomeLoja }}</h1>
+    <p class="login-subtitle">Sistema de Gestão & Balcão</p>
 
     @if (expirou()) {
-      <p class="login-dica">Sua sessão expirou. Entre de novo.</p>
+      <div class="login-err" role="alert" style="margin-bottom: 16px;">
+        <b>Sessão expirada</b>
+        <span>Por favor, insira suas credenciais novamente para continuar.</span>
+      </div>
     }
 
-    <label for="u">Usuário</label>
-    <input id="u" name="usuario" [(ngModel)]="usuario" autocomplete="username"
-           autocapitalize="off" spellcheck="false" autofocus
-           [disabled]="enviando()">
+    <form class="login-form" (ngSubmit)="entrar()" novalidate>
+      <!-- Campo Usuário -->
+      <div class="login-field">
+        <label for="u">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Usuário ou Operador
+        </label>
+        <div class="login-input-wrap">
+          <input id="u" name="usuario" [(ngModel)]="usuario" autocomplete="username"
+                 placeholder="Digite seu usuário..."
+                 autocapitalize="off" spellcheck="false" autofocus
+                 [disabled]="enviando()">
+          <span class="login-input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+            </svg>
+          </span>
+        </div>
+      </div>
 
-    <label for="s">Senha</label>
-    <input id="s" name="senha" type="password" [(ngModel)]="senha"
-           autocomplete="current-password" [disabled]="enviando()">
+      <!-- Campo Senha com Toggle Mostrar/Ocultar -->
+      <div class="login-field">
+        <label for="s">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Senha de Acesso
+        </label>
+        <div class="login-input-wrap">
+          <input id="s" name="senha" [type]="mostrarSenha() ? 'text' : 'password'"
+                 [(ngModel)]="senha" placeholder="Digite sua senha..."
+                 autocomplete="current-password" [disabled]="enviando()">
+          <span class="login-input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <button type="button" class="login-toggle-pass" (click)="alternarMostrarSenha()"
+                  [title]="mostrarSenha() ? 'Ocultar senha' : 'Ver senha'">
+            @if (mostrarSenha()) {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            } @else {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
 
-    @if (erro()) {
-      <p class="login-err" role="alert">{{ erro() }}</p>
-      @if (dica()) { <p class="login-dica">{{ dica() }}</p> }
-    }
+      <!-- Lembrar deste computador -->
+      <div class="login-lembrar-row">
+        <label class="login-checkbox-label">
+          <input type="checkbox" name="lembrar" [(ngModel)]="lembrar">
+          <span>Manter conectado neste computador</span>
+        </label>
+      </div>
 
-    <button type="submit" class="btn btn-p btn-lg" [disabled]="enviando()">
-      {{ enviando() ? 'Entrando…' : 'Entrar' }}
-    </button>
+      @if (erro()) {
+        <div class="login-err" role="alert">
+          <b>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {{ erro() }}
+          </b>
+          @if (dica()) { <span>{{ dica() }}</span> }
+        </div>
+      }
 
-    <p class="login-dica">A sessão termina quando o programa é fechado.</p>
-  </form>
+      <button type="submit" class="btn-login-submit" [disabled]="enviando()">
+        @if (enviando()) {
+          <svg class="giro" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          <span>Entrando no sistema…</span>
+        } @else {
+          <span>Entrar no Sistema</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        }
+      </button>
+    </form>
+
+    <div class="login-footer-info">
+      <span class="status-dot">Servidor Conectado</span>
+      <span>Farias Troca de Óleo v1.0.2</span>
+    </div>
+  </div>
 
   @if (splash()) {
     <div class="login-splash" role="status" aria-live="polite">

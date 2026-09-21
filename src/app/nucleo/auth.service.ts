@@ -17,6 +17,7 @@ export interface Usuario {
 
 const CHAVE_TOKEN = 'farias.token';
 const CHAVE_USER = 'farias.usuario';
+const CHAVE_LEMBRAR = 'farias.lembrar';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -33,23 +34,36 @@ export class AuthService {
 
   constructor() {
     try {
-      const t = sessionStorage.getItem(CHAVE_TOKEN);
-      const u = sessionStorage.getItem(CHAVE_USER);
-      if (t && u) { this._token.set(t); this._usuario.set(JSON.parse(u)); }
-    } catch { /* modo privado: começa deslogado, que é o correto */ }
+      // Lê do localStorage (persistente) ou sessionStorage
+      const t = localStorage.getItem(CHAVE_TOKEN) || sessionStorage.getItem(CHAVE_TOKEN);
+      const u = localStorage.getItem(CHAVE_USER) || sessionStorage.getItem(CHAVE_USER);
+      if (t && u) {
+        this._token.set(t);
+        this._usuario.set(JSON.parse(u));
+      }
+    } catch { /* modo privado ou erro de leitura: inicia deslogado */ }
   }
 
   get token(): string | null { return this._token(); }
 
-  async entrar(usuario: string, senha: string): Promise<void> {
+  async entrar(usuario: string, senha: string, lembrar = true): Promise<void> {
     const r = await firstValueFrom(
       this.api.post<{ token: string; usuario: Usuario & { primeiro_acesso?: boolean } }>('/api/auth/login', { usuario, senha }));
     this._token.set(r.token);
     this._usuario.set(r.usuario);
     try {
+      if (lembrar) {
+        localStorage.setItem(CHAVE_TOKEN, r.token);
+        localStorage.setItem(CHAVE_USER, JSON.stringify(r.usuario));
+        localStorage.setItem(CHAVE_LEMBRAR, 'true');
+      } else {
+        localStorage.removeItem(CHAVE_TOKEN);
+        localStorage.removeItem(CHAVE_USER);
+        localStorage.removeItem(CHAVE_LEMBRAR);
+      }
       sessionStorage.setItem(CHAVE_TOKEN, r.token);
       sessionStorage.setItem(CHAVE_USER, JSON.stringify(r.usuario));
-    } catch { /* a sessão vive só na memória, e ainda funciona */ }
+    } catch { /* a sessão vive só na memória caso storage esteja bloqueado */ }
 
     // Verifica se é o primeiro acesso (ou senha padrão inicial)
     const senhaInicialPadrao = senha === 'farias2026' || senha === '123456';
@@ -88,7 +102,7 @@ export class AuthService {
     this.router.navigate(['/entrar']);
   }
 
-  /** Usado pelo interceptor quando o servidor devolve 401. */
+  /** Usado pelo interceptor quando o servidor devolve 401 ou no logout. */
   limpar(): void {
     this._token.set(null);
     this._usuario.set(null);
@@ -96,6 +110,9 @@ export class AuthService {
     try {
       sessionStorage.removeItem(CHAVE_TOKEN);
       sessionStorage.removeItem(CHAVE_USER);
+      localStorage.removeItem(CHAVE_TOKEN);
+      localStorage.removeItem(CHAVE_USER);
+      localStorage.removeItem(CHAVE_LEMBRAR);
     } catch { /* nada a limpar */ }
   }
 
