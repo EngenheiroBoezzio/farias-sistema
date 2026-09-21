@@ -1,0 +1,116 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Novo cliente</h1>
+      <p>O cliente e o primeiro veículo entram juntos, numa operação só.</p>
+    </div>
+  </div>
+
+  @if (erro(); as e) {
+    <div class="falha" role="alert">
+      <b>{{ e.mensagem }}</b>
+      @if (e.detalhe) { <p>{{ e.detalhe }}</p> }
+    </div>
+  }
+
+  @if (duplicado(); as d) {
+    <div class="alerta" role="alert" style="margin-bottom:14px">
+      <b>Atenção</b><span>{{ d }}</span>
+    </div>
+  }
+
+  <form (ngSubmit)="salvar()" novalidate>
+    <div class="panel">
+      <div class="panel-h"><b>Cliente</b></div>
+      <div class="panel-b">
+        <div class="f-row c2">
+          <label class="f"><span>Nome *</span>
+            <input name="nome" [(ngModel)]="f.nome" maxlength="120" required autofocus></label>
+          <label class="f"><span>Telefone</span>
+            <input name="tel" [(ngModel)]="f.telefone" maxlength="20"
+                   inputmode="tel" placeholder="(55) 99999-9999"></label>
+        </div>
+        <div class="f-row c2">
+          <label class="f"><span>Nascimento</span>
+            <input type="date" name="nasc" [(ngModel)]="f.nascimento"></label>
+          <label class="f"><span>Observação</span>
+            <input name="obs" [(ngModel)]="f.obs" maxlength="255"></label>
+        </div>
+        <label class="check">
+          <input type="checkbox" name="aviso" [(ngModel)]="f.aceita_aviso">
+          <span>Aceita receber avisos no WhatsApp</span>
+        </label>
+        <p class="hint">
+          O aniversário só serve se for preenchido: hoje só 1% da base tem essa data.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">
+        <b>Veículo</b>
+        <label class="check" style="margin:0">
+          <input type="checkbox" [checked]="comVeiculo()"
+                 (change)="comVeiculo.set(!comVeiculo())">
+          <span>cadastrar agora</span>
+        </label>
+      </div>
+      @if (comVeiculo()) {
+        <div class="panel-b">
+          <div class="f-row c3">
+            <label class="f"><span>Placa *</span>
+              <input name="placa" [(ngModel)]="f.placa" maxlength="8"
+                     autocapitalize="characters" placeholder="ABC1D23"></label>
+            <label class="f"><span>Marca</span>
+              <input name="marca" [(ngModel)]="f.marca" maxlength="40"></label>
+            <label class="f"><span>Modelo</span>
+              <input name="modelo" [(ngModel)]="f.modelo" maxlength="80"></label>
+          </div>
+          <div class="f-row c2">
+            <label class="f"><span>Motor</span>
+              <input name="cil" [(ngModel)]="f.cilindrada" maxlength="4"
+                     placeholder="1.0"></label>
+            <label class="f"><span>Ano</span>
+              <input type="number" name="ano" [(ngModel)]="f.ano" min="1950" max="2027"
+                     inputmode="numeric"></label>
+          </div>
+          <p class="hint">
+            Marca, motor e ano são o que o catálogo usa para acertar o filtro.
+            Sem eles a sugestão fica fraca.
+          </p>
+
+          <div class="panel-h" style="margin-top:14px;padding-left:0">
+            <b>Filtros</b><span>opcional — dá para preencher depois</span>
+          </div>
+          <div class="f-row c2">
+            <label class="f"><span>Óleo</span>
+              <input name="fo" [(ngModel)]="f.filtro_oleo" maxlength="40"
+                     autocapitalize="characters"></label>
+            <label class="f"><span>Ar</span>
+              <input name="fa" [(ngModel)]="f.filtro_ar" maxlength="40"
+                     autocapitalize="characters"></label>
+          </div>
+          <div class="f-row c2">
+            <label class="f"><span>Cabine</span>
+              <input name="fc" [(ngModel)]="f.filtro_cabine" maxlength="40"
+                     autocapitalize="characters"></label>
+            <label class="f"><span>Combustível</span>
+              <input name="fk" [(ngModel)]="f.filtro_combustivel" maxlength="40"
+                     autocapitalize="characters"></label>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="form-actions" style="margin-top: 24px; display: flex; gap: 12px; align-items: center;">
+      <button type="submit" class="btn btn-p btn-lg" [disabled]="enviando()">
+        {{ enviando() ? 'Gravando…' : 'Cadastrar Cliente' }}
+      </button>
+      <a routerLink="/clientes" class="btn btn-s">Cancelar</a>
+    </div>
+  </form>
+
+  @if (selo(); as s) {
+    <app-selo [titulo]="s.titulo" [linha]="s.linha" (fechou)="aoFechar()" />
+  }
+</section>

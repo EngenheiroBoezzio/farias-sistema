@@ -1,0 +1,26 @@
+.sino-area { position: relative; display: inline-flex; align-items: center; z-index: 50; }
+.sino { width: 36px; height: 36px; border-radius: var(--r-sm); position: relative;
+  background: var(--surface); border: 1px solid var(--bd-strong); color: var(--tx-2);
+  cursor: pointer; display: grid; place-items: center; transition: all .15s ease; }
+.sino:hover { background: var(--surface-2); color: var(--tx); border-color: var(--b-400); }
+.sino svg { width: 17px; height: 17px; }
+.sino.tem-erro { border-color: var(--crit-bd); color: var(--crit); }
+.pip { position: absolute; top: -5px; right: -5px; min-width: 17px; height: 17px;
+  padding: 0 4px; border-radius: var(--r-full); background: var(--b-600); color: #fff;
+  font-size: 10px; font-weight: 700; display: grid; place-items: center;
+  box-shadow: 0 2px 6px rgba(185,28,28,.4); }
+.sino.tem-erro .pip { background: var(--crit); }
+
+.sino-pop { position: absolute; top: calc(100% + 8px); right: 0; width: 320px; z-index: 70;
+  background: var(--surface); border: 1px solid var(--bd); border-radius: var(--r-md);
+  box-shadow: var(--e-pop); overflow: hidden; animation: pop .18s both; }
+.sino-pop header { padding: 11px 14px; font-weight: 600; font-size: 13px;
+  border-bottom: 1px solid var(--bd); }
+.sino-pop ul { list-style: none; margin: 0; padding: 0; max-height: 340px; overflow: auto; }
+.sino-pop li { padding: 11px 14px; border-bottom: 1px solid var(--bd); display: grid; gap: 2px; }
+.sino-pop li:last-child { border-bottom: 0; }
+.sino-pop li.erro { background: var(--crit-bg); }
+.sino-pop li b { font-size: 13px; }
+.sino-pop li span { font-size: 12px; color: var(--tx-2); }
+.sino-pop li time { font-size: 11px; color: var(--tx-3); font-variant-numeric: tabular-nums; }
+.nada { margin: 0; padding: 22px 16px; text-align: center; font-size: 12.5px; color: var(--tx-3); }

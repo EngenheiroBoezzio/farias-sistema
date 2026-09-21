@@ -1,0 +1,33 @@
+<div class="sino-area">
+  <button type="button" class="sino" (click)="alternar()"
+          [class.tem-erro]="erros() > 0"
+          [attr.aria-expanded]="aberto()"
+          [attr.aria-label]="naoLidas() > 0
+            ? naoLidas() + ' notificações não lidas'
+            : 'Notificações'">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M8 2a4 4 0 0 0-4 4v2.5L2.8 11h10.4L12 8.5V6a4 4 0 0 0-4-4z"/>
+      <path d="M6.5 13a1.5 1.5 0 0 0 3 0"/>
+    </svg>
+    @if (naoLidas() > 0) { <span class="pip">{{ naoLidas() }}</span> }
+  </button>
+
+  @if (aberto()) {
+    <div class="sino-pop" role="dialog" aria-label="Notificações">
+      <header>Notificações</header>
+      @if (lista().length === 0) {
+        <p class="nada">Nada por aqui. O backup está silencioso, que é o normal.</p>
+      } @else {
+        <ul>
+          @for (n of lista(); track n.id) {
+            <li [class.erro]="n.nivel === 'erro'">
+              <b>{{ n.titulo }}</b>
+              @if (n.detalhe) { <span>{{ n.detalhe }}</span> }
+              <time>{{ dataHora(n.criada_em) }}</time>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,125 @@
+<section>
+  @if (carregando()) {
+    <p class="carregando">Abrindo a ficha…</p>
+  } @else if (erro() && !v()) {
+    <div class="falha" role="alert">
+      <b>{{ erro()!.mensagem }}</b>
+      <button type="button" class="btn btn-s" (click)="buscar()">Tentar de novo</button>
+    </div>
+  } @else {
+    @if (v(); as d) {
+
+    <div class="ficha-h">
+      <div>
+        <h1 class="id">{{ fPlaca(d.placa) }}</h1>
+        <p>
+          {{ d.marca ? d.marca + ' ' : '' }}{{ d.modelo || 'Modelo não informado' }}
+          @if (d.ano) { · {{ d.ano }} }
+          @if (d.cilindrada) { · {{ d.cilindrada }} }
+        </p>
+        <span class="hint">{{ d.cliente }} · {{ telefone(d.telefone) }}</span>
+      </div>
+      <div class="head-act">
+        <span class="pill"
+              [class]="'pill ' + (d.situacao === 'em_dia' ? 'p-pos'
+                       : d.situacao === 'vencido' ? 'p-warn'
+                       : d.situacao === 'parado' ? 'p-crit' : 'p-mute')">
+          {{ rotuloSituacao(d.situacao) }}
+        </span>
+        <a routerLink="/ordem" [queryParams]="{ placa: d.placa }" class="btn btn-p">
+          Lançar ordem
+        </a>
+        <app-sino />
+      </div>
+    </div>
+
+    @if (erro(); as e) {
+      <div class="falha" role="alert">
+        <b>{{ e.mensagem }}</b>
+        @if (e.detalhe) { <p>{{ e.detalhe }}</p> }
+      </div>
+    }
+
+    <div class="grid">
+      <div class="stat"><span class="stat-l">Última troca</span>
+        <span class="stat-v">{{ data(d.ultima_troca) }}</span>
+        <span class="stat-d">{{ haQuanto(d.dias) }}</span></div>
+      <div class="stat"><span class="stat-l">Quilometragem</span>
+        <span class="stat-v">{{ km(d.ultimo_km) }}</span>
+        <span class="stat-d">na última passagem</span></div>
+      <div class="stat"><span class="stat-l">Óleo</span>
+        <span class="stat-v">{{ d.ultimo_oleo || '—' }}</span>
+        <span class="stat-d">usado pela casa</span></div>
+      <div class="stat"><span class="stat-l">Visitas</span>
+        <span class="stat-v">{{ d.visitas }}</span>
+        <span class="stat-d">desde o primeiro registro</span></div>
+    </div>
+
+    <!-- A SUBSEÇÃO DE FILTROS -->
+    <div class="panel">
+      <div class="panel-h">
+        <b>Filtros</b>
+        @if (d.filtros_por) {
+          <span>preenchido por {{ d.filtros_por }} em {{ dataHora(d.filtros_em) }}</span>
+        } @else {
+          <span>ainda não preenchido</span>
+        }
+      </div>
+      <div class="panel-b">
+        <p class="hint" style="margin-top:0">
+          Uma vez por carro. Nas próximas trocas o código já aparece pronto na ordem.
+        </p>
+        <div class="f-row c2">
+          <label class="f"><span>Filtro de óleo</span>
+            <input name="fo" [(ngModel)]="f.filtro_oleo" maxlength="40"
+                   autocapitalize="characters" placeholder="ex.: WO170"></label>
+          <label class="f"><span>Filtro de ar</span>
+            <input name="fa" [(ngModel)]="f.filtro_ar" maxlength="40"
+                   autocapitalize="characters" placeholder="ex.: FAP5303"></label>
+        </div>
+        <div class="f-row c2">
+          <label class="f"><span>Filtro de cabine</span>
+            <input name="fc" [(ngModel)]="f.filtro_cabine" maxlength="40"
+                   autocapitalize="characters" placeholder="ex.: AKX1215"></label>
+          <label class="f"><span>Filtro de combustível</span>
+            <input name="fk" [(ngModel)]="f.filtro_combustivel" maxlength="40"
+                   autocapitalize="characters" placeholder="ex.: FCI1630"></label>
+        </div>
+        <button type="button" class="btn btn-p" style="margin-top:12px"
+                [disabled]="gravando()" (click)="gravarFiltros()">
+          {{ gravando() ? 'Gravando…' : 'Gravar filtros' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><b>Histórico</b><span>{{ historico().length }} trocas</span></div>
+      <div class="panel-b">
+        @if (historico().length === 0) {
+          <p class="vazio"><b>Sem trocas registradas</b></p>
+        } @else {
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Data</th><th>Km</th><th>Óleo</th><th class="num">Total</th></tr></thead>
+              <tbody>
+                @for (h of historico(); track h.id) {
+                  <tr>
+                    <td>{{ data(h.data) }}</td>
+                    <td class="num">{{ km(h.km) }}</td>
+                    <td>{{ h.oleo || '—' }} <small>{{ litros(h.litros) }}</small></td>
+                    <td class="num">{{ dinheiro(h.total) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  }
+  }
+
+  @if (selo(); as s) {
+    <app-selo [titulo]="s" [duracao]="1800" (fechou)="selo.set(null)" />
+  }
+</section>

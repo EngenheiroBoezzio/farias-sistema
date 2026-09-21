@@ -1,0 +1,105 @@
+{
+  "name": "farias-app",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "node scripts/aplicar-config.js && ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "fontes": "node scripts/baixar-fontes.js",
+    "electron": "electron .",
+    "dev": "concurrently -k \"ng serve\" \"wait-on tcp:4200 && electron .\"",
+    "empacotar": "npm run build && electron-builder --publish never",
+    "publicar": "npm run build && electron-builder --publish always",
+    "build:servidor": "node scripts/aplicar-config.js --servidor && ng build",
+    "conferir-config": "node scripts/aplicar-config.js --conferir",
+    "icone": "node scripts/gerar-icone.js"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^18.2.0",
+    "@angular/common": "^18.2.0",
+    "@angular/compiler": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@angular/forms": "^18.2.0",
+    "@angular/platform-browser": "^18.2.0",
+    "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/router": "^18.2.0",
+    "chart.js": "^4.5.1",
+    "electron-updater": "^6.8.9",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.10"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.2.21",
+    "@angular/cli": "^18.2.21",
+    "@angular/compiler-cli": "^18.2.0",
+    "@types/jasmine": "~5.1.0",
+    "concurrently": "^10.0.5",
+    "electron": "^32.3.3",
+    "electron-builder": "^25.1.8",
+    "jasmine-core": "~5.2.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.5.2",
+    "wait-on": "^9.1.0"
+  },
+  "description": "Sistema de gestão da Farias Troca de Óleo",
+  "author": {
+    "name": "Pedro",
+    "email": "pedroboezziorodrigues@gmail.com"
+  },
+  "main": "electron/main.js",
+  "build": {
+    "appId": "br.com.farias.sistema",
+    "productName": "Farias Troca de Oleo",
+    "copyright": "Farias Troca de Óleo",
+    "directories": {
+      "output": "instalador",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/farias-app/browser/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icone.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Farias Troca de Óleo"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Office"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "EngenheiroBoezzio",
+        "repo": "farias-sistema",
+        "releaseType": "release"
+      }
+    ]
+  }
+}

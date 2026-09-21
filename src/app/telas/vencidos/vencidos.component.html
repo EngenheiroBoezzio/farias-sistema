@@ -1,0 +1,95 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Vencidos</h1>
+      <p>Carros passados do intervalo de troca. Quem foi contatado nos últimos
+         {{ carencia() }} dias não aparece aqui, e quem pediu para sair some da lista.</p>
+    </div>
+    <div class="head-act">
+      <span class="pill p-warn">{{ total() }} para chamar</span>
+      <app-sino />
+    </div>
+  </div>
+
+  @if (resultado(); as r) {
+    <div class="grid">
+      <div class="stat"><span class="stat-l">Avisos enviados</span>
+        <span class="stat-v">{{ r.enviados }}</span>
+        <span class="stat-d">últimos {{ r.periodo_dias }} dias</span></div>
+      <div class="stat"><span class="stat-l">Voltaram</span>
+        <span class="stat-v">{{ r.retornaram }}</span>
+        <span class="stat-d">com serviço registrado depois</span></div>
+      <div class="stat"><span class="stat-l">Taxa de retorno</span>
+        <span class="stat-v">{{ r.taxa_retorno != null ? r.taxa_retorno + '%' : '—' }}</span>
+        <span class="stat-d">medida, não estimada</span></div>
+      <div class="stat"><span class="stat-l">Pediram para sair</span>
+        <span class="stat-v">{{ r.pediram_sair }}</span>
+        <span class="stat-d">não recebem mais</span></div>
+    </div>
+  }
+
+  @if (carregando()) {
+    <p class="carregando">Montando a fila…</p>
+  } @else if (erro()) {
+    <div class="falha" role="alert">
+      <b>{{ erro()!.mensagem }}</b>
+      @if (erro()!.detalhe) { <p>{{ erro()!.detalhe }}</p> }
+      <button type="button" class="btn btn-s" (click)="buscar()">Tentar de novo</button>
+    </div>
+  } @else if (fila().length === 0) {
+    <p class="vazio">
+      <b>Ninguém para chamar hoje</b>
+      Ou todos já foram contatados nos últimos {{ carencia() }} dias.
+    </p>
+  } @else {
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Cliente</th><th>Carro</th><th>Última troca</th>
+              <th>Km</th><th>Contato</th></tr>
+        </thead>
+        <tbody>
+          @for (i of fila(); track i.veiculo_id) {
+            <tr [class.p-mute]="avisados().has(i.veiculo_id)">
+              <td>
+                <b>{{ i.cliente }}</b><br>
+                <small>{{ telefone(i.telefone) }}</small>
+                @if (i.tel_inferido) {
+                  <span class="pill p-warn" title="DDD deduzido na importação">DDD?</span>
+                }
+              </td>
+              <td>
+                <a [routerLink]="['/veiculo', i.veiculo_id]" class="id">{{ fPlaca(i.placa) }}</a><br>
+                <small>{{ i.modelo || '—' }} · {{ i.ultimo_oleo || 'óleo não anotado' }}</small>
+              </td>
+              <td>{{ data(i.ultima_troca) }}<br><small>{{ haQuanto(i.dias) }}</small></td>
+              <td class="num">{{ km(i.ultimo_km) }}</td>
+              <td>
+                @if (avisados().has(i.veiculo_id)) {
+                  <span class="pill p-pos">chamado agora</span>
+                } @else if (i.whatsapp) {
+                  <button type="button" class="btn btn-zap" (click)="chamar(i)">
+                    Chamar no WhatsApp
+                  </button>
+                } @else {
+                  <span class="hint">sem telefone</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="hint" style="margin-top:10px">
+      O texto vai montado com o carro e a data da última troca. Você confere e
+      envia — o sistema não manda nada sozinho.
+    </p>
+
+    <div class="tbl-foot">
+      <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">Anterior</button>
+      <span>página {{ pagina() }}</span>
+      <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="fila().length < 25">Próxima</button>
+    </div>
+  }
+</section>

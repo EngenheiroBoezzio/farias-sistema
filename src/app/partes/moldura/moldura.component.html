@@ -1,0 +1,133 @@
+<div class="app" [class.rail-fixada]="railFixada()">
+  <nav class="rail" aria-label="Navegação principal">
+    <div class="rail-brand">
+      <img src="assets/logo.png" alt="Farias Troca de Óleo" aria-hidden="true">
+      <b>Farias<span>Troca de óleo</span></b>
+      <button class="rail-pin" type="button" (click)="alternarFixacao()"
+              [title]="railFixada() ? 'Recolher menu' : 'Fixar menu aberto'"
+              aria-label="Alternar fixação do menu lateral">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 6.5h8M4 9.5h8M4 3.5h8"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="rail-group">
+      <p>Operação</p>
+
+      <a routerLink="/painel" routerLinkActive="ativo"
+         [attr.aria-current]="rlPainel.isActive ? 'page' : null"
+         #rlPainel="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/>
+          <rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/>
+        </svg>
+        <span class="lab">Painel</span>
+      </a>
+
+      <a routerLink="/ordem" routerLinkActive="ativo"
+         [attr.aria-current]="rlOrdem.isActive ? 'page' : null" #rlOrdem="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3"/>
+        </svg>
+        <span class="lab">Nova ordem</span>
+      </a>
+
+      <a routerLink="/placa" routerLinkActive="ativo"
+         [attr.aria-current]="rlPlaca.isActive ? 'page' : null" #rlPlaca="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="1.5" y="4" width="13" height="8" rx="1.5"/><path d="M4 7.5h2M7 7.5h5M4 9.5h8"/>
+        </svg>
+        <span class="lab">Consultar placa</span>
+      </a>
+
+      <a routerLink="/clientes" routerLinkActive="ativo"
+         [attr.aria-current]="rlCli.isActive ? 'page' : null" #rlCli="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M2 12v-1.5A2.5 2.5 0 0 1 4.5 8h7a2.5 2.5 0 0 1 2.5 2.5V12"/><circle cx="8" cy="4.5" r="2.5"/>
+        </svg>
+        <span class="lab">Clientes</span><span class="badge">{{ bdClientes() }}</span>
+      </a>
+    </div>
+
+    <div class="rail-group">
+      <p>Relacionamento</p>
+
+      <a routerLink="/vencidos" routerLinkActive="ativo"
+         [attr.aria-current]="rlVenc.isActive ? 'page' : null" #rlVenc="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M8 2v3M3.5 4.5 5.6 6.6M12.5 4.5 10.4 6.6M4 11h8l-.8-3.2A3.3 3.3 0 0 0 8 5.2a3.3 3.3 0 0 0-3.2 2.6L4 11z"/>
+          <path d="M6.8 13h2.4"/>
+        </svg>
+        @if (temVencido()) { <span class="dot-alert" aria-hidden="true"></span> }
+        <span class="lab">Vencidos</span><span class="badge">{{ bdVencidos() }}</span>
+      </a>
+
+      <a routerLink="/filtros" routerLinkActive="ativo"
+         [attr.aria-current]="rlFil.isActive ? 'page' : null" #rlFil="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M2 3h12l-4.5 5.2V13L6.5 11.4V8.2L2 3z"/>
+        </svg>
+        <span class="lab">Fila de filtros</span><span class="badge">{{ bdFiltros() }}</span>
+      </a>
+    </div>
+
+    @if (auth.ehAdmin()) {
+      <div class="rail-group">
+        <p>Sistema</p>
+        <a routerLink="/configuracao" routerLinkActive="ativo"
+           [attr.aria-current]="rlCfg.isActive ? 'page' : null" #rlCfg="routerLinkActive">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="8" cy="8" r="2.2"/>
+            <path d="M8 1.6v1.6M8 12.8v1.6M14.4 8h-1.6M3.2 8H1.6M12.5 3.5l-1.1 1.1M4.6 11.4l-1.1 1.1M12.5 12.5l-1.1-1.1M4.6 4.6 3.5 3.5"/>
+          </svg>
+          <span class="lab">Configuração</span>
+        </a>
+      </div>
+    }
+
+    <div class="rail-foot">
+      <span class="av">{{ auth.iniciais() }}</span>
+      <span class="txt">
+        <b>{{ auth.usuario()?.nome }}</b>
+        <span>{{ auth.usuario()?.papel === 'admin' ? 'Administrador' : 'Atendente' }}</span>
+      </span>
+      <button class="sair" type="button" (click)="sair()" aria-label="Sair do sistema" title="Sair">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 14H3.5A1.5 1.5 0 0 1 2 12.5v-9A1.5 1.5 0 0 1 3.5 2H6M10.5 11 13.5 8l-3-3M13 8H6"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="fade-in">
+    <router-outlet />
+  </main>
+
+  @if (auth.precisaDefinirSenha()) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-senha">
+      <div class="modal-box">
+        <h2 id="tit-senha">Definir sua senha</h2>
+        <p>Este é seu primeiro acesso ao sistema. Defina uma senha pessoal para acessar a Farias Troca de Óleo com segurança.</p>
+        <form (ngSubmit)="salvarSenha()" class="f" novalidate>
+          <label class="f">
+            <span>Nova senha</span>
+            <input type="password" [(ngModel)]="novaSenha" name="novaSenha" required placeholder="Digite sua nova senha" autofocus autocomplete="new-password">
+          </label>
+          <label class="f">
+            <span>Confirmar nova senha</span>
+            <input type="password" [(ngModel)]="confirmaSenha" name="confirmaSenha" required placeholder="Repita a senha" autocomplete="new-password">
+          </label>
+          @if (erroSenha(); as err) {
+            <p class="hint erro" style="margin:0">{{ err }}</p>
+          }
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px">
+            <button type="submit" class="btn btn-p btn-lg" [disabled]="salvandoSenha()">
+              {{ salvandoSenha() ? 'Gravando…' : 'Salvar senha e continuar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

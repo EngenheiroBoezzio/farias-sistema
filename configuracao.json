@@ -1,0 +1,16 @@
+{
+  "_leia": "Este arquivo é a configuração do CLIENTE FINAL. Edite antes de compilar. Ele é gravado dentro do executável e o computador da oficina não altera nada disto. Rode 'npm run empacotar' depois de mexer aqui.",
+  "apiUrl": "https://farias.devghzteste.fun",
+  "nomeLoja": "Farias Troca de Óleo",
+  "canalWhatsapp": "",
+  "travado": true,
+  "_apiUrl": "https://farias.devghzteste.fun",
+  "_nomeLoja": "Nome que aparece na tela de entrada e no topo.",
+  "_canalWhatsapp": "Link do canal do WhatsApp da loja, ou vazio.",
+  "_travado": "true = a oficina não vê nem altera o endereço do servidor. false = a tela de Configuração fica editável, para quem hospeda a própria API.",
+  "github": {
+    "owner": "EngenheiroBoezzio",
+    "repo": "farias-sistema"
+  },
+  "_github": "Repositório onde as versões novas são publicadas. Preencha owner com seu usuário ou organização no GitHub. Com isto preenchido, \"npm run publicar\" sobe a release e o app instalado se atualiza sozinho. Deixe owner vazio para gerar instalador sem publicar."
+}

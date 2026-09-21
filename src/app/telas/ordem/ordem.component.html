@@ -1,0 +1,179 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Nova ordem</h1>
+      <p>Comece pela placa: o carro traz o óleo e os filtros que ele usa.</p>
+    </div>
+    <div class="head-act">
+      <app-sino />
+    </div>
+  </div>
+
+  <div class="search-card">
+    <div class="search-card-h">
+      <div class="placa-badge" aria-hidden="true">
+        <span class="br">BRASIL</span>
+        <span>BR</span>
+      </div>
+      <div>
+        <h2>Consultar placa do veículo</h2>
+        <p>Digite a placa (ex.: ABC1D23 ou ABC-1234) para carregar o histórico e peças</p>
+      </div>
+    </div>
+
+    <form class="search-form-row" (ngSubmit)="buscar()" novalidate>
+      <div class="input-placa-wrap">
+        <input [(ngModel)]="entrada" name="placa" placeholder="ABC1D23"
+               autocapitalize="characters" autocomplete="off" spellcheck="false"
+               maxlength="8" aria-label="Placa" autofocus>
+      </div>
+      <button type="submit" class="btn btn-p btn-lg" [disabled]="buscando() || !entrada.trim()">
+        @if (buscando()) {
+          <span class="piston-anim-box" style="width:20px;height:20px;margin-right:6px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v6h10V2H7zm-2 8h14v3H5v-3zm2 5h10v7H7v-7z"/></svg>
+          </span>
+          Buscando…
+        } @else {
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+          Buscar carro
+        }
+      </button>
+    </form>
+  </div>
+
+  @if (erro(); as e) {
+    <div class="falha" role="alert">
+      <b>{{ e.mensagem }}</b>
+      @if (e.detalhe) { <p>{{ e.detalhe }}</p> }
+    </div>
+  }
+
+  @if (aviso(); as a) {
+    <div class="alerta" role="alert" style="margin:14px 0">
+      <b>Confira antes de seguir</b><span>{{ a }}</span>
+    </div>
+  }
+
+  @if (naoAchou(); as p) {
+    <p class="vazio">
+      <b>{{ fPlaca(p) }} não está cadastrada</b>
+      Cadastre o cliente e o veículo antes de lançar a ordem.
+    </p>
+    <a routerLink="/clientes/novo" [queryParams]="{ placa: p }" class="btn btn-p"
+       style="display:block;max-width:260px;margin:0 auto">Cadastrar agora</a>
+  }
+
+  @if (carro(); as c) {
+    <div class="fade-in">
+      <div class="ficha-h" style="border-radius:var(--r-md);background:var(--surface);margin-bottom:16px;border:1px solid var(--bd)">
+        <div>
+          <h2 class="id" style="color:var(--b-700)">{{ fPlaca(c.placa) }}</h2>
+          <p style="font-size:16px;font-weight:600">{{ c.veiculo.modelo || 'Modelo não informado' }}
+             @if (c.cadastro) { · <span style="color:var(--tx-2);font-weight:normal">{{ c.cadastro.cliente }}</span> }</p>
+          @if (c.cadastro) {
+            <span class="hint">
+              Última troca {{ data(c.cadastro.ultima_troca) }} · {{ km(c.cadastro.ultimo_km) }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <form (ngSubmit)="salvar()" novalidate>
+        <div class="grid two">
+          <div class="panel">
+            <div class="panel-h"><b>Troca de Óleo</b></div>
+            <div class="panel-b">
+              <div class="f-row c3">
+                <label class="f">
+                  <span>Quilometragem atual</span>
+                  <input type="number" name="km" [(ngModel)]="f.km" min="0" max="2000000"
+                         inputmode="numeric" placeholder="ex.: 96500">
+                </label>
+                <label class="f">
+                  <span>Óleo utilizado</span>
+                  <input name="oleo" [(ngModel)]="f.oleo" maxlength="30"
+                         placeholder="ex.: 5W30 MOB" autocapitalize="characters">
+                </label>
+                <label class="f">
+                  <span>Litros</span>
+                  <input type="number" name="litros" [(ngModel)]="f.litros"
+                         min="0" max="30" step="0.25" inputmode="decimal" placeholder="ex.: 4.0">
+                </label>
+              </div>
+              @if (c.oleo && c.oleo.origem) {
+                <p class="hint" style="margin-top:10px">Sugerido: <b>{{ c.oleo.origem }}</b></p>
+              }
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-h"><b>Filtros</b><span class="meta">código da peça</span></div>
+            <div class="panel-b">
+              <div class="f-row c2">
+                <label class="f"><span>Filtro de Óleo</span>
+                  <input name="cfo" [(ngModel)]="f.cod_filtro_oleo" maxlength="30"
+                         autocapitalize="characters" placeholder="ex.: WO170"></label>
+                <label class="f"><span>Filtro de Ar</span>
+                  <input name="cfa" [(ngModel)]="f.cod_filtro_ar" maxlength="30"
+                         autocapitalize="characters" placeholder="ex.: FAP5303"></label>
+              </div>
+              <div class="f-row c2" style="margin-top:10px">
+                <label class="f"><span>Filtro de Cabine</span>
+                  <input name="cfc" [(ngModel)]="f.cod_filtro_cabine" maxlength="30"
+                         autocapitalize="characters" placeholder="ex.: AKX1215"></label>
+                <label class="f"><span>Filtro de Combustível</span>
+                  <input name="cfk" [(ngModel)]="f.cod_filtro_combustivel" maxlength="30"
+                         autocapitalize="characters" placeholder="ex.: FCI1630"></label>
+              </div>
+              @if (c.filtros && c.filtros.origem) {
+                <p class="hint" style="margin-top:10px">Sugerido por: <b>{{ c.filtros.origem }}</b></p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><b>Valores e Fechamento</b></div>
+          <div class="panel-b">
+            <div class="f-row c3">
+              <label class="f"><span>Filtro de óleo (R$)</span>
+                <input type="number" name="vfo" [(ngModel)]="f.valor_filtro_oleo"
+                       min="0" max="5000" step="0.01" inputmode="decimal"></label>
+              <label class="f"><span>Filtro de ar (R$)</span>
+                <input type="number" name="vfa" [(ngModel)]="f.valor_filtro_ar"
+                       min="0" max="5000" step="0.01" inputmode="decimal"></label>
+              <label class="f"><span>Total da ordem (R$) *</span>
+                <input type="number" name="total" [(ngModel)]="f.total" required
+                       min="0" max="20000" step="0.01" inputmode="decimal"></label>
+            </div>
+            @if (somaItens() > 0) {
+              <p class="hint" style="margin-top:10px">Filtros somam <b>{{ dinheiro(somaItens()) }}</b> — o total inclui óleo e mão de obra.</p>
+            }
+            <div style="margin-top:18px">
+              <button type="submit" class="btn btn-p btn-lg" [disabled]="enviando()">
+                @if (enviando()) {
+                  <span class="piston-anim-box" style="width:22px;height:22px;margin-right:6px">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v6h10V2H7zm-2 8h14v3H5v-3zm2 5h10v7H7v-7z"/></svg>
+                  </span>
+                  Gravando ordem…
+                } @else {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
+                  Registrar ordem de serviço
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (selo(); as s) {
+    <app-selo [titulo]="s.titulo" [linha]="s.linha" [valor]="s.valor" [meta]="s.meta"
+              (fechou)="aoFechar()" />
+  }
+</section>

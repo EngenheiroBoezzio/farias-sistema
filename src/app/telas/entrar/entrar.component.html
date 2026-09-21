@@ -1,0 +1,54 @@
+<div class="login">
+  <form class="login-card" (ngSubmit)="entrar()" novalidate>
+    <img src="assets/logo.png" alt="Farias Troca de Óleo">
+    <h1>{{ cfg.nomeLoja }}</h1>
+    <p class="sub">Entre para continuar</p>
+
+    @if (expirou()) {
+      <p class="login-dica">Sua sessão expirou. Entre de novo.</p>
+    }
+
+    <label for="u">Usuário</label>
+    <input id="u" name="usuario" [(ngModel)]="usuario" autocomplete="username"
+           autocapitalize="off" spellcheck="false" autofocus
+           [disabled]="enviando()">
+
+    <label for="s">Senha</label>
+    <input id="s" name="senha" type="password" [(ngModel)]="senha"
+           autocomplete="current-password" [disabled]="enviando()">
+
+    @if (erro()) {
+      <p class="login-err" role="alert">{{ erro() }}</p>
+      @if (dica()) { <p class="login-dica">{{ dica() }}</p> }
+    }
+
+    <button type="submit" class="btn btn-p btn-lg" [disabled]="enviando()">
+      {{ enviando() ? 'Entrando…' : 'Entrar' }}
+    </button>
+
+    <p class="login-dica">A sessão termina quando o programa é fechado.</p>
+  </form>
+
+  @if (splash()) {
+    <div class="login-splash" role="status" aria-live="polite">
+      <div class="splash-content">
+        <img src="assets/logo.png" alt="Farias Troca de Óleo">
+        <h2>Bem-vindo à Farias Troca de Óleo</h2>
+        <p>Inicializando sistema e carregando dados da oficina…</p>
+        <div class="piston-anim-box">
+          <svg class="piston-l" width="28" height="28" viewBox="0 0 24 24" fill="#F59E0B">
+            <path d="M7 2v6h10V2H7zm-2 8h14v3H5v-3zm2 5h10v7H7v-7z"/>
+          </svg>
+          <svg class="piston-r" width="28" height="28" viewBox="0 0 24 24" fill="#F59E0B">
+            <path d="M7 2v6h10V2H7zm-2 8h14v3H5v-3zm2 5h10v7H7v-7z"/>
+          </svg>
+          <div class="oil-drop">
+            <svg width="14" height="20" viewBox="0 0 24 32" fill="currentColor">
+              <path d="M12 2 C12 2, 3 14, 3 21 C3 26 7 30 12 30 C17 30 21 26 21 21 C21 14, 12 2, 12 2 Z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

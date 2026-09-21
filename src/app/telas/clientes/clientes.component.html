@@ -1,0 +1,72 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Clientes</h1>
+      <p>{{ total() }} cadastrados. Busque por nome, telefone ou placa.</p>
+    </div>
+    <div class="head-act">
+      <a routerLink="/clientes/novo" class="btn btn-p">+ Novo cliente</a>
+      <app-sino />
+    </div>
+  </div>
+
+  <div class="search-card" style="margin-bottom: 20px;">
+    <div class="search-card-b">
+      <label class="f" style="margin: 0;">
+        <span>Buscar na base</span>
+        <input [ngModel]="busca" (ngModelChange)="aoDigitar($event)" name="busca"
+               placeholder="Digite o nome, telefone ou placa..." aria-label="Buscar cliente"
+               autocomplete="off" style="font-size: 14.5px; padding: 10px 14px;">
+      </label>
+    </div>
+  </div>
+
+  @if (carregando()) {
+    <p class="carregando">Buscando…</p>
+  } @else if (erro()) {
+    <div class="falha" role="alert">
+      <b>{{ erro()!.mensagem }}</b>
+      @if (erro()!.detalhe) { <p>{{ erro()!.detalhe }}</p> }
+      <button type="button" class="btn btn-s" (click)="buscar()">Tentar de novo</button>
+    </div>
+  } @else if (lista().length === 0) {
+    <p class="vazio">
+      <b>Nenhum cliente encontrado</b>
+      {{ busca ? 'Tente outro termo, ou cadastre este cliente.' : 'A base está vazia.' }}
+    </p>
+  } @else {
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Nome</th><th>Telefone</th><th>Nascimento</th>
+              <th class="num">Veículos</th><th>Avisos</th></tr>
+        </thead>
+        <tbody>
+          @for (c of lista(); track c.id) {
+            <tr>
+              <td><b>{{ c.nome }}</b></td>
+              <td>
+                {{ telefone(c.telefone) }}
+                @if (c.tel_inferido) {
+                  <span class="pill p-warn" title="O DDD foi deduzido na importação — confirme com o cliente">DDD deduzido</span>
+                }
+              </td>
+              <td>{{ data(c.nascimento) }}</td>
+              <td class="num">{{ qtdVeiculos(c) }}</td>
+              <td>
+                @if (c.aceita_aviso) { <span class="pill p-pos">aceita</span> }
+                @else { <span class="pill p-mute">pediu para sair</span> }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-foot">
+      <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">Anterior</button>
+      <span>{{ lista().length }} de {{ total() }} · página {{ pagina() }}</span>
+      <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="lista().length < 50">Próxima</button>
+    </div>
+  }
+</section>

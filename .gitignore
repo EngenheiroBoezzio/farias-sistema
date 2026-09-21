@@ -1,0 +1,6 @@
+node_modules/
+dist/
+instalador/
+.angular/
+*.log
+public/assets/fontes/

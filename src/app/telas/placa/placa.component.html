@@ -1,0 +1,396 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Consultar placa</h1>
+      <p>Digite a placa e veja o histórico, o óleo e os filtros do carro.
+         O sistema sugere — quem confirma é você.</p>
+    </div>
+    <div class="head-act">
+      <app-sino />
+    </div>
+  </div>
+
+  <div class="search-card">
+    <div class="search-card-h">
+      <div class="placa-badge" aria-hidden="true">
+        <span class="br">BRASIL</span>
+        <span>BR</span>
+      </div>
+      <div>
+        <h2>Pesquisar histórico do veículo</h2>
+        <p>Encontre óleo correto, viscosidade, filtros e histórico de atendimentos</p>
+      </div>
+    </div>
+
+    <form class="search-form-row" (ngSubmit)="buscar()" novalidate>
+      <div class="input-placa-wrap">
+        <input [(ngModel)]="entrada" name="placa" placeholder="ABC1D23"
+               autocapitalize="characters" autocomplete="off" spellcheck="false"
+               maxlength="8" aria-label="Placa do veículo" autofocus>
+      </div>
+      <button type="submit" class="btn btn-p btn-lg" [disabled]="buscando() || !entrada.trim()">
+        @if (buscando()) {
+          <span class="piston-anim-box" style="width:20px;height:20px;margin-right:6px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v6h10V2H7zm-2 8h14v3H5v-3zm2 5h10v7H7v-7z"/></svg>
+          </span>
+          Consultando…
+        } @else {
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+          Consultar placa
+        }
+      </button>
+    </form>
+  </div>
+
+  @if (erro(); as e) {
+    <div class="falha" role="alert">
+      <b>{{ e.mensagem }}</b>
+      @if (e.detalhe) { <p>{{ e.detalhe }}</p> }
+    </div>
+  }
+
+  <!-- Placa desconhecida: NÃO é erro, é o começo do atendimento.
+       O balcão diz o modelo e a resposta sai igual, de graça e sem internet. -->
+  <!-- Some assim que a resposta aparece: com o resultado na tela este bloco
+       vira meia tela de formulário repetido. Quem quiser trocar usa o botão
+       "Trocar modelo" no topo do resultado. -->
+  @if (precisa(); as np) { @if (!r()) {
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-h">
+        <b>{{ fPlaca(np.placa) }} ainda não é da casa</b>
+        <span class="pill p-mute">primeiro atendimento</span>
+      </div>
+      <div class="panel-b">
+        <p class="hint" style="margin:0 0 12px">{{ np.motivo }} {{ np.acao }}</p>
+
+        <form class="mod-wrap" (ngSubmit)="consultarModelo()" novalidate>
+          <div class="mod-campos">
+            <input name="modelo" [ngModel]="modelo"
+                   (ngModelChange)="aoDigitarModelo($event)"
+                   placeholder="Modelo do carro (ex.: Gol)"
+                   autocomplete="off" spellcheck="false" maxlength="60"
+                   aria-label="Modelo do carro" autofocus>
+            <input name="anoModelo" [(ngModel)]="anoModelo" type="number"
+                   placeholder="Ano" min="1950" max="2100"
+                   aria-label="Ano do carro">
+            <button type="submit" class="btn btn-p" [disabled]="buscando() || !modelo.trim()">
+              {{ buscando() ? 'Consultando…' : 'Ver óleo e filtros' }}
+            </button>
+          </div>
+
+          @if (sugestoes().length) {
+            <ul class="mod-lista" role="listbox">
+              @for (m of sugestoes(); track m.modelo) {
+                <li>
+                  <button type="button" (click)="escolher(m)">
+                    <span class="nome">{{ m.modelo }}</span>
+                    @if (m.marca) { <span class="marca">{{ m.marca }}</span> }
+                    @if (m.carros) { <span class="qtd">{{ m.carros }} na oficina</span> }
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </form>
+
+        <!-- O ano importa de verdade: Gol 2005 e Gol 2018 não levam o mesmo
+             filtro. Por isso o aviso fica visível enquanto o campo está vazio. -->
+        @if (!anoModelo) {
+          <p class="hint" style="margin-top:9px">
+            Informe o ano se souber: a mesma linha muda de filtro de uma geração
+            para outra.
+          </p>
+        }
+
+        @if (np.modelos_comuns.length) {
+          <p class="hint" style="margin:16px 0 0">Os que mais entram aqui:</p>
+          <div class="atalhos">
+            @for (m of np.modelos_comuns; track m.modelo) {
+              <button type="button" (click)="escolher(m)">
+                {{ m.modelo }} <span class="marca">· {{ m.carros }}</span>
+              </button>
+            }
+          </div>
+        }
+
+        <p class="hint" style="margin:16px 0 0">
+          Se o cliente for ficar,
+          <a routerLink="/clientes/novo" [queryParams]="{ placa: np.placa }">
+            cadastre o veículo</a> — na próxima vez a placa já responde sozinha.
+        </p>
+      </div>
+    </div>
+  } }
+
+  @if (r(); as d) {
+    <div class="ficha-h">
+      <div>
+        <h2 class="id">{{ d.placa ? fPlaca(d.placa) : (d.veiculo.modelo || 'Carro') }}</h2>
+        <p>
+          {{ d.veiculo.marca ? d.veiculo.marca + ' ' : '' }}{{ d.veiculo.modelo || 'Modelo não informado' }}
+          @if (d.veiculo.ano) { · {{ d.veiculo.ano }} }
+          @if (d.veiculo.cilindrada) { · {{ d.veiculo.cilindrada }} }
+          @if (d.veiculo.versao) { <span class="hint">{{ d.veiculo.versao }}</span> }
+        </p>
+        <span class="hint">Origem: {{ d.origem_veiculo }}</span>
+      </div>
+      <div class="head-act">
+        @if (precisa()) {
+          <!-- Sem veículo cadastrado não há ordem de serviço para lançar: o
+               caminho daqui é o cadastro, já com tudo o que a tela descobriu. -->
+          <button type="button" class="btn btn-s" (click)="trocarModelo()">Trocar modelo</button>
+          <button type="button" class="btn btn-p" (click)="cadastrarEsta()">
+            Cadastrar este veículo
+          </button>
+        } @else {
+          @if (d.cadastro) {
+            <button type="button" class="btn btn-s" (click)="abrirFicha()">Abrir ficha</button>
+          }
+          <button type="button" class="btn btn-p" (click)="novaOrdem()">Lançar ordem</button>
+        }
+      </div>
+    </div>
+
+    <!-- Quando a resposta veio de um modelo digitado, não há placa conferida:
+         o atendente escolheu o modelo e pode ter escolhido o errado. -->
+    @if (precisa()) {
+      <p class="alerta" style="margin-top:12px">
+        <b>Resposta pelo modelo "{{ d.veiculo.modelo }}"{{ d.veiculo.ano ? ', ano ' + d.veiculo.ano : '' }}</b>
+        <span>Ninguém conferiu a placa: isto vale se o carro for mesmo esse.
+              Olhe o motor antes de pedir a peça.</span>
+      </p>
+    }
+
+    <div class="grid two">
+      <!-- ÓLEO -->
+      <div class="panel">
+        <div class="panel-h">
+          <b>Óleo</b>
+          @if (d.oleo.recomendado; as rec) {
+            <span class="pill" [class]="'pill ' + tomForca(rec.forca)">
+              {{ rec.confianca != null ? rec.confianca + '% de confiança' : 'sem medida' }}
+            </span>
+          }
+        </div>
+        <div class="panel-b">
+          <!-- UMA resposta grande. O resto fica aberto embaixo para conferir:
+               o atendente tem um cliente na frente, não tempo de comparar. -->
+          @if (d.oleo.recomendado; as rec) {
+            <p class="destaque">
+              <span class="valor">{{ rec.texto }}</span>
+              @if (rec.marca_usual) { <span class="compl">normalmente {{ rec.marca_usual }}</span> }
+            </p>
+            @if (d.oleo.litros) { <p class="hint">Cabe {{ d.oleo.litros }} L</p> }
+            <p class="fonte">
+              <b>{{ rec.fonte === 'catálogo' ? d.oleo.origem : rec.fonte }}</b>
+              @if (rec.porque) { <span>{{ rec.porque }}</span> }
+            </p>
+
+            @if (d.oleo.divergencia) {
+              <p class="alerta">
+                <b>Catálogo e oficina discordam</b>
+                <span>{{ d.oleo.divergencia }}</span>
+              </p>
+            } @else if (d.oleo.confere_com_a_casa) {
+              <span class="bateu">O catálogo diz o mesmo que a oficina vem usando.</span>
+            }
+
+            @if (rec.forca === 'baixa') {
+              <p class="alerta">
+                <b>Pouca base para essa resposta</b>
+                <span>Confirme no manual do carro antes de fechar.</span>
+              </p>
+            }
+          } @else {
+            <p class="vazio">
+              <b>Sem sugestão de óleo</b>
+              {{ d.oleo.status === 'sem_catalogo'
+                 ? 'Este modelo não está no catálogo e a oficina ainda não tem histórico dele.'
+                 : 'Faltam dados do carro para sugerir.' }}
+            </p>
+          }
+
+          <!-- O histórico da própria casa, sempre visível quando existe: é a
+               fonte que mais acerta e a única que não custa consulta. -->
+          @if (d.oleo.na_casa; as nc) {
+            <div class="na-casa">
+              <b>O que a Farias usa neste modelo</b>
+              <ul>
+                @for (i of nc.itens; track i.rotulo) {
+                  <li>
+                    <span>{{ i.rotulo }}</span>
+                    @if (i.marca_usual) { <span class="hint">{{ i.marca_usual }}</span> }
+                    <span class="q">{{ i.vezes }}x · {{ i.parte }}%</span>
+                  </li>
+                }
+              </ul>
+              <p class="obs">
+                {{ nc.total }} trocas em {{ nc.carros }} carros
+                {{ faixaCasa(nc.janela, nc.ano) }}@if (nc.criterio === 'aproximado') {
+                  <span> · casamento aproximado do nome do modelo</span>
+                }.
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="panel">
+        <div class="panel-h">
+          <b>Filtros</b>
+          @if (d.filtros.status === 'cadastrado') {
+            <span class="pill p-pos">confirmado pela loja</span>
+          } @else if (d.filtros.confianca != null) {
+            <span class="pill" [class]="'pill ' + tomConfianca(d.filtros.confianca)">
+              {{ d.filtros.confianca }}% de confiança
+            </span>
+          }
+        </div>
+        <div class="panel-b">
+          @if (d.filtros.itens.length) {
+            <ul class="pecas">
+              @for (i of d.filtros.itens; track i.tipo) {
+                <li>
+                  <span class="tipo">{{ i.rotulo }}</span>
+                  <b class="cod">{{ i.codigo }}</b>
+                  @if (i.alternativo) { <span class="alt">ou {{ i.alternativo }}</span> }
+                  @if (i.nota) { <span class="obs">{{ i.nota }}</span> }
+                </li>
+              }
+            </ul>
+
+            @if (d.filtros.status === 'cadastrado') {
+              <p class="hint" style="margin-top:10px">
+                Confirmado por {{ d.filtros.confirmado_por }}.
+              </p>
+              @if (d.filtros.sugeridos?.length) {
+                <p class="fonte">
+                  <b>O catálogo também sugere:</b>
+                  <span>
+                    @for (s of d.filtros.sugeridos!; track s.tipo) {
+                      {{ s.rotulo }}: {{ s.codigo }}{{ $last ? '' : ' · ' }}
+                    }
+                  </span>
+                </p>
+              }
+            } @else {
+              <p class="fonte">
+                <b>{{ d.filtros.origem }}</b>
+                @if (d.filtros.porque) { <span>{{ d.filtros.porque }}</span> }
+                @if (d.filtros.pagina_pdf) {
+                  <span class="hint">Catálogo Wega, página {{ d.filtros.pagina_pdf }}.</span>
+                }
+              </p>
+              @if (d.filtros.alternativas?.length) {
+                <p class="alerta">
+                  <b>Atenção: há mais de uma opção</b>
+                  <span>O catálogo lista {{ d.filtros.alternativas!.join(', ') }} para
+                        carros parecidos. Confira o motor antes de pedir a peça.</span>
+                </p>
+              }
+              @if (d.filtros.acao) { <p class="hint" style="margin-top:8px">{{ d.filtros.acao }}</p> }
+            }
+
+            @if (d.filtros.divergencia) {
+              <p class="alerta">
+                <b>Catálogo e oficina discordam</b>
+                <span>{{ d.filtros.divergencia }}</span>
+              </p>
+            } @else if (d.filtros.confere_com_a_casa) {
+              <span class="bateu">Bate com o que a oficina já usou em carros iguais.</span>
+            }
+          } @else {
+            <p class="vazio">
+              <b>Sem filtro definido</b>
+              {{ d.filtros.acao || 'Preencha à mão uma vez; nas próximas trocas já vem pronto.' }}
+            </p>
+          }
+
+          <!-- Filtro que a casa já confirmou em carro igual vale mais que
+               catálogo: alguém daqui olhou a peça e ela serviu. -->
+          @if (d.filtros.na_casa; as nc) {
+            <div class="na-casa">
+              <b>O que a Farias já pôs em {{ nc.carros }} carros deste modelo</b>
+              <ul>
+                @for (i of nc.itens; track i.tipo) {
+                  <li>
+                    <span>{{ i.rotulo }}</span>
+                    <b class="cod" style="font-family:var(--code)">{{ i.codigo }}</b>
+                    <span class="q">{{ i.vezes }}x · {{ i.parte }}%</span>
+                  </li>
+                }
+              </ul>
+              @if (nc.itens[0].outros.length) {
+                <p class="obs">
+                  Há outros códigos no cadastro
+                  (@for (o of nc.itens[0].outros; track o.codigo) {
+                    {{ o.codigo }} ({{ o.vezes }}x){{ $last ? '' : ', ' }}
+                  }) — motor diferente dentro do mesmo modelo.
+                </p>
+              }
+              <p class="obs">Faixa olhada: {{ faixaCasa(nc.janela, nc.ano) }}.</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- CADASTRO E HISTÓRICO -->
+    @if (d.cadastro; as c) {
+      <div class="grid two">
+        <div class="panel">
+          <div class="panel-h"><b>Cliente</b></div>
+          <div class="panel-b">
+            <p style="font-size:16px;font-weight:600;margin:0 0 3px">{{ c.cliente }}</p>
+            <p class="hint">{{ telefone(c.telefone) }}</p>
+            <div class="n-l"><span>Situação</span><span class="d"></span>
+              <span class="v">{{ rotuloSituacao(c.situacao) }}</span></div>
+            <div class="n-l"><span>Última troca</span><span class="d"></span>
+              <span class="v">{{ data(c.ultima_troca) }}</span></div>
+            <div class="n-l"><span>Há quanto tempo</span><span class="d"></span>
+              <span class="v">{{ haQuanto(c.dias) }}</span></div>
+            <div class="n-l"><span>Quilometragem</span><span class="d"></span>
+              <span class="v">{{ km(c.ultimo_km) }}</span></div>
+            <div class="n-l"><span>Visitas</span><span class="d"></span>
+              <span class="v">{{ c.visitas }}</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><b>Histórico</b><span>{{ d.historico.length }} trocas</span></div>
+          <div class="panel-b">
+            @if (d.historico.length === 0) {
+              <p class="vazio"><b>Sem trocas registradas</b></p>
+            } @else {
+              <div class="tbl-wrap">
+                <table>
+                  <thead><tr><th>Data</th><th>Km</th><th>Óleo</th><th class="num">Total</th></tr></thead>
+                  <tbody>
+                    @for (h of d.historico; track $index) {
+                      <tr>
+                        <td>{{ data(h.data) }}</td>
+                        <td class="num">{{ km(h.km) }}</td>
+                        <td>{{ h.oleo || '—' }} <small>{{ litros(h.litros) }}</small></td>
+                        <td class="num">{{ dinheiro(h.total) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <p class="hint" style="margin-top:14px">
+      Consulta resolvida em {{ d.ms }} ms.
+      @for (p of d.passos; track p.passo) {
+        <span> · {{ p.passo }}{{ p.ms != null ? ' ' + p.ms + 'ms' : '' }}</span>
+      }
+    </p>
+  }
+</section>

@@ -1,0 +1,108 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Fila de filtros</h1>
+      <p>Carros ativos sem filtro definido, com a sugestão do catálogo Wega ao lado.
+         Comece pelos de mais visitas — são os que voltam.</p>
+    </div>
+    <div class="head-act">
+      <span class="pill p-mute">{{ total() }} na fila</span>
+      <app-sino />
+    </div>
+  </div>
+
+  @if (carregando()) {
+    <p class="carregando">Montando a fila e consultando o catálogo…</p>
+  } @else if (erro()) {
+    <div class="falha" role="alert">
+      <b>{{ erro()!.mensagem }}</b>
+      @if (erro()!.detalhe) { <p>{{ erro()!.detalhe }}</p> }
+      <button type="button" class="btn btn-s" (click)="buscar()">Tentar de novo</button>
+    </div>
+  } @else if (lista().length === 0) {
+    <p class="vazio"><b>Nenhum carro pendente</b>Todos os veículos ativos já têm filtro definido.</p>
+  } @else {
+    @for (v of lista(); track v.id) {
+      <div class="panel" style="margin-bottom:12px">
+        <div class="panel-h">
+          <b class="id">{{ fPlaca(v.placa) }}</b>
+          <span>
+            {{ v.modelo || 'modelo não informado' }}
+            @if (v.ano) { · {{ v.ano }} }
+            @if (v.cilindrada) { · {{ v.cilindrada }} }
+            · {{ v.visitas }} visitas · {{ v.cliente }}
+          </span>
+          @if (v.sugestao.confianca != null) {
+            <span class="pill" [class]="'pill ' + tom(v.sugestao.confianca)">
+              {{ v.sugestao.confianca }}%
+            </span>
+          }
+        </div>
+        <div class="panel-b">
+          @if (v.sugestao.itens.length) {
+            <ul class="pecas">
+              @for (i of v.sugestao.itens; track i.tipo) {
+                <li>
+                  <span class="tipo">{{ i.rotulo }}</span>
+                  <b class="cod">{{ i.codigo }}</b>
+                  @if (i.alternativo) { <span class="alt">ou {{ i.alternativo }}</span> }
+                </li>
+              }
+            </ul>
+            <p class="fonte">
+              <b>{{ v.sugestao.origem }}</b>
+              @if (v.sugestao.pagina_pdf) {
+                <span class="hint">Catálogo Wega, página {{ v.sugestao.pagina_pdf }}.</span>
+              }
+            </p>
+            <div class="head-act" style="margin-top:12px">
+              <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir ficha</a>
+              <button type="button" class="btn btn-p"
+                      [disabled]="gravando() === v.id" (click)="aceitar(v)">
+                {{ gravando() === v.id ? 'Gravando…' : 'Conferi, pode gravar' }}
+              </button>
+            </div>
+          } @else {
+            <p class="vazio">
+              <b>Sem par no catálogo</b>
+              Este modelo não casou com nenhuma aplicação. Preencha à mão na ficha.
+            </p>
+            <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir ficha</a>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="tbl-foot">
+      <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">
+        Anterior
+      </button>
+      <span>página {{ pagina() }}</span>
+      <button type="button" class="btn btn-s" (click)="proxima()"
+              [disabled]="lista().length < 25">Próxima</button>
+    </div>
+  }
+
+  @if (duvida(); as d) {
+    <div class="ok-veil" (click)="duvida.set(null)">
+      <div class="ok-card" (click)="$event.stopPropagation()">
+        <h3>Confiança baixa</h3>
+        <p>{{ d.motivo }}</p>
+        <p class="ok-meta">
+          O catálogo não tem certeza para {{ fPlaca(d.v.placa) }}.
+          Confira a peça no carro antes de gravar.
+        </p>
+        <div class="head-act" style="justify-content:center;margin-top:16px">
+          <button type="button" class="btn btn-s" (click)="duvida.set(null)">Cancelar</button>
+          <button type="button" class="btn btn-w" (click)="aceitar(d.v, true)">
+            Conferi, gravar mesmo assim
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (selo(); as s) {
+    <app-selo [titulo]="s.titulo" [linha]="s.linha" (fechou)="selo.set(null)" />
+  }
+</section>
