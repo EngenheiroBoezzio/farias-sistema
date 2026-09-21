@@ -43,10 +43,10 @@ export class ConfigComponent implements OnInit {
       apiUrl: c.apiUrl,
       nomeLoja: c.nomeLoja,
       canalWhatsapp: c.canalWhatsapp,
-      tamanhoFonte: c.tamanhoFonte || 'normal',
-      tema: c.tema || 'adaptativo',
-      frequenciaAtualizacao: c.frequenciaAtualizacao || 'semanal',
-      tipoGrafico: c.tipoGrafico || 'linha'
+      tamanhoFonte: this.cfg.tamanhoFonte || c.tamanhoFonte || 'normal',
+      tema: this.cfg.tema || c.tema || 'adaptativo',
+      frequenciaAtualizacao: this.cfg.frequenciaAtualizacao || c.frequenciaAtualizacao || 'semanal',
+      tipoGrafico: this.cfg.tipoGrafico || c.tipoGrafico || 'linha'
     };
     try {
       if (window.farias?.versao) this.versao.set(await window.farias.versao());

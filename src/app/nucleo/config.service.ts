@@ -80,7 +80,13 @@ export class ConfigService {
   get tamanhoFonte(): TamanhoFonte { return this._config().tamanhoFonte || 'normal'; }
   get tema(): TemaApp { return this._config().tema || 'adaptativo'; }
   get frequenciaAtualizacao(): FrequenciaAtualizacao { return this._config().frequenciaAtualizacao || 'semanal'; }
-  get tipoGrafico(): TipoGrafico { return this._config().tipoGrafico || 'linha'; }
+  get tipoGrafico(): TipoGrafico {
+    if (typeof localStorage !== 'undefined') {
+      const d = localStorage.getItem('farias.tipoGrafico') as TipoGrafico;
+      if (d && (d === 'linha' || d === 'barras' || d === 'pizza' || d === 'area')) return d;
+    }
+    return this._config().tipoGrafico || 'linha';
+  }
 
   /** Chamado pelo APP_INITIALIZER: o app não sobe antes disto terminar. */
   async carregar(): Promise<void> {
@@ -94,10 +100,23 @@ export class ConfigService {
       // sem config.json o app ainda sobe, com o padrão
     }
 
-    /* Ponto de corte. Travado, o que veio do pacote é a palavra final e as
-       duas camadas abaixo nem são lidas — senão bastaria um localStorage
-       para apontar o app da oficina para outro servidor. */
+    /* Ponto de corte. Travado, o que veio do pacote (servidor, loja) é a palavra final.
+       No entanto, as preferências do usuário (tipo de gráfico, tema, tamanho da fonte)
+       devem ser sempre preservadas e lidas do localStorage! */
     if (c.travado) {
+      try {
+        const salvo = localStorage.getItem(CHAVE);
+        if (salvo) {
+          const s = JSON.parse(salvo);
+          if (s.tipoGrafico) c.tipoGrafico = s.tipoGrafico;
+          if (s.tema) c.tema = s.tema;
+          if (s.tamanhoFonte) c.tamanhoFonte = s.tamanhoFonte;
+          if (s.frequenciaAtualizacao) c.frequenciaAtualizacao = s.frequenciaAtualizacao;
+        }
+        const tgDireto = localStorage.getItem('farias.tipoGrafico') as TipoGrafico;
+        if (tgDireto) c.tipoGrafico = tgDireto;
+      } catch { /* segue */ }
+
       this._config.set(this.limpar(c));
       this.aplicarAparencia();
       return;
@@ -174,6 +193,9 @@ export class ConfigService {
     let ok = false;
     try {
       localStorage.setItem(CHAVE, JSON.stringify(novo));
+      if (novo.tipoGrafico) {
+        localStorage.setItem('farias.tipoGrafico', novo.tipoGrafico);
+      }
       ok = true;
     } catch { /* modo privado, disco cheio */ }
     try {

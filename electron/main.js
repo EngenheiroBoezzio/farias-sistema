@@ -119,10 +119,15 @@ function configDoPacote() {
 const estaTravado = () => configDoPacote()?.travado === true;
 
 function lerConfig() {
-  if (estaTravado()) return null;          // o do pacote manda, e a tela já o lê
   try {
-    if (fs.existsSync(ARQ_CONFIG))
-      return JSON.parse(fs.readFileSync(ARQ_CONFIG, 'utf8'));
+    if (fs.existsSync(ARQ_CONFIG)) {
+      const doDisco = JSON.parse(fs.readFileSync(ARQ_CONFIG, 'utf8'));
+      if (estaTravado()) {
+        const pacote = configDoPacote() || {};
+        return { ...doDisco, apiUrl: pacote.apiUrl, travado: true, nomeLoja: pacote.nomeLoja };
+      }
+      return doDisco;
+    }
   } catch (e) {
     console.error('[config] não consegui ler:', e.message);
   }
@@ -130,13 +135,16 @@ function lerConfig() {
 }
 
 function salvarConfig(c) {
-  if (estaTravado()) {
-    console.warn('[config] gravação recusada: configuração travada no pacote');
-    return false;
-  }
   try {
+    const seguro = { ...c };
+    if (estaTravado()) {
+      const pacote = configDoPacote() || {};
+      seguro.apiUrl = pacote.apiUrl;
+      seguro.travado = true;
+      seguro.nomeLoja = pacote.nomeLoja;
+    }
     fs.mkdirSync(path.dirname(ARQ_CONFIG), { recursive: true });
-    fs.writeFileSync(ARQ_CONFIG, JSON.stringify(c, null, 2), 'utf8');
+    fs.writeFileSync(ARQ_CONFIG, JSON.stringify(seguro, null, 2), 'utf8');
     return true;
   } catch (e) {
     console.error('[config] não consegui gravar:', e.message);
