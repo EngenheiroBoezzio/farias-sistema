@@ -25,6 +25,17 @@
         <span class="lab">Painel</span>
       </a>
 
+      <a routerLink="/financeiro" routerLinkActive="ativo"
+         [attr.aria-current]="rlFin.isActive ? 'page' : null"
+         #rlFin="routerLinkActive">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="2" y="3.5" width="12" height="9" rx="1.5"/>
+          <circle cx="8" cy="8" r="2.2"/>
+          <path d="M4.5 6h.01M11.5 10h.01"/>
+        </svg>
+        <span class="lab">Financeiro</span>
+      </a>
+
       <a routerLink="/ordem" routerLinkActive="ativo"
          [attr.aria-current]="rlOrdem.isActive ? 'page' : null" #rlOrdem="routerLinkActive">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">

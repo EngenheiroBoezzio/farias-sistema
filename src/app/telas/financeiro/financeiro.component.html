@@ -1,0 +1,223 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Financeiro</h1>
+      <p>Consolidação de faturamento, despesas operacionais e lucro líquido calculados sobre as ordens da oficina.</p>
+    </div>
+    <div class="head-act">
+      <!-- Seletor rápido de período -->
+      <div style="display:inline-flex; background:var(--surface-2); border:1px solid var(--bd-strong); border-radius:var(--r-sm); padding:2px; gap:2px">
+        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
+                [style.background]="periodo() === '6m' ? 'var(--surface)' : 'transparent'"
+                [style.fontWeight]="periodo() === '6m' ? '600' : 'normal'"
+                [style.boxShadow]="periodo() === '6m' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                (click)="selecionarPeriodo('6m')">
+          6 meses
+        </button>
+        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
+                [style.background]="periodo() === '12m' ? 'var(--surface)' : 'transparent'"
+                [style.fontWeight]="periodo() === '12m' ? '600' : 'normal'"
+                [style.boxShadow]="periodo() === '12m' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                (click)="selecionarPeriodo('12m')">
+          12 meses
+        </button>
+        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
+                [style.background]="periodo() === 'ano' ? 'var(--surface)' : 'transparent'"
+                [style.fontWeight]="periodo() === 'ano' ? '600' : 'normal'"
+                [style.boxShadow]="periodo() === 'ano' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                (click)="selecionarPeriodo('ano')">
+          Ano atual
+        </button>
+        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
+                [style.background]="periodo() === 'tudo' ? 'var(--surface)' : 'transparent'"
+                [style.fontWeight]="periodo() === 'tudo' ? '600' : 'normal'"
+                [style.boxShadow]="periodo() === 'tudo' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                (click)="selecionarPeriodo('tudo')">
+          Histórico
+        </button>
+      </div>
+
+      <button type="button" class="btn btn-s" (click)="buscar()" [disabled]="carregando()" title="Recarregar dados">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+        Atualizar
+      </button>
+      <app-sino />
+    </div>
+  </div>
+
+  @if (carregando()) {
+    <p class="carregando">Consolidando entradas, despesas e margens…</p>
+  } @else if (erro()) {
+    <div class="falha" role="alert">
+      <b>{{ erro()!.mensagem }}</b>
+      @if (erro()!.detalhe) { <p>{{ erro()!.detalhe }}</p> }
+      <button type="button" class="btn btn-s" (click)="buscar()">Tentar de novo</button>
+    </div>
+  } @else {
+
+    <!-- Cards de Indicadores Consolidados -->
+    <div class="strip">
+      <div class="stat">
+        <span class="stat-l">Faturamento bruto</span>
+        <span class="stat-v" style="color:var(--tx)">{{ dinheiro(totais().faturamento) }}</span>
+        <span class="stat-d"><b>{{ inteiro(totais().ordens) }}</b> ordens faturadas</span>
+      </div>
+
+      <div class="stat">
+        <span class="stat-l">Custos / Despesas</span>
+        <span class="stat-v" style="color:var(--tx-2)">{{ dinheiro(totais().custos) }}</span>
+        <span class="stat-d">peças, filtros e lubrificantes</span>
+      </div>
+
+      <!-- Destaque visual expressivo: cor de destaque diferente se positivo ou negativo -->
+      <div class="stat"
+           [style.background]="totais().positivo ? 'var(--pos-bg)' : 'var(--crit-bg)'"
+           [style.borderLeft]="totais().positivo ? '3px solid var(--pos)' : '3px solid var(--crit)'">
+        <span class="stat-l" [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'" style="font-weight:600">
+          Lucro Líquido
+        </span>
+        <span class="stat-v" [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'">
+          {{ dinheiro(totais().lucro) }}
+        </span>
+        <span class="stat-d" [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'">
+          <b>{{ totais().margem.toFixed(1) }}%</b> de margem de lucro líquida
+        </span>
+      </div>
+
+      <div class="stat">
+        <span class="stat-l">Ticket Médio</span>
+        <span class="stat-v"><small>R$ </small>{{ totais().ticketMedio.toFixed(2) }}</span>
+        <span class="stat-d">por troca de óleo atendida</span>
+      </div>
+    </div>
+
+    <!-- Painel do Gráfico Evolutivo -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-h">
+        <div>
+          <h2>Evolução de Faturamento, Custos e Lucro</h2>
+          <span class="meta">comparativo temporal ({{ mesesFiltrados().length }} meses)</span>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:6px">
+          <span style="font-size:12px; color:var(--tx-3); margin-right:4px">Visualização:</span>
+          <button type="button" class="btn btn-s" style="height:28px; padding:0 10px; font-size:12px"
+                  [style.background]="tipoGrafico() === 'barras' ? 'var(--surface-2)' : 'transparent'"
+                  [style.borderColor]="tipoGrafico() === 'barras' ? 'var(--b-600)' : 'var(--bd-strong)'"
+                  [style.fontWeight]="tipoGrafico() === 'barras' ? '600' : 'normal'"
+                  (click)="alternarTipoGrafico('barras')">
+            Barras
+          </button>
+          <button type="button" class="btn btn-s" style="height:28px; padding:0 10px; font-size:12px"
+                  [style.background]="tipoGrafico() === 'linha' ? 'var(--surface-2)' : 'transparent'"
+                  [style.borderColor]="tipoGrafico() === 'linha' ? 'var(--b-600)' : 'var(--bd-strong)'"
+                  [style.fontWeight]="tipoGrafico() === 'linha' ? '600' : 'normal'"
+                  (click)="alternarTipoGrafico('linha')">
+            Linhas
+          </button>
+        </div>
+      </div>
+      <div class="panel-b">
+        <div style="position:relative; height:260px; width:100%">
+          <canvas #graficoCanvas></canvas>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:14px; padding-top:10px; border-top:1px solid var(--bd)">
+          <div class="legend" style="margin:0">
+            <span><i style="background:#9E1822"></i> Faturamento</span>
+            <span><i style="background:#EA580C"></i> Custos / Insumos</span>
+            <span><i style="background:#16855A"></i> Lucro Líquido</span>
+          </div>
+          <span class="hint" style="margin:0">
+            Valores obtidos do fechamento de cada ordem de serviço cadastrada.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela Resumo por Mês / Período -->
+    <div class="panel">
+      <div class="panel-h">
+        <div>
+          <h2>Resumo Analítico por Mês</h2>
+          <span class="meta">detalhamento financeiro mês a mês</span>
+        </div>
+      </div>
+      <div class="panel-b" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mês / Período</th>
+                <th class="num">Ordens</th>
+                <th class="num">Ticket Médio</th>
+                <th class="num">Faturamento</th>
+                <th class="num">Custos / Despesas</th>
+                <th class="num">Lucro Líquido</th>
+                <th class="num">Margem</th>
+                <th style="text-align:center">Situação</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of mesesFiltrados(); track m.mes) {
+                <tr>
+                  <td>
+                    <span style="font-weight:600">{{ m.mesExtenso }}</span>
+                    <br><small class="id" style="color:var(--tx-3)">{{ m.mes }}</small>
+                  </td>
+                  <td class="num">{{ inteiro(m.ordens) }}</td>
+                  <td class="num">{{ dinheiro(m.ticket) }}</td>
+                  <td class="num" style="font-weight:600; color:var(--tx)">
+                    {{ dinheiro(m.faturamento) }}
+                  </td>
+                  <td class="num" style="color:var(--tx-2)">
+                    {{ dinheiro(m.custos) }}
+                  </td>
+                  <td class="num"
+                      [style.color]="m.positivo ? 'var(--pos)' : 'var(--crit)'"
+                      style="font-weight:700">
+                    {{ dinheiro(m.lucro) }}
+                  </td>
+                  <td class="num"
+                      [style.color]="m.positivo ? 'var(--pos)' : 'var(--crit)'"
+                      style="font-weight:600">
+                    {{ m.margem.toFixed(1) }}%
+                  </td>
+                  <td style="text-align:center">
+                    <span class="pill" [class.p-pos]="m.positivo" [class.p-crit]="!m.positivo">
+                      {{ m.positivo ? 'Lucro' : 'Prejuízo' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr style="background:var(--surface-2); font-weight:700; border-top:2px solid var(--bd-strong)">
+                <td style="padding:14px 12px">Total consolidado do período</td>
+                <td class="num">{{ inteiro(totais().ordens) }}</td>
+                <td class="num">{{ dinheiro(totais().ticketMedio) }}</td>
+                <td class="num" style="color:var(--tx)">{{ dinheiro(totais().faturamento) }}</td>
+                <td class="num" style="color:var(--tx-2)">{{ dinheiro(totais().custos) }}</td>
+                <td class="num"
+                    [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'"
+                    style="font-size:15px">
+                  {{ dinheiro(totais().lucro) }}
+                </td>
+                <td class="num"
+                    [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'">
+                  {{ totais().margem.toFixed(1) }}%
+                </td>
+                <td style="text-align:center">
+                  <span class="pill" [class.p-pos]="totais().positivo" [class.p-crit]="!totais().positivo">
+                    {{ totais().positivo ? 'Superávit' : 'Déficit' }}
+                  </span>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  }
+</section>

@@ -20,6 +20,10 @@ export const rotas: Routes = [
         loadComponent: () => import('./telas/painel/painel.component').then(m => m.PainelComponent)
       },
       {
+        path: 'financeiro', title: 'Financeiro — Farias',
+        loadComponent: () => import('./telas/financeiro/financeiro.component').then(m => m.FinanceiroComponent)
+      },
+      {
         path: 'ordem', title: 'Nova ordem — Farias',
         loadComponent: () => import('./telas/ordem/ordem.component').then(m => m.OrdemComponent)
       },
