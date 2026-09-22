@@ -334,7 +334,7 @@ body{margin:0;background:var(--ground);color:var(--tx);font-family:var(--ui);
 .rail:hover,.rail:has(:focus-visible),.app.rail-fixada .rail{
   width:230px;box-shadow:6px 0 28px -6px rgba(0,0,0,.36)}
 
-.rail-brand{display:flex;align-items:center;gap:12px;padding:0 14px 16px;height:52px;position:relative}
+.rail-brand{display:flex;align-items:center;gap:12px;padding:0 14px 16px;height:52px;position:relative;overflow:hidden}
 .rail-brand img{width:36px;height:36px;border-radius:var(--r-full);flex-shrink:0;
   display:block;box-shadow:0 0 0 2px rgba(255,255,255,.3);background:#fff}
 .rail-brand b{color:#fff;font-size:14.5px;font-weight:700;letter-spacing:-.01em;line-height:1.15;
@@ -344,7 +344,8 @@ body{margin:0;background:var(--ground);color:var(--tx);font-family:var(--ui);
 .rail-brand b span{display:block;font-size:11.5px;opacity:.78;font-weight:400;color:var(--gold-light)}
 
 .rail-pin{margin-left:auto;background:none;border:0;color:#fff;opacity:.6;cursor:pointer;
-  padding:6px;border-radius:var(--r-xs);display:grid;place-items:center;transition:opacity .15s}
+  padding:6px;border-radius:var(--r-xs);display:grid;place-items:center;transition:opacity .15s;
+  position:relative;z-index:2;flex-shrink:0;pointer-events:auto}
 .rail-pin:hover{opacity:1;background:rgba(255,255,255,.15)}
 
 .rail-group{padding:0 10px;margin-bottom:6px;position:relative}
@@ -452,7 +453,7 @@ main{flex:1;min-width:0;padding:24px;padding-bottom:48px}
   .grid.form{grid-template-columns:minmax(0,1fr) 300px}
 }
 .panel{background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-lg);
-  overflow:hidden;min-width:0}
+  overflow:clip;min-width:0}
 .panel-h{display:flex;align-items:center;gap:12px;padding:14px 17px;
   border-bottom:1px solid var(--bd);flex-wrap:wrap}
 .panel-h h2{font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
@@ -470,7 +471,7 @@ main{flex:1;min-width:0;padding:24px;padding-bottom:48px}
 .legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
 
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:560px}
+table{width:100%;border-collapse:collapse;min-width:420px}
 th{background:var(--surface-2);font-size:12.5px;font-weight:600;text-align:left;
   padding:9px 12px;border-bottom:1px solid var(--bd);white-space:nowrap;color:var(--tx-2)}
 td{padding:11px 12px;border-bottom:1px solid var(--bd);vertical-align:middle}
@@ -795,6 +796,18 @@ router-outlet { display: none; }
 .bateu { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
   font-size: 12.5px; color: var(--pos); }
 .bateu::before { content: "✓"; font-weight: 700; }
+
+/* Foto de perfil — preview na tela de configuração */
+.foto-perfil-preview {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--b-700); color: #fff;
+  display: grid; place-items: center; flex-shrink: 0;
+  overflow: hidden;
+  border: 3px solid var(--b-300);
+  box-shadow: 0 4px 12px rgba(158,24,34,.25);
+}
+.foto-perfil-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-perfil-inicial { font-size: 28px; font-weight: 700; }
 
 /* ===========================================================
    Ações Rápidas do Painel

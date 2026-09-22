@@ -29,6 +29,7 @@ export interface Config {
   tema?: TemaApp;
   frequenciaAtualizacao?: FrequenciaAtualizacao;
   tipoGrafico?: TipoGrafico;
+  menuFixado?: boolean;
   ultimaVerificacaoAtualizacao?: string;
   /* Gravado por quem COMPILA, não por quem usa. Com true, o endereço da API
      vem do pacote e nada no computador da oficina muda isso: nem a tela de
@@ -45,6 +46,7 @@ const PADRAO: Config = {
   tema: 'adaptativo',
   frequenciaAtualizacao: 'semanal',
   tipoGrafico: 'linha',
+  menuFixado: false,
   travado: false
 };
 
@@ -87,6 +89,28 @@ export class ConfigService {
     }
     return this._config().tipoGrafico || 'linha';
   }
+  get menuFixado(): boolean {
+    if (typeof localStorage !== 'undefined') {
+      const fix = localStorage.getItem('farias.rail_fixada');
+      if (fix !== null) return fix === 'true';
+    }
+    return this._config().menuFixado ?? false;
+  }
+
+  /** Foto de perfil salva como base64 — chave própria para não inflar o JSON de config. */
+  get fotoPerfil(): string | null {
+    if (typeof localStorage === 'undefined') return null;
+    return localStorage.getItem('farias.foto_perfil') || null;
+  }
+
+  salvarFoto(base64: string | null): void {
+    if (typeof localStorage === 'undefined') return;
+    if (base64) {
+      localStorage.setItem('farias.foto_perfil', base64);
+    } else {
+      localStorage.removeItem('farias.foto_perfil');
+    }
+  }
 
   /** Chamado pelo APP_INITIALIZER: o app não sobe antes disto terminar. */
   async carregar(): Promise<void> {
@@ -112,9 +136,12 @@ export class ConfigService {
           if (s.tema) c.tema = s.tema;
           if (s.tamanhoFonte) c.tamanhoFonte = s.tamanhoFonte;
           if (s.frequenciaAtualizacao) c.frequenciaAtualizacao = s.frequenciaAtualizacao;
+          if (s.menuFixado !== undefined) c.menuFixado = s.menuFixado;
         }
         const tgDireto = localStorage.getItem('farias.tipoGrafico') as TipoGrafico;
         if (tgDireto) c.tipoGrafico = tgDireto;
+        const fixDireto = localStorage.getItem('farias.rail_fixada');
+        if (fixDireto !== null) c.menuFixado = fixDireto === 'true';
       } catch { /* segue */ }
 
       this._config.set(this.limpar(c));
@@ -196,6 +223,9 @@ export class ConfigService {
       if (novo.tipoGrafico) {
         localStorage.setItem('farias.tipoGrafico', novo.tipoGrafico);
       }
+      if (novo.menuFixado !== undefined) {
+        localStorage.setItem('farias.rail_fixada', String(novo.menuFixado));
+      }
       ok = true;
     } catch { /* modo privado, disco cheio */ }
     try {
@@ -217,13 +247,14 @@ export class ConfigService {
         ? c.frequenciaAtualizacao : 'semanal';
     const tipoGrafico: TipoGrafico =
       c.tipoGrafico === 'barras' || c.tipoGrafico === 'pizza' || c.tipoGrafico === 'area' ? c.tipoGrafico : 'linha';
+    const menuFixado = c.menuFixado === true;
     const ultimaVerificacaoAtualizacao = c.ultimaVerificacaoAtualizacao;
 
     const bruto = String(c.apiUrl ?? '').trim();
     /* Nada preenchido cai no padrão de desenvolvimento, como sempre foi. */
     if (!bruto) return {
       apiUrl: PADRAO.apiUrl, nomeLoja, canalWhatsapp, travado,
-      tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, ultimaVerificacaoAtualizacao
+      tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, menuFixado, ultimaVerificacaoAtualizacao
     };
 
     /* As formas que uma pessoa escreveria para dizer "é quem serviu a página".
@@ -232,13 +263,13 @@ export class ConfigService {
     if (/^(mesma[- ]origem|same[- ]origin|\.|\/)$/i.test(bruto))
       return {
         apiUrl: MESMA_ORIGEM, nomeLoja, canalWhatsapp, travado,
-        tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, ultimaVerificacaoAtualizacao
+        tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, menuFixado, ultimaVerificacaoAtualizacao
       };
 
     const url = /^https?:\/\//i.test(bruto) ? bruto : 'http://' + bruto;
     return {
       apiUrl: url.replace(/\/+$/, '') || PADRAO.apiUrl, nomeLoja, canalWhatsapp, travado,
-      tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, ultimaVerificacaoAtualizacao
+      tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, menuFixado, ultimaVerificacaoAtualizacao
     };
   }
 

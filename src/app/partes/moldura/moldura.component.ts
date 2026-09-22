@@ -27,6 +27,7 @@ export class MolduraComponent implements OnInit {
   bdFiltros = signal<string>('—');
   temVencido = signal(false);
   railFixada = signal(false);
+  fotoPerfil = signal<string | null>(null);
 
   novaSenha = '';
   confirmaSenha = '';
@@ -38,6 +39,16 @@ export class MolduraComponent implements OnInit {
       const fix = localStorage.getItem('farias.rail_fixada');
       if (fix === 'true') this.railFixada.set(true);
     } catch {}
+
+    // foto de perfil
+    this.fotoPerfil.set(this.cfg.fotoPerfil);
+
+    // escuta a storage para atualizar quando a tela de config salvar
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'farias.foto_perfil') {
+        this.fotoPerfil.set(e.newValue || null);
+      }
+    });
 
     // os contadores da barra: se falharem, a barra continua utilizável
     this.dados.painel().subscribe({

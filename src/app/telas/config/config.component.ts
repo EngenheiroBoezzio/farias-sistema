@@ -26,7 +26,8 @@ export class ConfigComponent implements OnInit {
     tamanhoFonte: 'normal' as TamanhoFonte,
     tema: 'adaptativo' as TemaApp,
     frequenciaAtualizacao: 'semanal' as FrequenciaAtualizacao,
-    tipoGrafico: 'linha' as TipoGrafico
+    tipoGrafico: 'linha' as TipoGrafico,
+    menuFixado: false
   };
 
   testando = signal(false);
@@ -36,6 +37,7 @@ export class ConfigComponent implements OnInit {
   versao = signal<string>('—');
   atualizacao = signal<string | null>(null);
   catalogo = signal<string | null>(null);
+  fotoPerfil = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
     const c = this.cfg.config();
@@ -46,8 +48,10 @@ export class ConfigComponent implements OnInit {
       tamanhoFonte: this.cfg.tamanhoFonte || c.tamanhoFonte || 'normal',
       tema: this.cfg.tema || c.tema || 'adaptativo',
       frequenciaAtualizacao: this.cfg.frequenciaAtualizacao || c.frequenciaAtualizacao || 'semanal',
-      tipoGrafico: this.cfg.tipoGrafico || c.tipoGrafico || 'linha'
+      tipoGrafico: this.cfg.tipoGrafico || c.tipoGrafico || 'linha',
+      menuFixado: this.cfg.menuFixado
     };
+    this.fotoPerfil.set(this.cfg.fotoPerfil);
     try {
       if (window.farias?.versao) this.versao.set(await window.farias.versao());
     } catch { /* fora do Electron não tem versão de instalador */ }
@@ -56,6 +60,37 @@ export class ConfigComponent implements OnInit {
   selecionarFonte(tf: TamanhoFonte): void {
     this.f.tamanhoFonte = tf;
     this.mudarAparencia();
+  }
+
+  /** Abre o seletor de arquivo e converte a imagem escolhida em base64. */
+  escolherFoto(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        this.cfg.salvarFoto(base64);
+        this.fotoPerfil.set(base64);
+        // notifica outros componentes na mesma janela (storage event é só cross-tab)
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'farias.foto_perfil', newValue: base64
+        }));
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  removerFoto(): void {
+    this.cfg.salvarFoto(null);
+    this.fotoPerfil.set(null);
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'farias.foto_perfil', newValue: null
+    }));
   }
 
   selecionarTipoGrafico(tipo: TipoGrafico): void {
@@ -67,7 +102,8 @@ export class ConfigComponent implements OnInit {
     this.cfg.salvar({
       tamanhoFonte: this.f.tamanhoFonte,
       tema: this.f.tema,
-      tipoGrafico: this.f.tipoGrafico
+      tipoGrafico: this.f.tipoGrafico,
+      menuFixado: this.f.menuFixado
     });
   }
 

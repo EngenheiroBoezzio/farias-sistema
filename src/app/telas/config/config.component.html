@@ -9,6 +9,47 @@
     </div>
   </div>
 
+  <!-- Painel de Perfil do Usuário -->
+  <div class="panel" style="margin-bottom:20px">
+    <div class="panel-h">
+      <b>Perfil do Usuário</b>
+      <span class="meta">foto exibida na barra lateral</span>
+    </div>
+    <div class="panel-b">
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <!-- Preview da foto -->
+        <div class="foto-perfil-preview">
+          @if (fotoPerfil()) {
+            <img [src]="fotoPerfil()!" alt="Foto de perfil">
+          } @else {
+            <span class="foto-perfil-inicial">{{ cfg.config().nomeLoja.charAt(0) }}</span>
+          }
+        </div>
+        <!-- Ações -->
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <p style="margin:0;font-size:13px;color:var(--tx-2)">
+            Clique em <b>Escolher foto</b> para personalizar a foto de perfil<br>
+            que aparece no rodapé da barra lateral.
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-s" (click)="escolherFoto()">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <rect x="1" y="3" width="14" height="10" rx="1.5"/>
+                <circle cx="8" cy="8" r="2.5"/>
+                <path d="M4 3V2M12 3V2"/>
+              </svg>
+              Escolher foto
+            </button>
+            @if (fotoPerfil()) {
+              <button type="button" class="btn btn-g" (click)="removerFoto()">Remover foto</button>
+            }
+          </div>
+          <p class="hint" style="margin:0">Formatos aceitos: JPG, PNG, WEBP. A imagem é guardada localmente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Painel de Acessibilidade e Aparência -->
   <div class="panel" style="margin-bottom:20px">
     <div class="panel-h">
