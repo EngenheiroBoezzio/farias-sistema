@@ -5,6 +5,7 @@
  * um instalador novo. */
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../nucleo/auth.service';
 import { ConfigService, TamanhoFonte, TemaApp, FrequenciaAtualizacao, TipoGrafico } from '../../nucleo/config.service';
 import { DadosService } from '../../nucleo/dados.service';
 import { SinoComponent } from '../../partes/sino/sino.component';
@@ -16,6 +17,7 @@ import { SinoComponent } from '../../partes/sino/sino.component';
   templateUrl: './config.component.html'
 })
 export class ConfigComponent implements OnInit {
+  auth = inject(AuthService);
   cfg = inject(ConfigService);
   private dados = inject(DadosService);
 
@@ -37,7 +39,11 @@ export class ConfigComponent implements OnInit {
   versao = signal<string>('—');
   atualizacao = signal<string | null>(null);
   catalogo = signal<string | null>(null);
-  fotoPerfil = signal<string | null>(null);
+
+  // Perfil do Usuário
+  nomeUsuario = '';
+  salvandoPerfil = signal(false);
+  salvoPerfil = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
     const c = this.cfg.config();
@@ -51,7 +57,7 @@ export class ConfigComponent implements OnInit {
       tipoGrafico: this.cfg.tipoGrafico || c.tipoGrafico || 'linha',
       menuFixado: this.cfg.menuFixado
     };
-    this.fotoPerfil.set(this.cfg.fotoPerfil);
+    this.nomeUsuario = this.auth.nomeExibicao();
     try {
       if (window.farias?.versao) this.versao.set(await window.farias.versao());
     } catch { /* fora do Electron não tem versão de instalador */ }
@@ -62,23 +68,46 @@ export class ConfigComponent implements OnInit {
     this.mudarAparencia();
   }
 
-  /** Abre o seletor de arquivo e converte a imagem escolhida em base64. */
+  /** Abre o seletor de arquivo e converte a imagem escolhida em base64 otimizado (256x256 max). */
   escolherFoto(): void {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*';
+    input.accept = 'image/png, image/jpeg, image/webp';
     input.onchange = () => {
       const file = input.files?.[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        const base64 = reader.result as string;
-        this.cfg.salvarFoto(base64);
-        this.fotoPerfil.set(base64);
-        // notifica outros componentes na mesma janela (storage event é só cross-tab)
-        window.dispatchEvent(new StorageEvent('storage', {
-          key: 'farias.foto_perfil', newValue: base64
-        }));
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const MAX = 256;
+            const canvas = document.createElement('canvas');
+            canvas.width = MAX;
+            canvas.height = MAX;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Corte quadrado centralizado proporcional
+            const minDim = Math.min(img.width, img.height);
+            const sx = (img.width - minDim) / 2;
+            const sy = (img.height - minDim) / 2;
+
+            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, MAX, MAX);
+            const base64 = canvas.toDataURL('image/jpeg', 0.85);
+
+            this.auth.salvarFoto(base64);
+            this.cfg.salvarFoto(base64);
+            this.salvoPerfil.set('Foto de perfil atualizada!');
+            setTimeout(() => this.salvoPerfil.set(null), 3500);
+          } catch {
+            // Fallback caso canvas falhe
+            const bruto = reader.result as string;
+            this.auth.salvarFoto(bruto);
+            this.cfg.salvarFoto(bruto);
+          }
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     };
@@ -86,11 +115,20 @@ export class ConfigComponent implements OnInit {
   }
 
   removerFoto(): void {
+    this.auth.salvarFoto(null);
     this.cfg.salvarFoto(null);
-    this.fotoPerfil.set(null);
-    window.dispatchEvent(new StorageEvent('storage', {
-      key: 'farias.foto_perfil', newValue: null
-    }));
+    this.salvoPerfil.set('Foto de perfil removida.');
+    setTimeout(() => this.salvoPerfil.set(null), 3000);
+  }
+
+  salvarPerfil(): void {
+    const nome = this.nomeUsuario.trim();
+    if (!nome) return;
+    this.salvandoPerfil.set(true);
+    this.auth.atualizarPerfil({ nome });
+    this.salvandoPerfil.set(false);
+    this.salvoPerfil.set('Perfil e nome de exibição salvos com sucesso!');
+    setTimeout(() => this.salvoPerfil.set(null), 4000);
   }
 
   selecionarTipoGrafico(tipo: TipoGrafico): void {

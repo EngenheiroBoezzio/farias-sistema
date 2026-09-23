@@ -53,7 +53,6 @@ export const rotas: Routes = [
       },
       {
         path: 'configuracao', title: 'Configuração — Farias',
-        canActivate: [guardaAdmin],
         loadComponent: () => import('./telas/config/config.component').then(m => m.ConfigComponent)
       }
     ]

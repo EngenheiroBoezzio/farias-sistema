@@ -2,7 +2,7 @@
   <div class="head">
     <div>
       <h1>Configuração</h1>
-      <p>Aparência, acessibilidade, servidor e manutenção. Só o administrador altera estes itens.</p>
+      <p>Perfil do usuário, legibilidade, aparência e preferências do sistema.</p>
     </div>
     <div class="head-act">
       <app-sino />
@@ -13,38 +13,68 @@
   <div class="panel" style="margin-bottom:20px">
     <div class="panel-h">
       <b>Perfil do Usuário</b>
-      <span class="meta">foto exibida na barra lateral</span>
+      <span class="meta">foto e identificação exibidos na barra lateral</span>
     </div>
     <div class="panel-b">
-      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
         <!-- Preview da foto -->
-        <div class="foto-perfil-preview">
-          @if (fotoPerfil()) {
-            <img [src]="fotoPerfil()!" alt="Foto de perfil">
-          } @else {
-            <span class="foto-perfil-inicial">{{ cfg.config().nomeLoja.charAt(0) }}</span>
-          }
-        </div>
-        <!-- Ações -->
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <p style="margin:0;font-size:13px;color:var(--tx-2)">
-            Clique em <b>Escolher foto</b> para personalizar a foto de perfil<br>
-            que aparece no rodapé da barra lateral.
-          </p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button type="button" class="btn btn-s" (click)="escolherFoto()">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="foto-perfil-preview" [title]="auth.nomeExibicao()">
+            @if (auth.fotoPerfil()) {
+              <img [src]="auth.fotoPerfil()!" alt="Foto de perfil">
+            } @else {
+              <span class="foto-perfil-inicial">{{ auth.iniciais() }}</span>
+            }
+          </div>
+          <div style="display:flex;gap:6px">
+            <button type="button" class="btn btn-s btn-sm" (click)="escolherFoto()" title="Escolher imagem do dispositivo">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <rect x="1" y="3" width="14" height="10" rx="1.5"/>
                 <circle cx="8" cy="8" r="2.5"/>
                 <path d="M4 3V2M12 3V2"/>
               </svg>
               Escolher foto
             </button>
-            @if (fotoPerfil()) {
-              <button type="button" class="btn btn-g" (click)="removerFoto()">Remover foto</button>
+            @if (auth.fotoPerfil()) {
+              <button type="button" class="btn btn-g btn-sm" (click)="removerFoto()" title="Remover foto personalizada">
+                Remover
+              </button>
             }
           </div>
-          <p class="hint" style="margin:0">Formatos aceitos: JPG, PNG, WEBP. A imagem é guardada localmente.</p>
+        </div>
+
+        <!-- Dados e edição do perfil -->
+        <div style="flex:1;min-width:280px;display:flex;flex-direction:column;gap:14px">
+          <div class="f-row c2">
+            <label class="f">
+              <span>Seu nome de exibição</span>
+              <input type="text" [(ngModel)]="nomeUsuario" placeholder="Digite como deseja ser chamado" maxlength="60" name="nomeUsuario">
+            </label>
+            <div class="f">
+              <span>Usuário / Login</span>
+              <div style="height:36px;display:flex;align-items:center;gap:8px">
+                <code style="font-size:13px;padding:4px 8px;background:var(--surface-2);border-radius:var(--r-xs)">
+                  {{ auth.usuario()?.username || auth.usuario()?.usuario || auth.usuario()?.login || '—' }}
+                </code>
+                <span class="badge" style="background:var(--b-100);color:var(--b-700);font-weight:600;padding:3px 9px;border-radius:var(--r-xs);font-size:11.5px">
+                  {{ auth.usuario()?.papel === 'admin' ? 'Administrador' : 'Atendente' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <button type="button" class="btn btn-p" (click)="salvarPerfil()" [disabled]="salvandoPerfil()">
+              {{ salvandoPerfil() ? 'Salvando…' : 'Salvar perfil' }}
+            </button>
+            @if (salvoPerfil(); as s) {
+              <span class="hint" style="margin:0;font-weight:600;color:var(--pos)">{{ s }}</span>
+            }
+          </div>
+
+          <p class="hint" style="margin:0">
+            A imagem é ajustada e guardada no seu dispositivo para carregamento instantâneo. Formatos: JPG, PNG, WEBP.
+          </p>
         </div>
       </div>
     </div>
@@ -269,118 +299,124 @@
     </div>
   </div>
 
-  <!-- Travado: o endereço veio gravado antes da compilação e o computador da
-       oficina não muda isso. Mostro o endereço mesmo assim, em texto, porque
-       na hora do suporte a primeira pergunta é "em que servidor você está" —
-       e ver não é poder alterar. -->
-  @if (cfg.travado) {
-    <div class="panel" style="margin-bottom:20px">
-      <div class="panel-h">
-        <b>Servidor</b>
-        <span class="pill p-mute">definido na instalação</span>
-      </div>
-      <div class="panel-b">
-        <div class="n-l">
-          <span>Endereço</span><span class="d"></span>
-          <span class="v" style="font-family:var(--code)">{{ cfg.apiUrl || 'mesma origem' }}</span>
+  @if (auth.ehAdmin()) {
+    <!-- Travado: o endereço veio gravado antes da compilação e o computador da
+         oficina não muda isso. Mostro o endereço mesmo assim, em texto, porque
+         na hora do suporte a primeira pergunta é "em que servidor você está" —
+         e ver não é poder alterar. -->
+    @if (cfg.travado) {
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-h">
+          <b>Servidor</b>
+          <span class="pill p-mute">definido na instalação</span>
         </div>
-        <p class="hint" style="margin-top:10px">
-          Este endereço faz parte do programa e não é alterado por aqui. Se
-          precisar apontar para outro servidor, fale com quem mantém o sistema.
-        </p>
-        <div class="head-act" style="margin-top:12px">
-          <button type="button" class="btn btn-s" (click)="testar()" [disabled]="testando()">
-            {{ testando() ? 'Testando…' : 'Testar conexão' }}
-          </button>
-        </div>
-        @if (resultado(); as r) {
-          <p class="fonte" style="margin-top:12px">
-            <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
-            <span>{{ r.texto }}</span>
+        <div class="panel-b">
+          <div class="n-l">
+            <span>Endereço</span><span class="d"></span>
+            <span class="v" style="font-family:var(--code)">{{ cfg.apiUrl || 'mesma origem' }}</span>
+          </div>
+          <p class="hint" style="margin-top:10px">
+            Este endereço faz parte do programa e não é alterado por aqui. Se
+            precisar apontar para outro servidor, fale com quem mantém o sistema.
           </p>
-        }
+          <div class="head-act" style="margin-top:12px">
+            <button type="button" class="btn btn-s" (click)="testar()" [disabled]="testando()">
+              {{ testando() ? 'Testando…' : 'Testar conexão' }}
+            </button>
+          </div>
+          @if (resultado(); as r) {
+            <p class="fonte" style="margin-top:12px">
+              <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
+              <span>{{ r.texto }}</span>
+            </p>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-h"><b>Servidor</b><span>onde o sistema guarda os dados</span></div>
+        <div class="panel-b">
+          <label class="f">
+            <span>Endereço da API</span>
+            <input name="api" [(ngModel)]="f.apiUrl" placeholder="http://192.168.0.10:3001"
+                   autocapitalize="off" spellcheck="false" autocomplete="off">
+          </label>
+          <p class="hint">
+            Pode ser o endereço da máquina na rede da oficina
+            (<code>http://192.168.0.10:3001</code>) ou um domínio interno.
+            Este valor é lido quando o programa abre — trocar aqui não exige
+            instalar nada de novo.
+          </p>
+
+          <div class="head-act" style="margin-top:12px">
+            <button type="button" class="btn btn-s" (click)="testar()" [disabled]="testando()">
+              {{ testando() ? 'Testando…' : 'Testar conexão' }}
+            </button>
+            <button type="button" class="btn btn-p" (click)="salvar()" [disabled]="salvando()">
+              {{ salvando() ? 'Salvando…' : 'Salvar configurações' }}
+            </button>
+          </div>
+
+          @if (resultado(); as r) {
+            <p class="note" [class.note-top]="!r.ok" style="margin-top:12px">
+              <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
+              <span>{{ r.texto }}</span>
+            </p>
+          }
+          @if (salvo(); as s) { <p class="hint" style="margin-top:8px;font-weight:600;color:var(--pos)">{{ s }}</p> }
+        </div>
+      </div>
+    }
+
+    @if (!cfg.travado) {
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-h"><b>Loja</b></div>
+      <div class="panel-b">
+        <div class="f-row c2">
+          <label class="f"><span>Nome que aparece na tela</span>
+            <input name="loja" [(ngModel)]="f.nomeLoja" maxlength="60"></label>
+          <label class="f"><span>Link do canal no WhatsApp</span>
+            <input name="canal" [(ngModel)]="f.canalWhatsapp"
+                   placeholder="https://whatsapp.com/channel/…"
+                   autocapitalize="off" spellcheck="false"></label>
+        </div>
+      </div>
+    </div>
+    }
+
+    <div class="panel">
+      <div class="panel-h"><b>Manutenção e Atualizações Automáticas</b></div>
+      <div class="panel-b">
+        <div class="f-row c2" style="margin-bottom:14px">
+          <label class="f">
+            <span>Verificação automática de novidades</span>
+            <select [(ngModel)]="f.frequenciaAtualizacao" (ngModelChange)="salvar()" name="frequencia">
+              <option value="semanal">Semanalmente (recomendado)</option>
+              <option value="tres_dias">A cada 3 dias</option>
+              <option value="diaria">Diariamente ao iniciar</option>
+              <option value="manual">Apenas manualmente</option>
+            </select>
+          </label>
+          <div style="display:flex;align-items:flex-end;gap:8px">
+            <button type="button" class="btn btn-s" (click)="verificarAtualizacao()">
+              Verificar agora
+            </button>
+            <button type="button" class="btn btn-s" (click)="recarregarCatalogo()">
+              Recarregar catálogo
+            </button>
+          </div>
+        </div>
+
+        @if (catalogo(); as c) { <p class="hint" style="margin-top:10px">{{ c }}</p> }
+        @if (atualizacao(); as a) { <p class="hint" style="margin-top:6px;font-weight:600">{{ a }}</p> }
+        <p class="hint" style="margin-top:14px">
+          Versão instalada: <b>{{ versao() }}</b>
+        </p>
       </div>
     </div>
   } @else {
-    <div class="panel" style="margin-bottom:20px">
-      <div class="panel-h"><b>Servidor</b><span>onde o sistema guarda os dados</span></div>
-      <div class="panel-b">
-        <label class="f">
-          <span>Endereço da API</span>
-          <input name="api" [(ngModel)]="f.apiUrl" placeholder="http://192.168.0.10:3001"
-                 autocapitalize="off" spellcheck="false" autocomplete="off">
-        </label>
-        <p class="hint">
-          Pode ser o endereço da máquina na rede da oficina
-          (<code>http://192.168.0.10:3001</code>) ou um domínio interno.
-          Este valor é lido quando o programa abre — trocar aqui não exige
-          instalar nada de novo.
-        </p>
-
-        <div class="head-act" style="margin-top:12px">
-          <button type="button" class="btn btn-s" (click)="testar()" [disabled]="testando()">
-            {{ testando() ? 'Testando…' : 'Testar conexão' }}
-          </button>
-          <button type="button" class="btn btn-p" (click)="salvar()" [disabled]="salvando()">
-            {{ salvando() ? 'Salvando…' : 'Salvar configurações' }}
-          </button>
-        </div>
-
-        @if (resultado(); as r) {
-          <p class="note" [class.note-top]="!r.ok" style="margin-top:12px">
-            <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
-            <span>{{ r.texto }}</span>
-          </p>
-        }
-        @if (salvo(); as s) { <p class="hint" style="margin-top:8px;font-weight:600;color:var(--pos)">{{ s }}</p> }
-      </div>
-    </div>
+    <p class="hint" style="margin-top:20px;text-align:center;color:var(--tx-2)">
+      As configurações de servidor e manutenção do sistema são gerenciadas exclusivamente por administradores.
+    </p>
   }
-
-  @if (!cfg.travado) {
-  <div class="panel" style="margin-bottom:20px">
-    <div class="panel-h"><b>Loja</b></div>
-    <div class="panel-b">
-      <div class="f-row c2">
-        <label class="f"><span>Nome que aparece na tela</span>
-          <input name="loja" [(ngModel)]="f.nomeLoja" maxlength="60"></label>
-        <label class="f"><span>Link do canal no WhatsApp</span>
-          <input name="canal" [(ngModel)]="f.canalWhatsapp"
-                 placeholder="https://whatsapp.com/channel/…"
-                 autocapitalize="off" spellcheck="false"></label>
-      </div>
-    </div>
-  </div>
-  }
-
-  <div class="panel">
-    <div class="panel-h"><b>Manutenção e Atualizações Automáticas</b></div>
-    <div class="panel-b">
-      <div class="f-row c2" style="margin-bottom:14px">
-        <label class="f">
-          <span>Verificação automática de novidades</span>
-          <select [(ngModel)]="f.frequenciaAtualizacao" (ngModelChange)="salvar()" name="frequencia">
-            <option value="semanal">Semanalmente (recomendado)</option>
-            <option value="tres_dias">A cada 3 dias</option>
-            <option value="diaria">Diariamente ao iniciar</option>
-            <option value="manual">Apenas manualmente</option>
-          </select>
-        </label>
-        <div style="display:flex;align-items:flex-end;gap:8px">
-          <button type="button" class="btn btn-s" (click)="verificarAtualizacao()">
-            Verificar agora
-          </button>
-          <button type="button" class="btn btn-s" (click)="recarregarCatalogo()">
-            Recarregar catálogo
-          </button>
-        </div>
-      </div>
-
-      @if (catalogo(); as c) { <p class="hint" style="margin-top:10px">{{ c }}</p> }
-      @if (atualizacao(); as a) { <p class="hint" style="margin-top:6px;font-weight:600">{{ a }}</p> }
-      <p class="hint" style="margin-top:14px">
-        Versão instalada: <b>{{ versao() }}</b>
-      </p>
-    </div>
-  </div>
 </section>

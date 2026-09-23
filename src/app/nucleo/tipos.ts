@@ -19,9 +19,12 @@ export interface Paginado {
 /* ---------- autenticação ---------- */
 export interface Usuario {
   id: number;
-  username: string;
-  nome: string;
+  username?: string;
+  usuario?: string;
+  login?: string;
+  nome?: string;
   papel: 'admin' | 'atendente';
+  foto?: string | null;
 }
 export interface RespostaLogin { usuario: Usuario; token: string; }
 

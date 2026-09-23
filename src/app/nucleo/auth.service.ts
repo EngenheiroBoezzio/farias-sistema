@@ -10,9 +10,12 @@ import { ApiService } from './api.service';
 
 export interface Usuario {
   id: number;
-  username: string;
-  nome: string;
+  username?: string;
+  usuario?: string;
+  login?: string;
+  nome?: string;
   papel: 'admin' | 'atendente';
+  foto?: string | null;
 }
 
 const CHAVE_TOKEN = 'farias.token';
@@ -26,8 +29,10 @@ export class AuthService {
 
   private _usuario = signal<Usuario | null>(null);
   private _token = signal<string | null>(null);
+  private _fotoPerfil = signal<string | null>(null);
 
   readonly usuario = this._usuario.asReadonly();
+  readonly fotoPerfil = this._fotoPerfil.asReadonly();
   readonly logado = computed(() => !!this._token());
   readonly ehAdmin = computed(() => this._usuario()?.papel === 'admin');
   readonly precisaDefinirSenha = signal(false);
@@ -38,23 +43,56 @@ export class AuthService {
       const t = localStorage.getItem(CHAVE_TOKEN) || sessionStorage.getItem(CHAVE_TOKEN);
       const u = localStorage.getItem(CHAVE_USER) || sessionStorage.getItem(CHAVE_USER);
       if (t && u) {
+        const parsed = JSON.parse(u) as Usuario;
+        // Restaura nome customizado caso salvo localmente
+        const nomeSalvo = localStorage.getItem(`farias.nome_usuario_${parsed.id}`);
+        if (nomeSalvo) parsed.nome = nomeSalvo;
         this._token.set(t);
-        this._usuario.set(JSON.parse(u));
+        this._usuario.set(parsed);
       }
+      this.carregarFoto();
     } catch { /* modo privado ou erro de leitura: inicia deslogado */ }
   }
 
   get token(): string | null { return this._token(); }
 
+  /** Carrega a foto de perfil salva */
+  carregarFoto(): void {
+    try {
+      const u = this._usuario();
+      const f = (u?.id ? localStorage.getItem(`farias.foto_perfil_${u.id}`) : null)
+        || localStorage.getItem('farias.foto_perfil')
+        || null;
+      this._fotoPerfil.set(f);
+    } catch {
+      this._fotoPerfil.set(null);
+    }
+  }
+
   async entrar(usuario: string, senha: string, lembrar = true): Promise<void> {
     const r = await firstValueFrom(
       this.api.post<{ token: string; usuario: Usuario & { primeiro_acesso?: boolean } }>('/api/auth/login', { usuario, senha }));
+    
+    // Assegura fallback para o campo de nome se vier como usuario ou username
+    const dadosUsuario: Usuario = {
+      ...r.usuario,
+      nome: r.usuario.nome || r.usuario.username || (r.usuario as any).usuario || usuario
+    };
+
+    // Restaura nome salvo caso exista customização prévia neste dispositivo
+    try {
+      const nomeSalvo = localStorage.getItem(`farias.nome_usuario_${dadosUsuario.id}`);
+      if (nomeSalvo) dadosUsuario.nome = nomeSalvo;
+    } catch {}
+
     this._token.set(r.token);
-    this._usuario.set(r.usuario);
+    this._usuario.set(dadosUsuario);
+    this.carregarFoto();
+
     try {
       if (lembrar) {
         localStorage.setItem(CHAVE_TOKEN, r.token);
-        localStorage.setItem(CHAVE_USER, JSON.stringify(r.usuario));
+        localStorage.setItem(CHAVE_USER, JSON.stringify(dadosUsuario));
         localStorage.setItem(CHAVE_LEMBRAR, 'true');
       } else {
         localStorage.removeItem(CHAVE_TOKEN);
@@ -62,7 +100,7 @@ export class AuthService {
         localStorage.removeItem(CHAVE_LEMBRAR);
       }
       sessionStorage.setItem(CHAVE_TOKEN, r.token);
-      sessionStorage.setItem(CHAVE_USER, JSON.stringify(r.usuario));
+      sessionStorage.setItem(CHAVE_USER, JSON.stringify(dadosUsuario));
     } catch { /* a sessão vive só na memória caso storage esteja bloqueado */ }
 
     // Verifica se é o primeiro acesso (ou senha padrão inicial)
@@ -73,6 +111,42 @@ export class AuthService {
     if ((r.usuario.primeiro_acesso || senhaInicialPadrao) && !jaDefiniu) {
       this.precisaDefinirSenha.set(true);
     }
+  }
+
+  /** Atualiza dados locais do perfil (nome e foto) com persistência imediata */
+  atualizarPerfil(dados: { nome?: string; foto?: string | null }): void {
+    const u = this._usuario();
+    if (!u) return;
+    const atualizado: Usuario = { ...u };
+    if (dados.nome !== undefined && dados.nome.trim()) {
+      atualizado.nome = dados.nome.trim();
+    }
+    if (dados.foto !== undefined) {
+      atualizado.foto = dados.foto;
+      this.salvarFoto(dados.foto);
+    }
+    this._usuario.set(atualizado);
+    try {
+      localStorage.setItem(CHAVE_USER, JSON.stringify(atualizado));
+      sessionStorage.setItem(CHAVE_USER, JSON.stringify(atualizado));
+      if (atualizado.nome) {
+        localStorage.setItem(`farias.nome_usuario_${atualizado.id}`, atualizado.nome);
+      }
+    } catch {}
+  }
+
+  salvarFoto(base64: string | null): void {
+    this._fotoPerfil.set(base64);
+    const u = this._usuario();
+    try {
+      if (base64) {
+        localStorage.setItem('farias.foto_perfil', base64);
+        if (u?.id) localStorage.setItem(`farias.foto_perfil_${u.id}`, base64);
+      } else {
+        localStorage.removeItem('farias.foto_perfil');
+        if (u?.id) localStorage.removeItem(`farias.foto_perfil_${u.id}`);
+      }
+    } catch {}
   }
 
   async definirSenha(novaSenha: string): Promise<{ ok: boolean; mensagem?: string }> {
@@ -106,6 +180,7 @@ export class AuthService {
   limpar(): void {
     this._token.set(null);
     this._usuario.set(null);
+    this._fotoPerfil.set(null);
     this.precisaDefinirSenha.set(false);
     try {
       sessionStorage.removeItem(CHAVE_TOKEN);
@@ -116,10 +191,19 @@ export class AuthService {
     } catch { /* nada a limpar */ }
   }
 
-  /** Iniciais para o avatar da barra lateral. */
+  /** Nome para exibição na barra e telas */
+  nomeExibicao(): string {
+    const u = this._usuario();
+    if (!u) return '';
+    return u.nome || u.username || (u as any).usuario || (u as any).login || 'Usuário';
+  }
+
+  /** Iniciais para o avatar da barra lateral */
   iniciais(): string {
-    const n = this._usuario()?.nome || '';
-    const p = n.trim().split(/\s+/);
-    return ((p[0]?.[0] || '') + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase() || '—';
+    const n = this.nomeExibicao();
+    const p = n.trim().split(/\s+/).filter(Boolean);
+    if (p.length === 0) return '—';
+    if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
+    return ((p[0][0] || '') + (p[p.length - 1][0] || '')).toUpperCase();
   }
 }
