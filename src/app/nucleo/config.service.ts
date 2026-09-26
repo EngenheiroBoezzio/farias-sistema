@@ -124,9 +124,19 @@ export class ConfigService {
       // sem config.json o app ainda sobe, com o padrão
     }
 
-    /* Ponto de corte. Travado, o que veio do pacote (servidor, loja) é a palavra final.
-       No entanto, as preferências do usuário (tipo de gráfico, tema, tamanho da fonte)
-       devem ser sempre preservadas e lidas do localStorage! */
+    /* Ponto de corte. Travado trava O ENDEREÇO DO SERVIDOR — só ele. É para
+       isso que a trava existe: o pacote sabe onde a API mora, e nada no
+       computador da oficina desvia disso.
+
+       O nome da loja e o link do canal NÃO são endereço de servidor, são da
+       oficina. Ficavam presos aqui junto com a apiUrl, e o efeito era o pior
+       possível: a tela de configuração aceitava o link novo, dizia "salvo", e
+       o próximo start do aplicativo jogava fora em silêncio. O canal do
+       WhatsApp é criado DEPOIS da instalação e muda quantas vezes precisar —
+       um link que não sobrevive a fechar o programa não serve para nada.
+
+       As preferências de quem usa (gráfico, tema, fonte) sempre passaram, e
+       continuam passando. */
     if (c.travado) {
       try {
         const salvo = localStorage.getItem(CHAVE);
@@ -137,12 +147,26 @@ export class ConfigService {
           if (s.tamanhoFonte) c.tamanhoFonte = s.tamanhoFonte;
           if (s.frequenciaAtualizacao) c.frequenciaAtualizacao = s.frequenciaAtualizacao;
           if (s.menuFixado !== undefined) c.menuFixado = s.menuFixado;
+          if (typeof s.nomeLoja === 'string' && s.nomeLoja.trim()) c.nomeLoja = s.nomeLoja;
+          if (typeof s.canalWhatsapp === 'string') c.canalWhatsapp = s.canalWhatsapp;
         }
         const tgDireto = localStorage.getItem('farias.tipoGrafico') as TipoGrafico;
         if (tgDireto) c.tipoGrafico = tgDireto;
         const fixDireto = localStorage.getItem('farias.rail_fixada');
         if (fixDireto !== null) c.menuFixado = fixDireto === 'true';
       } catch { /* segue */ }
+
+      /* O Electron guarda o mesmo JSON num arquivo ao lado do executável. Se
+         o computador foi formatado e o localStorage se perdeu, o link do
+         canal ainda volta daqui — mas a apiUrl continua sendo a do pacote. */
+      try {
+        if (window.farias?.lerConfig) {
+          const d = await window.farias.lerConfig();
+          if (d && typeof d.nomeLoja === 'string' && d.nomeLoja.trim()) c.nomeLoja = d.nomeLoja;
+          if (d && typeof d.canalWhatsapp === 'string' && d.canalWhatsapp.trim())
+            c.canalWhatsapp = d.canalWhatsapp;
+        }
+      } catch { /* fora do Electron */ }
 
       this._config.set(this.limpar(c));
       this.aplicarAparencia();
@@ -227,6 +251,33 @@ export class ConfigService {
 
   /** A tela de configuração pergunta isto antes de mostrar os campos. */
   get travado(): boolean { return this._config().travado === true; }
+
+  /* ---------- o que vem do servidor ----------
+
+     Nome da loja e link do canal passaram a morar no banco. Não dá para
+     buscá-los no APP_INITIALIZER: naquele momento ninguém logou ainda, e a
+     rota exige sessão. Então o boot segue igual (pacote + localStorage) e a
+     moldura chama isto assim que entra na área logada.
+
+     O valor do servidor é gravado no localStorage de propósito: assim a tela
+     de ENTRAR do próximo start já mostra o nome certo, mesmo antes de haver
+     sessão para perguntar.
+
+     Este serviço não injeta o DadosService — seria ciclo, porque o ApiService
+     depende daqui. Quem chama passa o objeto pronto. */
+  aplicarDoServidor(vindo: { nomeLoja?: string; canalWhatsapp?: string } | null | undefined): void {
+    if (!vindo) return;
+    const atual = this._config();
+    const nomeLoja = typeof vindo.nomeLoja === 'string' && vindo.nomeLoja.trim()
+      ? vindo.nomeLoja.trim() : atual.nomeLoja;
+    const canalWhatsapp = typeof vindo.canalWhatsapp === 'string'
+      ? vindo.canalWhatsapp.trim() : atual.canalWhatsapp;
+    if (nomeLoja === atual.nomeLoja && canalWhatsapp === atual.canalWhatsapp) return;
+
+    const novo = this.limpar({ ...atual, nomeLoja, canalWhatsapp });
+    this._config.set(novo);
+    try { localStorage.setItem(CHAVE, JSON.stringify(novo)); } catch { /* segue */ }
+  }
 
   /** Salva o que o usuário digitou. Volta true se conseguiu guardar. */
   async salvar(parcial: Partial<Config>): Promise<boolean> {

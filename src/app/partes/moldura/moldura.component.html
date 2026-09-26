@@ -69,6 +69,20 @@
           </svg>
           <span class="lab">Financeiro</span>
         </a>
+
+        <!-- O canal do WhatsApp fica na Gestão, e não no Relacionamento, de
+             propósito: o Relacionamento é um-a-um (liga para o dono do carro),
+             e isto aqui fala com a base inteira de uma vez. Quem publica
+             pensa em campanha, não em cliente. -->
+        <a routerLink="/comunidade" routerLinkActive="ativo" #rlCom="routerLinkActive"
+           [attr.aria-current]="rlCom.isActive ? 'page' : null">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M3 6.2v3.1a1 1 0 0 0 1 1h1.4l4.1 2.8V2.4L5.4 5.2H4a1 1 0 0 0-1 1z"/>
+            <path d="M5.6 10.4v2a1.2 1.2 0 0 0 2.3.4"/>
+            <path d="M12.2 5.7a3.3 3.3 0 0 1 0 4.6"/>
+          </svg>
+          <span class="lab">Comunidade</span>
+        </a>
       </div>
 
       <div class="rail-group">

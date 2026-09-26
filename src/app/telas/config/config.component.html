@@ -234,7 +234,8 @@
             </div>
             <div class="lin-c">
               <label for="nl" class="visualmente-oculto">Nome da loja</label>
-              <input id="nl" type="text" [(ngModel)]="f.nomeLoja" maxlength="60">
+              <input id="nl" type="text" [(ngModel)]="f.nomeLoja" maxlength="60"
+                     [disabled]="!auth.ehAdmin()">
             </div>
           </div>
 
@@ -248,7 +249,8 @@
               <span class="junto">
                 <label for="cw" class="visualmente-oculto">Link do canal no WhatsApp</label>
                 <input id="cw" type="url" class="mono-campo" [(ngModel)]="f.canalWhatsapp"
-                       placeholder="https://whatsapp.com/channel/…">
+                       placeholder="https://whatsapp.com/channel/…"
+                       [disabled]="!auth.ehAdmin()">
                 @if (f.canalWhatsapp) {
                   <a [href]="f.canalWhatsapp" target="_blank" rel="noopener" class="btn btn-s">Abrir</a>
                 }
@@ -261,15 +263,23 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-p btn-lg" (click)="salvar()" [disabled]="salvando()">
-          {{ salvando() ? 'Gravando…' : 'Salvar' }}
-        </button>
+        @if (auth.ehAdmin()) {
+          <button type="button" class="btn btn-p btn-lg" (click)="salvar()" [disabled]="salvando()">
+            {{ salvando() ? 'Gravando…' : 'Salvar' }}
+          </button>
+        }
         @if (salvo(); as m) { <p class="fonte"><b>{{ m }}</b></p> }
 
         <p class="nota-atencao solta">
-          Hoje isto fica gravado <b>neste computador</b>. Se a oficina tiver mais
-          de um balcão, cada um guarda o seu — trocar o link aqui não muda o do
-          outro. Passar essas duas coisas para o servidor é o que falta na API.
+          @if (auth.ehAdmin()) {
+            Estes dois campos ficam gravados <b>no servidor</b>: trocar o link
+            aqui vale para todos os balcões da oficina, sem precisar repetir em
+            cada computador.
+          } @else {
+            Só quem tem acesso de <b>administrador</b> pode trocar o nome da loja
+            e o link do canal — eles valem para a oficina inteira, não só para
+            este computador.
+          }
         </p>
       }
 

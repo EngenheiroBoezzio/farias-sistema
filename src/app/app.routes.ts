@@ -59,6 +59,10 @@ export const rotas: Routes = [
         loadComponent: () => import('./telas/vencidos/vencidos.component').then(m => m.VencidosComponent)
       },
       {
+        path: 'comunidade', title: 'Comunidade — Farias',
+        loadComponent: () => import('./telas/comunidade/comunidade.component').then(m => m.ComunidadeComponent)
+      },
+      {
         path: 'configuracao', title: 'Configuração — Farias',
         loadComponent: () => import('./telas/config/config.component').then(m => m.ConfigComponent)
       }

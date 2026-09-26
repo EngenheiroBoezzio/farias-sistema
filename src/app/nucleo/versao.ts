@@ -6,4 +6,4 @@
  * rodapé é a primeira coisa que faz o suporte procurar problema no lugar
  * errado. O valor abaixo é só o que fica no repositório entre um build e
  * outro; quem manda é o package.json. */
-export const VERSAO = '1.0.11';
+export const VERSAO = '1.0.12';

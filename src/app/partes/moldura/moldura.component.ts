@@ -66,6 +66,18 @@ export class MolduraComponent implements OnInit, OnDestroy {
       error: () => {}
     });
 
+    /* Nome da loja e canal do WhatsApp vêm do banco, para que os dois balcões
+       da oficina não fiquem cada um com um link. Aqui é o primeiro momento em
+       que existe sessão: no APP_INITIALIZER ainda não há.
+
+       Falhar aqui não pode quebrar nada. API antiga sem a rota devolve 404,
+       servidor fora devolve 0 — nos dois casos vale o que já estava guardado
+       neste computador, que é como o sistema funcionava até a 1.0.12. */
+    this.dados.configLoja().subscribe({
+      next: r => this.cfg.aplicarDoServidor(r?.config),
+      error: () => { /* segue com o valor local */ }
+    });
+
     this.conferirServidor();
     this.relogio = setInterval(() => this.conferirServidor(), INTERVALO_ESTADO);
   }

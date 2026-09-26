@@ -262,7 +262,7 @@ existir no CSS — os botões "pequenos" saíam do mesmo tamanho. Rode a auditor
 **Pronto:** paleta, tipografia, barra lateral travada, Entrar, Painel,
 Clientes, Vencidos ("Chamar de volta"), Financeiro, Configuração, Fila de
 filtros, Ficha do veículo, Nova ordem (rodapé fixo), Novo cliente, folha de
-impressão.
+impressão, **Comunidade** (1.0.12).
 
 **Falta na interface:**
 - **Consulta de placa** (`placa.component.html`, a maior do sistema). Hoje são
@@ -272,23 +272,62 @@ impressão.
   monoespaçada) e a busca vira uma barra fina com a placa e um "trocar". A
   divergência entre catálogo e histórico da casa deve virar **duas opções
   lado a lado**, porque é ali que o atendente decide.
-- **Seção Comunidade** (canal do WhatsApp): ideias de publicação tiradas dos
-  próprios números da oficina, editor com prévia, histórico. O
-  `canalWhatsapp` hoje é configuração morta — está gravado e nada o usa.
 - **Ajudante de novidades**: tour que aparece uma vez por pessoa a cada versão
   grande. O texto vai **dentro do build** (cada versão descreve a si mesma), e
   o "já vi" vai no usuário, no banco. Nunca bloqueia: fecha no Esc, e "agora
   não" some pelo resto do dia.
 
-**Falta na API** (nada disto é urgente, mas três destravam o que já existe):
+### A Comunidade, como ficou (1.0.12)
+
+Mora em `telas/comunidade/` e em `nucleo/comunidade.service.ts`, sob **Gestão**
+no menu — e não sob Relacionamento, porque o Relacionamento é um-a-um (liga
+para o dono daquele carro) e o canal fala com a base inteira de uma vez.
+
+Duas regras que não devem ser afrouxadas por quem mexer depois:
+
+1. **Cada ideia declara de onde veio o número.** As que citam um número trazem
+   a pílula "número real" e a linha "De onde veio: …" no rodapé do editor; as
+   que não citam nenhum vêm marcadas como "modelo". Um número inventado num
+   canal com centenas de clientes é o tipo de erro que só aparece quando
+   alguém responde perguntando. Se for acrescentar ideia nova, preencha
+   `fonte` e `base` com honestidade — inclusive para dizer que é modelo.
+2. **A tela não promete publicar.** O canal do WhatsApp não tem API de
+   publicação. O fluxo real está escrito em três passos dentro do editor:
+   copiar, abrir o canal e colar, voltar e marcar como publicado. Nenhum
+   botão pode sugerir envio automático.
+
+O histórico é `localStorage` por enquanto, e a tela diz isso com todas as
+letras no rodapé amarelo. Quando o item **B** sair, troque a origem dentro do
+`ComunidadeService` — a tela já conversa só por ele.
+
+**O nome da loja e o canal agora moram no banco** (item E, feito). A ordem de
+precedência é: servidor > localStorage > pacote. O pedido não pode sair no
+`APP_INITIALIZER` — ali ainda não há sessão e a rota exige login — então quem
+busca é a `moldura`, no primeiro instante da área logada, e o resultado é
+gravado no localStorage para a tela de Entrar do próximo start já acertar. Se
+a API for antiga (404) ou estiver fora (0), vale o valor local e nada quebra:
+o app da 1.0.12 sobe contra uma API velha sem reclamar.
+
+**O `travado` mudou de escopo.** Ele trava **o endereço do servidor, e só
+ele**. Antes prendia junto o `nomeLoja` e o `canalWhatsapp`, e o efeito era o
+pior possível: a Configuração aceitava o link novo, dizia "salvo", e o próximo
+start do aplicativo jogava fora em silêncio. O canal é criado *depois* da
+instalação e muda quantas vezes precisar. Não volte esse comportamento.
+
+**Feito na API na 1.0.12:** item **E** — tabela `configuracoes` (chave/valor),
+`GET /api/config` para qualquer logado e `PUT /api/config` só para admin, com
+lista branca de chaves. Só chave pública entra nessa tabela: segredo continua
+no `.env`. O `canalWhatsapp` é validado como **https obrigatório**, porque o
+valor volta para a tela e vira `href` e `window.open`.
+
+**Falta na API** (nada disto é urgente, mas dois destravam o que já existe):
 
 | | O quê | Por quê |
 |---|---|---|
 | A | Custo da peça na ordem de serviço | Sem ele o "Sobrou" do Financeiro é uma subtração incompleta — o óleo e o filtro que saem do estoque não entram. A tela avisa isso em amarelo hoje. |
-| B | Tabela de publicações do canal | Faz o "última publicação há 9 dias" e o histórico existirem |
-| C | Rota que monta as ideias de publicação | Sem tabela nova: lê vencidos, óleos mais usados e clientes novos |
+| B | Tabela de publicações do canal | Hoje o histórico e o "última publicação há 9 dias" valem só para **este computador**. A tela avisa; a tabela é o que faz valer para a loja |
+| C | Rota que monta as ideias de publicação | Hoje o cálculo é no cliente, a partir de `/api/painel`. Funciona; mover para o servidor deixa a regra num lugar só |
 | D | Rota de IA para melhorar texto | **A chave fica na API, nunca no executável** — o app da oficina é um arquivo que qualquer um abre |
-| E | Configurações da loja no banco (`nomeLoja`, `canalWhatsapp`) | Hoje vivem no build: a Farias não consegue mudar o próprio nome nem o próprio canal sem recompilar |
 | F | Coluna de "última versão de novidades vista" no usuário | Para o ajudante aparecer uma vez por pessoa, não por computador |
 | G | Placas e situação na lista de clientes | A lista devolve só a **quantidade** de veículos; mostrar a placa e a situação na linha precisa disso |
 

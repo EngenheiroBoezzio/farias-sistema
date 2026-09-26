@@ -1,0 +1,163 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Comunidade</h1>
+      <p>O canal da oficina no WhatsApp. As ideias abaixo saem dos números da
+         própria casa — nada aqui é inventado.</p>
+    </div>
+    <div class="head-act">
+      @if (desdeUltima(); as d) {
+        <span class="pill p-mute">última publicação {{ d }}</span>
+      }
+      @if (temCanal()) {
+        <button type="button" class="btn btn-s" (click)="abrirCanal()">Abrir o canal</button>
+      }
+    </div>
+  </div>
+
+  <!-- Sem link do canal a tela ainda serve: o texto é escrito e copiado do
+       mesmo jeito. O que ela não faz é fingir que sabe para onde mandar. -->
+  @if (!temCanal()) {
+    <div class="alerta" role="status">
+      <b>O canal ainda não foi configurado</b>
+      <!-- <strong> e não <b>: dentro de .alerta o `b` é display:block, e o
+           caminho do menu quebrava a frase no meio deixando o parêntese
+           sozinho na linha de baixo. -->
+      <span>
+        Crie o canal no celular da loja em
+        <strong>Atualizações → Canais → + → Criar canal</strong>, copie o link e cole
+        em <a routerLink="/configuracao" [queryParams]="{ secao: 'loja' }">Configuração → Loja</a>.
+        Até lá dá para escrever e copiar o texto normalmente.
+      </span>
+    </div>
+  }
+
+  @if (carregando()) {
+    <p class="carregando">Lendo os números da oficina para montar as ideias…</p>
+  } @else if (erro()) {
+    <div class="falha" role="alert">
+      <b>{{ erro()!.mensagem }}</b>
+      @if (erro()!.detalhe) { <p>{{ erro()!.detalhe }}</p> }
+      <button type="button" class="btn btn-s" (click)="buscar()">Tentar de novo</button>
+    </div>
+  } @else {
+
+    @if (aba() === 'escrever') {
+      <!-- Mesma divisão da fila de filtros: a lista escolhe, o painel da
+           direita trabalha. Quem publica não quer rolar seis cartões para
+           chegar no editor. -->
+      <div class="triagem">
+        <div class="triagem-fila" role="listbox" aria-label="Ideias de publicação">
+          @for (i of ideias(); track i.id) {
+            <button type="button" role="option" class="fila-item"
+                    [class.on]="escolhida()?.id === i.id"
+                    [attr.aria-selected]="escolhida()?.id === i.id"
+                    (click)="usar(i)">
+              <span class="topo">
+                <span class="ideia-tit">{{ i.titulo }}</span>
+                @if (i.fonte === 'numero') {
+                  <span class="pill p-pos">número real</span>
+                } @else {
+                  <span class="pill p-mute">modelo</span>
+                }
+              </span>
+              <span class="meta-item">{{ i.porque }}</span>
+            </button>
+          }
+        </div>
+
+        <div class="triagem-detalhe">
+          <div class="panel">
+            <div class="panel-h">
+              <h2>{{ escolhida()?.titulo || 'Publicação' }}</h2>
+              <span class="meta">{{ caracteres() }} caracteres</span>
+            </div>
+            <div class="panel-b">
+              <label for="texto-post" class="visualmente-oculto">Texto da publicação</label>
+              <textarea id="texto-post" class="post-campo" rows="14"
+                        [ngModel]="texto()" (ngModelChange)="texto.set($event)"
+                        name="texto" spellcheck="true"
+                        placeholder="Escreva o recado da oficina…"></textarea>
+
+              <!-- Três passos, na ordem em que acontecem de verdade. O canal
+                   do WhatsApp não aceita publicação de fora: quem posta é a
+                   pessoa, no celular. Dizer isso aqui evita a espera por um
+                   envio que nunca vai sair. -->
+              <ol class="passos">
+                <li><b>Copiar</b> o texto</li>
+                <li><b>Abrir o canal</b> e colar lá</li>
+                <li>Voltar e <b>marcar como publicado</b>, para ficar no histórico</li>
+              </ol>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn-p btn-lg"
+                        [disabled]="vazio()" (click)="copiar()">
+                  {{ copiado() ? 'Copiado!' : 'Copiar o texto' }}
+                </button>
+                <button type="button" class="btn btn-s"
+                        [disabled]="!temCanal()" (click)="abrirCanal()">Abrir o canal</button>
+                <span class="espaco"></span>
+                <button type="button" class="btn btn-s"
+                        [disabled]="vazio()" (click)="marcarPublicado()">Marcar como publicado</button>
+              </div>
+            </div>
+
+            @if (escolhida(); as i) {
+              <p class="nota-atencao">
+                <b>De onde veio:</b> {{ i.base }}. Confira antes de publicar — quem
+                assina a mensagem é a oficina, não o sistema.
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (aba() === 'historico') {
+      <div class="panel">
+        <div class="panel-h">
+          <h2>Histórico</h2>
+          <span class="meta">{{ historico().length }} {{ historico().length === 1 ? 'publicação' : 'publicações' }}</span>
+        </div>
+        @if (historico().length === 0) {
+          <div class="panel-b">
+            <p class="vazio"><b>Nada registrado ainda</b>Depois de publicar no canal, marque aqui para guardar o que saiu.</p>
+          </div>
+        } @else {
+          <div class="panel-b">
+            @for (p of historico(); track p.id) {
+              <article class="post-hist">
+                <div class="post-hist-h">
+                  <b>{{ dataHora(p.quando) }}</b>
+                  @if (p.deIdeia) { <span class="pill p-mute">{{ p.deIdeia }}</span> }
+                  <span class="espaco"></span>
+                  <button type="button" class="btn btn-s" (click)="reusar(p)">Usar de novo</button>
+                  <button type="button" class="btn btn-g perigo" (click)="remover(p)">Remover</button>
+                </div>
+                <p class="post-hist-txt">{{ p.texto }}</p>
+              </article>
+            }
+          </div>
+        }
+        <p class="nota-atencao">
+          <b>Guardado neste computador.</b> O que a Raíssa publicar direto do
+          celular não aparece aqui — o servidor ainda não guarda as publicações
+          do canal.
+        </p>
+      </div>
+    }
+
+    <div class="abas">
+      <button type="button" [class.on]="aba() === 'escrever'" (click)="aba.set('escrever')">
+        Ideias e publicação <span class="conta">{{ ideias().length }}</span>
+      </button>
+      <button type="button" [class.on]="aba() === 'historico'" (click)="aba.set('historico')">
+        Histórico <span class="conta">{{ historico().length }}</span>
+      </button>
+    </div>
+  }
+
+  @if (selo(); as s) {
+    <app-selo [titulo]="s.titulo" [linha]="s.linha" (fechou)="selo.set(null)" />
+  }
+</section>

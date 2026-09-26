@@ -5,6 +5,8 @@
  * um instalador novo. */
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../nucleo/auth.service';
 import { ConfigService, TamanhoFonte, TemaApp, FrequenciaAtualizacao, TipoGrafico } from '../../nucleo/config.service';
 import { DadosService } from '../../nucleo/dados.service';
@@ -26,6 +28,7 @@ export class ConfigComponent implements OnInit {
   cfg = inject(ConfigService);
   private dados = inject(DadosService);
   private usuariosService = inject(UsuariosService);
+  private rota = inject(ActivatedRoute);
 
   f = {
     apiUrl: '',
@@ -75,7 +78,16 @@ export class ConfigComponent implements OnInit {
   salvandoNovoUsuario = signal(false);
   erroNovoUsuario = signal<string | null>(null);
 
+  private readonly SECOES: SecaoConfig[] =
+    ['perfil', 'aparencia', 'loja', 'conexao', 'atualizacoes', 'usuarios'];
+
   async ngOnInit(): Promise<void> {
+    /* Quem chega da Comunidade vem atrás do link do canal. Cair em "Perfil" e
+       ter que descobrir sozinho qual das seis seções guarda o campo é o tipo
+       de atrito que faz a pessoa desistir no meio. */
+    const pedida = this.rota.snapshot.queryParamMap.get('secao') as SecaoConfig | null;
+    if (pedida && this.SECOES.includes(pedida)) this.secao.set(pedida);
+
     const c = this.cfg.config();
     this.f = {
       apiUrl: c.apiUrl,
@@ -302,6 +314,35 @@ export class ConfigComponent implements OnInit {
     this.salvando.set(true);
     this.salvo.set(null);
     const ok = await this.cfg.salvar(this.f);
+
+    /* O nome da loja e o link do canal são da OFICINA, não deste computador:
+       vão para o banco, e daí todos os balcões enxergam o mesmo. O resto
+       (tema, fonte, tipo de gráfico) é preferência de quem está sentado aqui
+       e continua só local.
+
+       Se o servidor recusar ou estiver fora, o valor local já está gravado e
+       a mensagem diz a verdade sobre até onde ele chegou. Nunca dizer "salvo"
+       por um salvamento que não aconteceu. */
+    if (this.secao() === 'loja' && this.auth.ehAdmin()) {
+      try {
+        const r = await firstValueFrom(this.dados.salvarConfigLoja({
+          nomeLoja: this.f.nomeLoja,
+          canalWhatsapp: this.f.canalWhatsapp
+        }));
+        this.cfg.aplicarDoServidor(r?.config);
+        this.salvando.set(false);
+        this.salvo.set('Salvo no servidor. Vale para todos os balcões da oficina.');
+        return;
+      } catch (e: any) {
+        this.salvando.set(false);
+        const motivo = e?.status === 404
+          ? 'O servidor ainda não tem a rota de configuração — atualize a API.'
+          : (e?.mensagem || 'Não consegui falar com o servidor.');
+        this.salvo.set(`Guardei neste computador, mas não no servidor: ${motivo}`);
+        return;
+      }
+    }
+
     this.salvando.set(false);
     this.salvo.set(ok
       ? 'Salvo. Já vale para as próximas chamadas, sem reiniciar.'

@@ -1463,3 +1463,49 @@ td.mono{font-family:var(--code);font-size:var(--t-xs)}
    precise valer só dentro de uma delas — e deixam de ser classe sem dono. */
 .financeiro,.config{display:block}
 .triagem-detalhe{min-width:0}
+
+/* ===========================================================
+   Comunidade — o canal do WhatsApp da oficina
+   =========================================================== */
+
+/* O título da ideia respira acima do "por que publicar isto". O porquê pode
+   passar de uma linha: recortar em duas com reticências mantém os seis
+   cartões na mesma altura sem esconder a frase inteira de nenhum. */
+.fila-item .ideia-tit{font-size:var(--t-sm);font-weight:600;color:var(--tx);
+  text-align:left}
+.fila-item .meta-item{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;line-height:1.45}
+
+/* O campo é o produto desta tela: quem escreve fica aqui dentro. Fonte de
+   leitura, não monoespaçada — o texto vai sair num celular, e é assim que
+   ele vai ser lido. */
+.post-campo{width:100%;min-height:260px;resize:vertical;padding:14px 16px;
+  border:1px solid var(--bd-strong);border-radius:var(--r-sm);
+  background:var(--surface);color:var(--tx);font-family:var(--ui);
+  font-size:var(--t-md);line-height:1.6}
+.post-campo:focus-visible{outline:2px solid var(--b-500);outline-offset:-1px;
+  border-color:var(--b-500)}
+
+/* Os três passos existem porque o canal do WhatsApp não aceita publicação de
+   fora. Sem eles, alguém clica em "copiar" e fica esperando o envio sair. */
+.passos{margin:14px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;
+  font-size:var(--t-xs);color:var(--tx-2);line-height:1.5}
+.passos b{color:var(--tx);font-weight:600}
+
+.form-actions .espaco{flex:1}
+
+.post-hist{padding:14px 0;border-bottom:1px solid var(--bd)}
+.post-hist:first-child{padding-top:0}
+.post-hist:last-child{border-bottom:0;padding-bottom:0}
+.post-hist-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.post-hist-h b{font-size:var(--t-xs);color:var(--tx-2);font-weight:600;
+  font-variant-numeric:tabular-nums}
+.post-hist-h .espaco{flex:1}
+/* white-space guarda as quebras de linha da publicação: um recado de canal é
+   escrito em parágrafos curtos, e amassar tudo numa linha some com a forma. */
+.post-hist-txt{margin:0;white-space:pre-wrap;font-size:var(--t-sm);
+  line-height:1.6;color:var(--tx);max-width:70ch}
+
+@media(max-width:1000px){
+  .post-campo{min-height:200px}
+}

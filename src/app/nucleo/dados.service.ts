@@ -137,6 +137,16 @@ export class DadosService {
     return this.api.get<{ avisos: any[] }>('/api/avisos', { veiculo_id });
   }
 
+  /* ---------- configurações da loja ---------- */
+  /* Nome da loja e link do canal, guardados no banco para que os dois balcões
+     da oficina não discordem. Só admin grava; qualquer logado lê. */
+  configLoja() {
+    return this.api.get<{ config: { nomeLoja: string; canalWhatsapp: string } }>('/api/config');
+  }
+  salvarConfigLoja(corpo: { nomeLoja?: string; canalWhatsapp?: string }) {
+    return this.api.put<{ config: { nomeLoja: string; canalWhatsapp: string } }>('/api/config', corpo);
+  }
+
   /* ---------- notificações ---------- */
   notificacoes() {
     return this.api.get<T.RespostaNotificacoes>('/api/notificacoes');
