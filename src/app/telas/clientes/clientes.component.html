@@ -2,23 +2,63 @@
   <div class="head">
     <div>
       <h1>Clientes</h1>
-      <p>{{ total() }} cadastrados. Busque por nome, telefone ou placa.</p>
+      <p>A base inteira da Farias, de 2010 para cá.</p>
     </div>
     <div class="head-act">
-      <a routerLink="/clientes/novo" class="btn btn-p">+ Novo cliente</a>
+      <a routerLink="/clientes/novo" class="btn btn-p btn-lg">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+             stroke-width="2.3" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>
+        Novo cliente
+      </a>
       <app-sino />
     </div>
   </div>
 
-  <div class="search-card" style="margin-bottom: 20px;">
-    <div class="search-card-b">
-      <label class="f" style="margin: 0;">
-        <span>Buscar na base</span>
-        <input [ngModel]="busca" (ngModelChange)="aoDigitar($event)" name="busca"
-               placeholder="Digite o nome, telefone ou placa..." aria-label="Buscar cliente"
-               autocomplete="off" style="font-size: 14.5px; padding: 10px 14px;">
-      </label>
+  <!-- O total sai da frase e vira número.
+
+       Ele estava dentro de um <p> de 13px embaixo do título, e a única outra
+       pista era "50 de 1284" em letra pequena no rodapé da tabela. Os quatro
+       números ao lado vêm do mesmo resumo que alimenta o painel — nenhum é
+       estimado aqui. -->
+  <div class="kpi">
+    <div class="kpi-destaque">
+      <span class="rot">Total na base</span>
+      <span class="val">{{ inteiro(total()) }}</span>
+      @if (resumo(); as r) {
+        <span class="sub">com {{ inteiro(r.veiculos) }} carros no total</span>
+      }
     </div>
+    @if (resumo(); as r) {
+      <div class="kpi-linha">
+        <div class="kpi-item">
+          <span class="rot">Dá para avisar</span>
+          <span class="val">{{ inteiro(r.com_telefone) }}</span>
+          <span class="sub">{{ percentual(r.com_telefone, r.clientes) }} têm telefone</span>
+        </div>
+        <div class="kpi-item">
+          <span class="rot">Passaram da hora</span>
+          <span class="val vermelho">{{ inteiro(r.vencido) }}</span>
+          <span class="sub">
+            <a routerLink="/vencidos" class="meta-link">chamar de volta</a>
+          </span>
+        </div>
+        <div class="kpi-item">
+          <span class="rot">Em dia</span>
+          <span class="val">{{ inteiro(r.em_dia) }}</span>
+          <span class="sub">dentro do intervalo</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="busca-grande">
+    <label for="q" class="visualmente-oculto">Buscar cliente</label>
+    <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+         stroke-width="1.8" aria-hidden="true">
+      <circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/>
+    </svg>
+    <input id="q" type="search" [ngModel]="busca" (ngModelChange)="aoDigitar($event)" name="busca"
+           placeholder="Nome, telefone ou placa" autocomplete="off">
   </div>
 
   @if (carregando()) {
@@ -35,38 +75,74 @@
       {{ busca ? 'Tente outro termo, ou cadastre este cliente.' : 'A base está vazia.' }}
     </p>
   } @else {
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>Nome</th><th>Telefone</th><th>Nascimento</th>
-              <th class="num">Veículos</th><th>Avisos</th></tr>
-        </thead>
-        <tbody>
-          @for (c of lista(); track c.id) {
+    <div class="panel">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
             <tr>
-              <td><b>{{ c.nome }}</b></td>
-              <td>
-                {{ telefone(c.telefone) }}
-                @if (c.tel_inferido) {
-                  <span class="pill p-warn" title="O DDD foi deduzido na importação — confirme com o cliente">DDD deduzido</span>
-                }
-              </td>
-              <td>{{ data(c.nascimento) }}</td>
-              <td class="num">{{ qtdVeiculos(c) }}</td>
-              <td>
-                @if (c.aceita_aviso) { <span class="pill p-pos">aceita</span> }
-                @else { <span class="pill p-mute">pediu para sair</span> }
-              </td>
+              <th>Cliente</th>
+              <th>Telefone</th>
+              <th class="num">Carros</th>
+              <th>Avisos</th>
+              <th class="acao-col">Chamar</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (c of lista(); track c.id) {
+              <tr>
+                <td><span class="who">{{ c.nome }}</span></td>
+                <td>
+                  @if (c.telefone) {
+                    <span class="num-tel">{{ telefone(c.telefone) }}</span>
+                    @if (c.tel_inferido) {
+                      <span class="sub aviso">DDD deduzido — confirmar</span>
+                    }
+                  } @else {
+                    <span class="tx-3">não cadastrado</span>
+                  }
+                </td>
+                <td class="num">{{ qtdVeiculos(c) }}</td>
+                <td>
+                  @if (c.aceita_aviso) {
+                    <span class="pill p-pos">aceita</span>
+                  } @else {
+                    <span class="pill p-mute">pediu para sair</span>
+                  }
+                </td>
+                <td class="acao-col">
+                  @if (c.telefone) {
+                    <button type="button" class="btn btn-zap"
+                            (click)="abrirWhatsapp(c.telefone, c.nome)"
+                            [title]="'Abrir o WhatsApp de ' + c.nome">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12.04 2a9.9 9.9 0 0 0-8.59 14.86L2.05 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2m0 1.67a8.24 8.24 0 1 1-4.2 15.32l-.3-.18-3.12.82.83-3.04-.2-.31a8.24 8.24 0 0 1 6.99-12.61"/>
+                      </svg>
+                      WhatsApp
+                    </button>
+                  } @else {
+                    <span class="tx-3">—</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
-    <div class="tbl-foot">
-      <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">Anterior</button>
-      <span>{{ lista().length }} de {{ total() }} · página {{ pagina() }}</span>
-      <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="lista().length < 50">Próxima</button>
+      <div class="tbl-foot">
+        <span>
+          Mostrando <b>{{ primeiroDaPagina() }}–{{ ultimoDaPagina() }}</b>
+          de <b>{{ inteiro(total()) }}</b>
+        </span>
+        <span class="espaco"></span>
+        <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">
+          Anterior
+        </button>
+        <span>página <b>{{ pagina() }}</b> de {{ totalPaginas() }}</span>
+        <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="lista().length < 50">
+          Próxima
+        </button>
+      </div>
     </div>
   }
 </section>

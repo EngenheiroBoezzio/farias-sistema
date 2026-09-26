@@ -1,422 +1,461 @@
-<section>
+<section class="config">
   <div class="head">
     <div>
       <h1>Configuração</h1>
-      <p>Perfil do usuário, legibilidade, aparência e preferências do sistema.</p>
+      <p>{{ cfg.nomeLoja }} · versão {{ versao() }} · este computador</p>
     </div>
-    <div class="head-act">
-      <app-sino />
-    </div>
+    <div class="head-act"><app-sino /></div>
   </div>
 
-  <!-- Painel de Perfil do Usuário -->
-  <div class="panel" style="margin-bottom:20px">
-    <div class="panel-h">
-      <b>Perfil do Usuário</b>
-      <span class="meta">foto e identificação exibidos na barra lateral</span>
-    </div>
-    <div class="panel-b">
-      <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
-        <!-- Preview da foto -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-          <div class="foto-perfil-preview" [title]="auth.nomeExibicao()">
-            @if (auth.fotoPerfil()) {
-              <img [src]="auth.fotoPerfil()!" alt="Foto de perfil">
-            } @else {
-              <span class="foto-perfil-inicial">{{ auth.iniciais() }}</span>
-            }
+  <!-- Sete painéis empilhados num scroll só viraram seis seções.
+
+       O jeito antigo não tinha ordem nem fim: para trocar o tamanho da letra
+       era preciso rolar por perfil, senha e gráfico. Agora é o formato de
+       qualquer tela de configuração — seções à esquerda, uma por vez à
+       direita — e cada ajuste é uma LINHA: o que é, do lado esquerdo, e o
+       controle do lado direito. Cartão com selo "✓ Selecionado" é página de
+       loja, não configuração. -->
+  <div class="cfg">
+    <nav class="cfg-secoes" aria-label="Seções da configuração">
+      <button type="button" [class.on]="secao() === 'perfil'" (click)="secao.set('perfil')">
+        <i class="bi bi-person-circle" aria-hidden="true"></i> Meu perfil
+      </button>
+      <button type="button" [class.on]="secao() === 'aparencia'" (click)="secao.set('aparencia')">
+        <i class="bi bi-eye" aria-hidden="true"></i> Aparência e leitura
+      </button>
+      <button type="button" [class.on]="secao() === 'loja'" (click)="secao.set('loja')">
+        <i class="bi bi-shop" aria-hidden="true"></i> A loja
+      </button>
+      <button type="button" [class.on]="secao() === 'conexao'" (click)="secao.set('conexao')">
+        <i class="bi bi-hdd-network" aria-hidden="true"></i> Conexão
+      </button>
+      <button type="button" [class.on]="secao() === 'atualizacoes'" (click)="secao.set('atualizacoes')">
+        <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Atualizações
+      </button>
+      @if (auth.ehAdmin()) {
+        <button type="button" [class.on]="secao() === 'usuarios'" (click)="secao.set('usuarios')">
+          <i class="bi bi-people" aria-hidden="true"></i> Usuários
+          <span class="conta">{{ usuarios().length || '' }}</span>
+        </button>
+      }
+    </nav>
+
+    <div class="cfg-corpo">
+
+      <!-- ===================== MEU PERFIL ===================== -->
+      @if (secao() === 'perfil') {
+        <h2 class="cfg-titulo">Meu perfil</h2>
+        <p class="cfg-ajuda">O nome e a foto que aparecem na barra lateral.</p>
+
+        <div class="panel">
+          <div class="lin">
+            <div class="lin-t">
+              <b>Foto</b>
+              <span>Só para você se reconhecer na tela. Fica neste computador.</span>
+            </div>
+            <div class="lin-c foto">
+              <span class="av-grande">
+                @if (auth.fotoPerfil()) {
+                  <img [src]="auth.fotoPerfil()!" alt="">
+                } @else {
+                  {{ auth.iniciais() }}
+                }
+              </span>
+              <span class="botoes">
+                <button type="button" class="btn btn-s" (click)="escolherFoto()">Escolher foto</button>
+                @if (auth.fotoPerfil()) {
+                  <button type="button" class="btn btn-g perigo" (click)="removerFoto()">Remover</button>
+                }
+              </span>
+            </div>
           </div>
-          <div style="display:flex;gap:6px">
-            <button type="button" class="btn btn-s btn-sm" (click)="escolherFoto()" title="Escolher imagem do dispositivo">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <rect x="1" y="3" width="14" height="10" rx="1.5"/>
-                <circle cx="8" cy="8" r="2.5"/>
-                <path d="M4 3V2M12 3V2"/>
-              </svg>
-              Escolher foto
-            </button>
-            @if (auth.fotoPerfil()) {
-              <button type="button" class="btn btn-g btn-sm" (click)="removerFoto()" title="Remover foto personalizada">
-                Remover
+
+          <div class="lin">
+            <div class="lin-t">
+              <b>Nome de exibição</b>
+              <span>É o que aparece no rodapé do menu e nas confirmações.</span>
+            </div>
+            <div class="lin-c">
+              <label for="nu" class="visualmente-oculto">Nome de exibição</label>
+              <input id="nu" type="text" [(ngModel)]="nomeUsuario" maxlength="60">
+              <button type="button" class="btn btn-p" (click)="salvarPerfil()" [disabled]="salvandoPerfil()">
+                {{ salvandoPerfil() ? 'Gravando…' : 'Salvar' }}
               </button>
-            }
+            </div>
+          </div>
+
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Entrada no sistema</b>
+              <span>Você entra como <code>{{ auth.usuario()?.usuario }}</code>,
+                {{ auth.ehAdmin() ? 'com acesso de administrador' : 'como atendente' }}.</span>
+            </div>
+            <div class="lin-c"></div>
           </div>
         </div>
 
-        <!-- Dados e edição do perfil -->
-        <div style="flex:1;min-width:280px;display:flex;flex-direction:column;gap:14px">
-          <div class="f-row c2">
-            <label class="f">
-              <span>Seu nome de exibição</span>
-              <input type="text" [(ngModel)]="nomeUsuario" placeholder="Digite como deseja ser chamado" maxlength="60" name="nomeUsuario">
-            </label>
-            <div class="f">
-              <span>Usuário / Login</span>
-              <div style="height:36px;display:flex;align-items:center;gap:8px">
-                <code style="font-size:13px;padding:4px 8px;background:var(--surface-2);border-radius:var(--r-xs)">
-                  {{ auth.usuario()?.username || auth.usuario()?.usuario || auth.usuario()?.login || '—' }}
-                </code>
-                <span class="badge" style="background:var(--b-100);color:var(--b-700);font-weight:600;padding:3px 9px;border-radius:var(--r-xs);font-size:11.5px">
-                  {{ auth.usuario()?.papel === 'admin' ? 'Administrador' : 'Atendente' }}
-                </span>
+        @if (salvoPerfil(); as m) { <p class="fonte"><b>{{ m }}</b></p> }
+
+        <div class="panel">
+          <div class="panel-h"><h3>Trocar minha senha</h3></div>
+          <div class="panel-b">
+            <div class="f-row c3">
+              <label class="f"><span>Senha de agora</span>
+                <input type="password" [(ngModel)]="minhaSenha.atual" autocomplete="current-password"></label>
+              <label class="f"><span>Nova senha</span>
+                <input type="password" [(ngModel)]="minhaSenha.nova" autocomplete="new-password"
+                       placeholder="pelo menos 4 caracteres"></label>
+              <label class="f"><span>Repetir a nova</span>
+                <input type="password" [(ngModel)]="minhaSenha.confirmacao" autocomplete="new-password"></label>
+            </div>
+            @if (erroMinhaSenha(); as e) { <p class="hint erro">{{ e }}</p> }
+            @if (sucessoMinhaSenha(); as m) { <p class="fonte"><b>{{ m }}</b></p> }
+            <button type="button" class="btn btn-p" (click)="alterarMinhaSenha()"
+                    [disabled]="salvandoMinhaSenha()">
+              {{ salvandoMinhaSenha() ? 'Gravando…' : 'Trocar a senha' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ===================== APARÊNCIA ===================== -->
+      @if (secao() === 'aparencia') {
+        <h2 class="cfg-titulo">Aparência e leitura</h2>
+        <p class="cfg-ajuda">Vale só para este computador. Cada balcão pode ter o seu.</p>
+
+        <div class="panel">
+          <div class="lin">
+            <div class="lin-t">
+              <b>Tamanho do texto</b>
+              <span>No grande, o texto e os campos crescem juntos — quem enxerga
+                    de longe com dificuldade erra menos o clique.</span>
+            </div>
+            <div class="lin-c">
+              <div class="seg" role="group" aria-label="Tamanho do texto">
+                <button type="button" [class.on]="f.tamanhoFonte === 'normal'"
+                        [attr.aria-pressed]="f.tamanhoFonte === 'normal'"
+                        (click)="selecionarFonte('normal')">Padrão</button>
+                <button type="button" [class.on]="f.tamanhoFonte === 'media'"
+                        [attr.aria-pressed]="f.tamanhoFonte === 'media'"
+                        (click)="selecionarFonte('media')">Médio</button>
+                <button type="button" [class.on]="f.tamanhoFonte === 'grande'"
+                        [attr.aria-pressed]="f.tamanhoFonte === 'grande'"
+                        (click)="selecionarFonte('grande')">Grande</button>
               </div>
             </div>
           </div>
 
-          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-            <button type="button" class="btn btn-p" (click)="salvarPerfil()" [disabled]="salvandoPerfil()">
-              {{ salvandoPerfil() ? 'Salvando…' : 'Salvar perfil' }}
-            </button>
-            @if (salvoPerfil(); as s) {
-              <span class="hint" style="margin:0;font-weight:600;color:var(--pos)">{{ s }}</span>
-            }
-          </div>
-
-          <p class="hint" style="margin:0">
-            A imagem é ajustada e guardada no seu dispositivo para carregamento instantâneo. Formatos: JPG, PNG, WEBP.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Painel de Acessibilidade e Aparência -->
-  <div class="panel" style="margin-bottom:20px">
-    <div class="panel-h">
-      <b>Tamanho do Texto e Legibilidade</b>
-      <span class="meta">escolha o tamanho que melhor se adapta à visão no balcão</span>
-    </div>
-    <div class="panel-b">
-      <div class="fonte-card-grid">
-        <button type="button" class="fonte-card"
-                [class.ativo]="f.tamanhoFonte === 'normal'"
-                (click)="selecionarFonte('normal')">
-          <div class="fonte-card-h">
-            <b>Padrão</b>
-            <span class="fonte-badge">{{ f.tamanhoFonte === 'normal' ? '✓ Selecionado' : '14px' }}</span>
-          </div>
-          <div class="fonte-card-preview" style="font-size: 14px;">
-            Troca de óleo rápida · Óleo 5W30 Sintético
-          </div>
-          <p class="fonte-card-desc">Tamanho padrão do sistema, compacto para telas menores.</p>
-        </button>
-
-        <button type="button" class="fonte-card"
-                [class.ativo]="f.tamanhoFonte === 'media'"
-                (click)="selecionarFonte('media')">
-          <div class="fonte-card-h">
-            <b>Média (Recomendada)</b>
-            <span class="fonte-badge">{{ f.tamanhoFonte === 'media' ? '✓ Selecionado' : '16px' }}</span>
-          </div>
-          <div class="fonte-card-preview" style="font-size: 16px;">
-            Troca de óleo rápida · Óleo 5W30 Sintético
-          </div>
-          <p class="fonte-card-desc">Mais espaçado e confortável para leitura à distância moderada.</p>
-        </button>
-
-        <button type="button" class="fonte-card"
-                [class.ativo]="f.tamanhoFonte === 'grande'"
-                (click)="selecionarFonte('grande')">
-          <div class="fonte-card-h">
-            <b>Grande (Acessibilidade)</b>
-            <span class="fonte-badge">{{ f.tamanhoFonte === 'grande' ? '✓ Selecionado' : '18px' }}</span>
-          </div>
-          <div class="fonte-card-preview" style="font-size: 18px;">
-            Troca de óleo rápida · Óleo 5W30 Sintético
-          </div>
-          <p class="fonte-card-desc">Texto ampliado para máxima facilidade de leitura e operadores idosos.</p>
-        </button>
-      </div>
-
-      <div class="f-row" style="margin-top: 18px;">
-        <label class="f" style="max-width: 400px;">
-          <span>Estilo e Tema de Cores</span>
-          <select [(ngModel)]="f.tema" (ngModelChange)="mudarAparencia()" name="tema">
-            <option value="adaptativo">Adaptativo (conforme o horário / sistema)</option>
-            <option value="claro">Tema Claro (fundo limpo)</option>
-            <option value="escuro">Tema Escuro (modo noturno)</option>
-          </select>
-        </label>
-      </div>
-
-      <p class="hint" style="margin-top:10px">
-        O tema adaptativo alterna automaticamente entre claro durante o dia e escuro no final da tarde/noite, facilitando a vista dos atendentes.
-      </p>
-    </div>
-  </div>
-
-  <!-- Painel de Seleção e Visualização 3D do Gráfico -->
-  <div class="panel" style="margin-bottom:20px">
-    <div class="panel-h">
-      <b>Estilo Visual do Gráfico do Painel</b>
-      <span class="meta">visualização 3D interativa · escolha a melhor perspectiva visual dos dados da oficina</span>
-    </div>
-    <div class="panel-b">
-      <div class="grafico-3d-grid">
-        <!-- 1. Linha Contínua 3D -->
-        <button type="button" class="grafico-3d-card"
-                [class.ativo]="f.tipoGrafico === 'linha'"
-                (click)="selecionarTipoGrafico('linha')">
-          <div class="grafico-3d-card-h">
-            <b>📈 Linha Contínua</b>
-            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'linha' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
-          </div>
-          <div class="grafico-3d-stage">
-            <div class="stage-grid-floor"></div>
-            <div class="stage-3d-line-wrap">
-              <div class="stage-3d-pillar" style="left: 15px; height: 35px;"></div>
-              <div class="stage-3d-pillar" style="left: 55px; height: 55px;"></div>
-              <div class="stage-3d-pillar" style="left: 95px; height: 42px;"></div>
-              <div class="stage-3d-pillar" style="left: 135px; height: 75px;"></div>
-
-              <svg class="stage-3d-svg-line" viewBox="0 0 150 100" fill="none">
-                <path d="M 15 65 Q 35 45, 55 45 T 95 58 T 135 25" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
-                <path d="M 15 65 Q 35 45, 55 45 T 95 58 T 135 25" stroke="#FDE047" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-
-              <div class="stage-3d-node" style="left: 15px; top: 65px;"></div>
-              <div class="stage-3d-node" style="left: 55px; top: 45px;"></div>
-              <div class="stage-3d-node" style="left: 95px; top: 58px;"></div>
-              <div class="stage-3d-node highlight" style="left: 135px; top: 25px;"></div>
+          <div class="lin">
+            <div class="lin-t">
+              <b>Tema</b>
+              <span>No automático o sistema segue o Windows: claro de dia, escuro à noite.</span>
             </div>
-          </div>
-          <p class="grafico-3d-desc">Linha contínua com suavização de curva e nós luminosos elevados. Ideal para acompanhar tendências de faturamento mês a mês.</p>
-          <div class="grafico-3d-meta">
-            <span>Modo: Curva de Tendência</span>
-          </div>
-        </button>
-
-        <!-- 2. Barras Isométricas 3D -->
-        <button type="button" class="grafico-3d-card"
-                [class.ativo]="f.tipoGrafico === 'barras'"
-                (click)="selecionarTipoGrafico('barras')">
-          <div class="grafico-3d-card-h">
-            <b>📊 Barras Isométricas</b>
-            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'barras' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
-          </div>
-          <div class="grafico-3d-stage">
-            <div class="stage-grid-floor"></div>
-            <div class="stage-3d-bars-wrap">
-              <div class="iso-bar" style="height: 42px;">
-                <div class="iso-bar-shadow"></div>
-                <div class="iso-bar-front"></div>
-                <div class="iso-bar-side"></div>
-                <div class="iso-bar-top"></div>
-              </div>
-              <div class="iso-bar" style="height: 65px;">
-                <div class="iso-bar-shadow"></div>
-                <div class="iso-bar-front"></div>
-                <div class="iso-bar-side"></div>
-                <div class="iso-bar-top"></div>
-              </div>
-              <div class="iso-bar" style="height: 50px;">
-                <div class="iso-bar-shadow"></div>
-                <div class="iso-bar-front"></div>
-                <div class="iso-bar-side"></div>
-                <div class="iso-bar-top"></div>
-              </div>
-              <div class="iso-bar gold" style="height: 80px;">
-                <div class="iso-bar-shadow"></div>
-                <div class="iso-bar-front"></div>
-                <div class="iso-bar-side"></div>
-                <div class="iso-bar-top"></div>
+            <div class="lin-c">
+              <div class="seg" role="group" aria-label="Tema">
+                <button type="button" [class.on]="f.tema === 'claro'"
+                        [attr.aria-pressed]="f.tema === 'claro'"
+                        (click)="trocarTema('claro')">Claro</button>
+                <button type="button" [class.on]="f.tema === 'escuro'"
+                        [attr.aria-pressed]="f.tema === 'escuro'"
+                        (click)="trocarTema('escuro')">Escuro</button>
+                <button type="button" [class.on]="f.tema === 'adaptativo'"
+                        [attr.aria-pressed]="f.tema === 'adaptativo'"
+                        (click)="trocarTema('adaptativo')">Automático</button>
               </div>
             </div>
           </div>
-          <p class="grafico-3d-desc">Colunas tridimensionais com faces sombreadas e topo iluminado. Destaque de volume mensal e último mês em aberto em dourado.</p>
-          <div class="grafico-3d-meta">
-            <span>Modo: Volume Comparativo</span>
-          </div>
-        </button>
 
-        <!-- 3. Donut / Disco 3D -->
-        <button type="button" class="grafico-3d-card"
-                [class.ativo]="f.tipoGrafico === 'pizza'"
-                (click)="selecionarTipoGrafico('pizza')">
-          <div class="grafico-3d-card-h">
-            <b>🍩 Disco / Donut 3D</b>
-            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'pizza' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
-          </div>
-          <div class="grafico-3d-stage">
-            <div class="stage-grid-floor"></div>
-            <div class="stage-3d-donut-wrap">
-              <div class="stage-3d-donut-shadow"></div>
-              <div class="stage-3d-donut-body"></div>
-              <svg class="stage-3d-donut-svg" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#B91C1C" stroke-width="18"
-                        stroke-dasharray="80 140" stroke-dashoffset="0" />
-                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#F59E0B" stroke-width="18"
-                        stroke-dasharray="55 165" stroke-dashoffset="-80" />
-                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#10B981" stroke-width="18"
-                        stroke-dasharray="45 175" stroke-dashoffset="-135" />
-                <circle cx="50" cy="50" r="34" fill="transparent" stroke="#6366F1" stroke-width="18"
-                        stroke-dasharray="35 185" stroke-dashoffset="-180" />
-              </svg>
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Gráfico do painel</b>
+              <span>Linha mostra a tendência; barras comparam mês a mês; área dá o
+                    volume acumulado; pizza mostra a fatia de cada mês.</span>
+            </div>
+            <div class="lin-c">
+              <div class="seg" role="group" aria-label="Formato do gráfico">
+                <button type="button" [class.on]="f.tipoGrafico === 'linha'"
+                        [attr.aria-pressed]="f.tipoGrafico === 'linha'"
+                        (click)="selecionarTipoGrafico('linha')">Linha</button>
+                <button type="button" [class.on]="f.tipoGrafico === 'barras'"
+                        [attr.aria-pressed]="f.tipoGrafico === 'barras'"
+                        (click)="selecionarTipoGrafico('barras')">Barras</button>
+                <button type="button" [class.on]="f.tipoGrafico === 'area'"
+                        [attr.aria-pressed]="f.tipoGrafico === 'area'"
+                        (click)="selecionarTipoGrafico('area')">Área</button>
+                <button type="button" [class.on]="f.tipoGrafico === 'pizza'"
+                        [attr.aria-pressed]="f.tipoGrafico === 'pizza'"
+                        (click)="selecionarTipoGrafico('pizza')">Pizza</button>
+              </div>
             </div>
           </div>
-          <p class="grafico-3d-desc">Cilindro volumétrico em perspectiva com anel segmentado. Ideal para ver a proporção de cada mês na receita total.</p>
-          <div class="grafico-3d-meta">
-            <span>Modo: Distribuição Circular</span>
-          </div>
-        </button>
+        </div>
 
-        <!-- 4. Relevo de Área 3D -->
-        <button type="button" class="grafico-3d-card"
-                [class.ativo]="f.tipoGrafico === 'area'"
-                (click)="selecionarTipoGrafico('area')">
-          <div class="grafico-3d-card-h">
-            <b>📉 Relevo de Área 3D</b>
-            <span class="grafico-3d-badge">{{ f.tipoGrafico === 'area' ? '✓ Ativo no Painel' : 'Selecionar' }}</span>
+        <!-- Uma prévia só, e ela é a tabela que o balcão usa de verdade. Eram
+             três cartões, cada um com selo, prévia e parágrafo de descrição. -->
+        <div class="panel">
+          <div class="panel-h">
+            <h3>Como fica na tela</h3>
+            <span class="meta">um pedaço de verdade do sistema, no tamanho escolhido</span>
           </div>
-          <div class="grafico-3d-stage">
-            <div class="stage-grid-floor"></div>
-            <div class="stage-3d-area-wrap">
-              <svg class="stage-3d-area-svg" viewBox="0 0 150 95" fill="none">
-                <defs>
-                  <linearGradient id="areaGrad3d" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#DC2626" stop-opacity="0.85"/>
-                    <stop offset="60%" stop-color="#991B1B" stop-opacity="0.4"/>
-                    <stop offset="100%" stop-color="#7F1D1D" stop-opacity="0.05"/>
-                  </linearGradient>
-                  <linearGradient id="areaBackGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.4"/>
-                    <stop offset="100%" stop-color="#B45309" stop-opacity="0.02"/>
-                  </linearGradient>
-                </defs>
-                <path d="M 10 75 Q 35 30, 60 55 T 110 35 T 145 20 L 145 85 L 10 85 Z" fill="url(#areaBackGrad)"/>
-                <path d="M 10 80 Q 40 40, 70 65 T 115 45 T 145 28 L 145 85 L 10 85 Z" fill="url(#areaGrad3d)"/>
-                <path d="M 10 80 Q 40 40, 70 65 T 115 45 T 145 28" stroke="#FCA5A5" stroke-width="2.5" stroke-linecap="round"/>
-                <circle cx="145" cy="28" r="4" fill="#FDE047" stroke="#FFF" stroke-width="1.5"/>
-              </svg>
+          <div class="panel-b sem-respiro">
+            <table>
+              <thead>
+                <tr><th>Placa</th><th>Cliente e carro</th><th>Situação</th><th class="num">Última ordem</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="placa-txt">IVT4A19</span></td>
+                  <td><span class="who">Ari Machado</span><span class="sub">Gol 1.0 2015</span></td>
+                  <td><span class="pill p-pos">Em dia</span></td>
+                  <td class="num forte">R$ 198,00</td>
+                </tr>
+                <tr>
+                  <td><span class="placa-txt">MCB1F07</span></td>
+                  <td><span class="who">Dirceu Farias</span><span class="sub">Strada 1.4 2019</span></td>
+                  <td><span class="pill p-crit">Venceu há 3 meses</span></td>
+                  <td class="num forte">R$ 312,00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- ===================== A LOJA ===================== -->
+      @if (secao() === 'loja') {
+        <h2 class="cfg-titulo">A loja</h2>
+        <p class="cfg-ajuda">O nome que aparece na entrada e o canal onde a oficina fala com os clientes.</p>
+
+        <div class="panel">
+          <div class="lin">
+            <div class="lin-t">
+              <b>Nome da loja</b>
+              <span>Aparece na tela de entrada e no topo do sistema.</span>
+            </div>
+            <div class="lin-c">
+              <label for="nl" class="visualmente-oculto">Nome da loja</label>
+              <input id="nl" type="text" [(ngModel)]="f.nomeLoja" maxlength="60">
             </div>
           </div>
-          <p class="grafico-3d-desc">Superfície volumétrica contínua com curvas topográficas em profundidade. Excelente para sensação de volume acumulado.</p>
-          <div class="grafico-3d-meta">
-            <span>Modo: Volume e Relevo</span>
+
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Link do canal no WhatsApp</b>
+              <span>Pode trocar quantas vezes precisar. Se o canal ainda não
+                    existe, deixe vazio.</span>
+            </div>
+            <div class="lin-c coluna">
+              <span class="junto">
+                <label for="cw" class="visualmente-oculto">Link do canal no WhatsApp</label>
+                <input id="cw" type="url" class="mono-campo" [(ngModel)]="f.canalWhatsapp"
+                       placeholder="https://whatsapp.com/channel/…">
+                @if (f.canalWhatsapp) {
+                  <a [href]="f.canalWhatsapp" target="_blank" rel="noopener" class="btn btn-s">Abrir</a>
+                }
+              </span>
+              <p class="hint">
+                No celular da loja: <b>Atualizações → Canais → + → Criar canal</b>.
+                Depois entre no canal, toque no nome e copie o <b>link do canal</b>.
+              </p>
+            </div>
           </div>
+        </div>
+
+        <button type="button" class="btn btn-p btn-lg" (click)="salvar()" [disabled]="salvando()">
+          {{ salvando() ? 'Gravando…' : 'Salvar' }}
         </button>
-      </div>
-    </div>
-  </div>
+        @if (salvo(); as m) { <p class="fonte"><b>{{ m }}</b></p> }
 
-  @if (auth.ehAdmin()) {
-    <!-- Travado: o endereço veio gravado antes da compilação e o computador da
-         oficina não muda isso. Mostro o endereço mesmo assim, em texto, porque
-         na hora do suporte a primeira pergunta é "em que servidor você está" —
-         e ver não é poder alterar. -->
-    @if (cfg.travado) {
-      <div class="panel" style="margin-bottom:20px">
-        <div class="panel-h">
-          <b>Servidor</b>
-          <span class="pill p-mute">definido na instalação</span>
-        </div>
-        <div class="panel-b">
-          <div class="n-l">
-            <span>Endereço</span><span class="d"></span>
-            <span class="v" style="font-family:var(--code)">{{ cfg.apiUrl || 'mesma origem' }}</span>
-          </div>
-          <p class="hint" style="margin-top:10px">
-            Este endereço faz parte do programa e não é alterado por aqui. Se
-            precisar apontar para outro servidor, fale com quem mantém o sistema.
-          </p>
-          <div class="head-act" style="margin-top:12px">
-            <button type="button" class="btn btn-s" (click)="testar()" [disabled]="testando()">
-              {{ testando() ? 'Testando…' : 'Testar conexão' }}
-            </button>
-          </div>
-          @if (resultado(); as r) {
-            <p class="fonte" style="margin-top:12px">
-              <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
-              <span>{{ r.texto }}</span>
-            </p>
-          }
-        </div>
-      </div>
-    } @else {
-      <div class="panel" style="margin-bottom:20px">
-        <div class="panel-h"><b>Servidor</b><span>onde o sistema guarda os dados</span></div>
-        <div class="panel-b">
-          <label class="f">
-            <span>Endereço da API</span>
-            <input name="api" [(ngModel)]="f.apiUrl" placeholder="http://192.168.0.10:3001"
-                   autocapitalize="off" spellcheck="false" autocomplete="off">
-          </label>
-          <p class="hint">
-            Pode ser o endereço da máquina na rede da oficina
-            (<code>http://192.168.0.10:3001</code>) ou um domínio interno.
-            Este valor é lido quando o programa abre — trocar aqui não exige
-            instalar nada de novo.
-          </p>
-
-          <div class="head-act" style="margin-top:12px">
-            <button type="button" class="btn btn-s" (click)="testar()" [disabled]="testando()">
-              {{ testando() ? 'Testando…' : 'Testar conexão' }}
-            </button>
-            <button type="button" class="btn btn-p" (click)="salvar()" [disabled]="salvando()">
-              {{ salvando() ? 'Salvando…' : 'Salvar configurações' }}
-            </button>
-          </div>
-
-          @if (resultado(); as r) {
-            <p class="note" [class.note-top]="!r.ok" style="margin-top:12px">
-              <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
-              <span>{{ r.texto }}</span>
-            </p>
-          }
-          @if (salvo(); as s) { <p class="hint" style="margin-top:8px;font-weight:600;color:var(--pos)">{{ s }}</p> }
-        </div>
-      </div>
-    }
-
-    @if (!cfg.travado) {
-    <div class="panel" style="margin-bottom:20px">
-      <div class="panel-h"><b>Loja</b></div>
-      <div class="panel-b">
-        <div class="f-row c2">
-          <label class="f"><span>Nome que aparece na tela</span>
-            <input name="loja" [(ngModel)]="f.nomeLoja" maxlength="60"></label>
-          <label class="f"><span>Link do canal no WhatsApp</span>
-            <input name="canal" [(ngModel)]="f.canalWhatsapp"
-                   placeholder="https://whatsapp.com/channel/…"
-                   autocapitalize="off" spellcheck="false"></label>
-        </div>
-      </div>
-    </div>
-    }
-
-    <div class="panel">
-      <div class="panel-h"><b>Manutenção e Atualizações Automáticas</b></div>
-      <div class="panel-b">
-        <div class="f-row c2" style="margin-bottom:14px">
-          <label class="f">
-            <span>Verificação automática de novidades</span>
-            <select [(ngModel)]="f.frequenciaAtualizacao" (ngModelChange)="salvar()" name="frequencia">
-              <option value="semanal">Semanalmente (recomendado)</option>
-              <option value="tres_dias">A cada 3 dias</option>
-              <option value="diaria">Diariamente ao iniciar</option>
-              <option value="manual">Apenas manualmente</option>
-            </select>
-          </label>
-          <div style="display:flex;align-items:flex-end;gap:8px">
-            <button type="button" class="btn btn-s" (click)="verificarAtualizacao()">
-              Verificar agora
-            </button>
-            <button type="button" class="btn btn-s" (click)="recarregarCatalogo()">
-              Recarregar catálogo
-            </button>
-          </div>
-        </div>
-
-        @if (catalogo(); as c) { <p class="hint" style="margin-top:10px">{{ c }}</p> }
-        @if (atualizacao(); as a) { <p class="hint" style="margin-top:6px;font-weight:600">{{ a }}</p> }
-        <p class="hint" style="margin-top:14px">
-          Versão instalada: <b>{{ versao() }}</b>
+        <p class="nota-atencao solta">
+          Hoje isto fica gravado <b>neste computador</b>. Se a oficina tiver mais
+          de um balcão, cada um guarda o seu — trocar o link aqui não muda o do
+          outro. Passar essas duas coisas para o servidor é o que falta na API.
         </p>
+      }
+
+      <!-- ===================== CONEXÃO ===================== -->
+      @if (secao() === 'conexao') {
+        <h2 class="cfg-titulo">Conexão</h2>
+        <p class="cfg-ajuda">Se o sistema está falando com o servidor, e quanto ele está demorando.</p>
+
+        <div class="panel">
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Testar agora</b>
+              <span>Pergunta ao servidor e mede o tempo da resposta.</span>
+            </div>
+            <div class="lin-c coluna">
+              <button type="button" class="btn btn-s btn-lg" (click)="testar()" [disabled]="testando()">
+                @if (testando()) { <span class="girando" aria-hidden="true"></span> }
+                {{ testando() ? 'Testando…' : 'Testar a conexão' }}
+              </button>
+              @if (resultado(); as r) {
+                <p class="fonte">
+                  <b>{{ r.ok ? 'Conexão em ordem' : 'Não consegui conectar' }}</b>
+                  <span>{{ r.texto }}</span>
+                </p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- O endereço do servidor não aparece: não há nada que a oficina possa
+             fazer com ele, e ele é só mais uma coisa para ler errado no
+             telefone. Quem precisa dele é quem mantém o sistema, e essa pessoa
+             já sabe qual é. -->
+        <p class="hint solta">
+          Se não conectar, não é a senha de ninguém e não adianta reinstalar:
+          avise quem cuida do sistema.
+        </p>
+      }
+
+      <!-- ===================== ATUALIZAÇÕES ===================== -->
+      @if (secao() === 'atualizacoes') {
+        <h2 class="cfg-titulo">Atualizações</h2>
+        <p class="cfg-ajuda">O sistema baixa em segundo plano e instala ao fechar — nunca no meio do expediente.</p>
+
+        <div class="panel">
+          <div class="lin">
+            <div class="lin-t">
+              <b>Procurar novidades</b>
+              <span>De quanto em quanto tempo o sistema olha se saiu versão nova.</span>
+            </div>
+            <div class="lin-c">
+              <label for="fa" class="visualmente-oculto">Frequência</label>
+              <select id="fa" [(ngModel)]="f.frequenciaAtualizacao" (ngModelChange)="salvar()">
+                <option value="semanal">Uma vez por semana</option>
+                <option value="tres_dias">A cada três dias</option>
+                <option value="diaria">Todo dia, ao abrir</option>
+                <option value="manual">Só quando eu pedir</option>
+              </select>
+              <button type="button" class="btn btn-s" (click)="verificarAtualizacao()">Procurar agora</button>
+            </div>
+          </div>
+
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Catálogo de filtros</b>
+              <span>A tabela Wega que o sistema usa para sugerir a peça.</span>
+            </div>
+            <div class="lin-c">
+              <button type="button" class="btn btn-s" (click)="recarregarCatalogo()">Recarregar catálogo</button>
+            </div>
+          </div>
+        </div>
+
+        @if (atualizacao(); as a) { <p class="fonte"><b>{{ a }}</b></p> }
+        @if (catalogo(); as c) { <p class="hint solta">{{ c }}</p> }
+        <p class="hint solta">Versão instalada: <b>{{ versao() }}</b></p>
+      }
+
+      <!-- ===================== USUÁRIOS ===================== -->
+      @if (secao() === 'usuarios' && auth.ehAdmin()) {
+        <h2 class="cfg-titulo">Usuários</h2>
+        <p class="cfg-ajuda">Quem entra no sistema, e com que acesso.</p>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h3>Quem tem acesso</h3>
+            <button type="button" class="btn btn-p btn-sm" (click)="modalNovoUsuario.set(true)">
+              Novo usuário
+            </button>
+          </div>
+          <div class="panel-b sem-respiro">
+            @if (carregandoUsuarios()) {
+              <p class="carregando">Carregando a equipe…</p>
+            } @else if (usuarios().length === 0) {
+              <p class="vazio"><b>Nenhum usuário</b>Ninguém além de você tem acesso.</p>
+            } @else {
+              <div class="tbl-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Nome</th><th>Entra como</th><th>Acesso</th><th class="acao-col">Ações</th></tr>
+                  </thead>
+                  <tbody>
+                    @for (u of usuarios(); track u.id) {
+                      <tr>
+                        <td><span class="who">{{ u.nome }}</span></td>
+                        <td><code>{{ u.usuario }}</code></td>
+                        <td>
+                          @if (u.papel === 'admin') {
+                            <span class="pill p-crit">Administrador</span>
+                          } @else {
+                            <span class="pill p-mute">Atendente</span>
+                          }
+                        </td>
+                        <td class="acao-col">
+                          <button type="button" class="btn btn-s btn-sm"
+                                  (click)="abrirModalSenhaOperador(u)">Trocar senha</button>
+                          @if (auth.usuario()?.id !== u.id) {
+                            <button type="button" class="btn btn-g btn-sm perigo"
+                                    (click)="excluirUsuario(u)">Remover</button>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </div>
+
+        <p class="hint solta">
+          Administrador vê o Financeiro e mexe nos usuários. Atendente faz tudo
+          no balcão e não vê as contas da oficina.
+        </p>
+      }
+    </div>
+  </div>
+
+  <!-- ===================== MODAIS ===================== -->
+  @if (usuarioParaAlterarSenha(); as uop) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="ts">
+      <div class="modal-box">
+        <h2 id="ts">Trocar a senha de {{ uop.nome }}</h2>
+        <p>A pessoa entra com a senha nova na próxima vez.</p>
+        <label class="f"><span>Nova senha</span>
+          <input type="password" [(ngModel)]="novaSenhaOperador" autocomplete="new-password"
+                 placeholder="pelo menos 4 caracteres" autofocus></label>
+        <div class="modal-acoes">
+          <button type="button" class="btn btn-s" (click)="usuarioParaAlterarSenha.set(null)">Cancelar</button>
+          <button type="button" class="btn btn-p" (click)="salvarSenhaOperador()"
+                  [disabled]="salvandoSenhaOperador()">
+            {{ salvandoSenhaOperador() ? 'Gravando…' : 'Trocar a senha' }}
+          </button>
+        </div>
       </div>
     </div>
-  } @else {
-    <p class="hint" style="margin-top:20px;text-align:center;color:var(--tx-2)">
-      As configurações de servidor e manutenção do sistema são gerenciadas exclusivamente por administradores.
-    </p>
+  }
+
+  @if (modalNovoUsuario()) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="nv">
+      <div class="modal-box">
+        <h2 id="nv">Novo usuário</h2>
+        <p>Quem vai usar o sistema no balcão.</p>
+        <div class="f">
+          <label class="f"><span>Nome</span>
+            <input type="text" [(ngModel)]="novoUsuario.nome" autofocus></label>
+          <label class="f"><span>Entra como</span>
+            <input type="text" [(ngModel)]="novoUsuario.usuario" autocapitalize="off"
+                   spellcheck="false" placeholder="sem espaço e sem acento"></label>
+          <label class="f"><span>Senha</span>
+            <input type="password" [(ngModel)]="novoUsuario.senha" autocomplete="new-password"></label>
+          <label class="f"><span>Acesso</span>
+            <select [(ngModel)]="novoUsuario.papel">
+              <option value="atendente">Atendente — o balcão inteiro, sem as contas</option>
+              <option value="admin">Administrador — inclusive o Financeiro</option>
+            </select></label>
+        </div>
+        @if (erroNovoUsuario(); as e) { <p class="hint erro">{{ e }}</p> }
+        <div class="modal-acoes">
+          <button type="button" class="btn btn-s" (click)="modalNovoUsuario.set(false)">Cancelar</button>
+          <button type="button" class="btn btn-p" (click)="salvarNovoUsuario()"
+                  [disabled]="salvandoNovoUsuario()">
+            {{ salvandoNovoUsuario() ? 'Gravando…' : 'Criar' }}
+          </button>
+        </div>
+      </div>
+    </div>
   }
 </section>

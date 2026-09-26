@@ -10,14 +10,16 @@
     @if (v(); as d) {
 
     <div class="ficha-h">
-      <div>
-        <h1 class="id">{{ fPlaca(d.placa) }}</h1>
-        <p>
-          {{ d.marca ? d.marca + ' ' : '' }}{{ d.modelo || 'Modelo não informado' }}
-          @if (d.ano) { · {{ d.ano }} }
-          @if (d.cilindrada) { · {{ d.cilindrada }} }
-        </p>
-        <span class="hint">{{ d.cliente }} · {{ telefone(d.telefone) }}</span>
+      <div class="linha-flex">
+        <app-placa-mercosul [placa]="d.placa" tamanho="lg" />
+        <div>
+          <h2 class="titulo-carro">
+            {{ d.marca ? d.marca + ' ' : '' }}{{ d.modelo || 'Modelo não informado' }}
+            @if (d.ano) { · {{ d.ano }} }
+            @if (d.cilindrada) { · {{ d.cilindrada }} }
+          </h2>
+          <span class="hint" style="font-size:13.5px;">{{ d.cliente }} · {{ telefone(d.telefone) }}</span>
+        </div>
       </div>
       <div class="head-act">
         <span class="pill"
@@ -26,7 +28,7 @@
                        : d.situacao === 'parado' ? 'p-crit' : 'p-mute')">
           {{ rotuloSituacao(d.situacao) }}
         </span>
-        <a routerLink="/ordem" [queryParams]="{ placa: d.placa }" class="btn btn-p">
+        <a routerLink="/ordem" [queryParams]="{ placa: d.placa, litros: ultimoServico()?.litros, oleo: ultimoServico()?.oleo }" class="btn btn-p">
           Lançar ordem
         </a>
         <app-sino />
@@ -47,12 +49,61 @@
       <div class="stat"><span class="stat-l">Quilometragem</span>
         <span class="stat-v">{{ km(d.ultimo_km) }}</span>
         <span class="stat-d">na última passagem</span></div>
+      <div class="stat"><span class="stat-l">Filtro de ar</span>
+        @if (ultimoServico(); as us) {
+          @if (trocouFiltroAr(us)) {
+            <span class="stat-v" style="color:var(--pos); font-size:18px; display:inline-flex; align-items:center; gap:4px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              {{ dinheiro(us.valor_filtro_ar) }}
+            </span>
+            <span class="stat-d">trocado na última revisão</span>
+          } @else {
+            <span class="stat-v" style="color:var(--warn); font-size:18px; display:inline-flex; align-items:center; gap:4px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              Não trocado
+            </span>
+            <span class="stat-d" style="color:var(--warn); font-weight:600">troca recomendada nesta!</span>
+          }
+        } @else {
+          <span class="stat-v">—</span>
+          <span class="stat-d">sem histórico</span>
+        }
+      </div>
       <div class="stat"><span class="stat-l">Óleo</span>
         <span class="stat-v">{{ d.ultimo_oleo || '—' }}</span>
         <span class="stat-d">usado pela casa</span></div>
       <div class="stat"><span class="stat-l">Visitas</span>
         <span class="stat-v">{{ d.visitas }}</span>
         <span class="stat-d">desde o primeiro registro</span></div>
+      <div class="stat"><span class="stat-l">Próxima troca (Etiqueta)</span>
+        @if (proximaTrocaKm(); as pkm) {
+          <span class="stat-v" style="color:var(--b-700); font-weight:700;">{{ km(pkm) }}</span>
+          <span class="stat-d">margem de +{{ km(intervaloVeiculo()) }}</span>
+        } @else {
+          <span class="stat-v">—</span>
+          <span class="stat-d">sem km registrado</span>
+        }
+      </div>
+    </div>
+
+    <!-- PREFERÊNCIA DE INTERVALO DA ETIQUETA -->
+    <div style="background:var(--surface); border:1px solid var(--bd); border-radius:var(--r-md); padding:10px 14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <span style="font-size:13px; font-weight:600; color:var(--tx); display:inline-flex; align-items:center; gap:6px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Intervalo de etiqueta preferido deste cliente:
+      </span>
+      <div style="display:inline-flex; align-items:center; gap:6px;">
+        @for (int of intervalosComuns; track int) {
+          <button type="button" class="btn btn-s"
+                  [style.background]="intervaloVeiculo() === int ? 'var(--b-700)' : 'var(--surface-2)'"
+                  [style.color]="intervaloVeiculo() === int ? '#fff' : 'var(--tx)'"
+                  [style.font-weight]="intervaloVeiculo() === int ? '700' : 'normal'"
+                  class="btn-sm"
+                  (click)="definirIntervalo(int)">
+            +{{ (int / 1000).toLocaleString('pt-BR') }}k km
+          </button>
+        }
+      </div>
     </div>
 
     <!-- A SUBSEÇÃO DE FILTROS -->
@@ -85,7 +136,7 @@
             <input name="fk" [(ngModel)]="f.filtro_combustivel" maxlength="40"
                    autocapitalize="characters" placeholder="ex.: FCI1630"></label>
         </div>
-        <button type="button" class="btn btn-p" style="margin-top:12px"
+        <button type="button" class="btn btn-p respiro"
                 [disabled]="gravando()" (click)="gravarFiltros()">
           {{ gravando() ? 'Gravando…' : 'Gravar filtros' }}
         </button>
@@ -93,30 +144,86 @@
     </div>
 
     <div class="panel">
-      <div class="panel-h"><b>Histórico</b><span>{{ historico().length }} trocas</span></div>
-      <div class="panel-b">
+      <div class="panel-h">
+        <h2>Histórico</h2>
+        <span class="meta">
+          {{ historico().length }} {{ historico().length === 1 ? 'troca' : 'trocas' }}
+          @if (mediaPorTroca(); as m) {
+            · roda <b>{{ km(m.media) }}</b> entre uma troca e outra
+          }
+        </span>
+      </div>
+      <div class="panel-b sem-respiro">
         @if (historico().length === 0) {
           <p class="vazio"><b>Sem trocas registradas</b></p>
         } @else {
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Km</th><th>Óleo</th><th class="num">Total</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Data</th><th class="num">Km</th><th class="num">Rodou desde a anterior</th>
+                  <th>Óleo</th><th>Filtro de ar</th><th class="num">Total</th>
+                  <th class="acao-col">Ações</th>
+                </tr>
+              </thead>
               <tbody>
-                @for (h of historico(); track h.id) {
+                @for (h of historicoComIntervalo(); track h.id) {
                   <tr>
-                    <td>{{ data(h.data) }}</td>
-                    <td class="num">{{ km(h.km) }}</td>
-                    <td>{{ h.oleo || '—' }} <small>{{ litros(h.litros) }}</small></td>
-                    <td class="num">{{ dinheiro(h.total) }}</td>
+                    <td class="mono">{{ data(h.data) }}</td>
+                    <td class="num">
+                      @if (h.km == null) {
+                        <span class="pill p-warn">sem km</span>
+                      } @else {
+                        {{ km(h.km) }}
+                      }
+                    </td>
+                    <!-- Só aparece quando as duas pontas têm km anotado: metade
+                         do histórico antigo veio da planilha sem quilometragem,
+                         e um número inventado aqui viraria etiqueta errada. -->
+                    <td class="num">
+                      @if (h.rodou != null) {
+                        <span class="forte">{{ km(h.rodou) }}</span>
+                        @if (h.meses) { <span class="sub">em {{ h.meses }} {{ h.meses === 1 ? 'mês' : 'meses' }}</span> }
+                      } @else {
+                        <span class="tx-3">—</span>
+                      }
+                    </td>
+                    <td>{{ h.oleo || '—' }} <small class="tx-3">{{ litros(h.litros) }}</small></td>
+                    <td>
+                      @if (trocouFiltroAr(h)) {
+                        <span class="pill p-pos">{{ dinheiro(h.valor_filtro_ar) }}</span>
+                        @if (h.cod_filtro_ar) { <span class="sub mono">{{ h.cod_filtro_ar }}</span> }
+                      } @else {
+                        <span class="tx-3">não trocado</span>
+                      }
+                    </td>
+                    <td class="num forte">{{ dinheiro(h.total) }}</td>
+                    <td class="acao-col">
+                      <button type="button" class="btn btn-s btn-sm" (click)="abrirEdicao(h)"
+                              title="Editar este atendimento — dá para acrescentar o km depois">
+                        Editar
+                      </button>
+                    </td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
+          @if (mediaPorTroca(); as m) {
+            <p class="nota-medida">
+              Medido em {{ m.amostra }} {{ m.amostra === 1 ? 'intervalo' : 'intervalos' }} com km
+              anotado nas duas pontas. Quanto mais o balcão anota o km, melhor o
+              adesivo do vidro acerta a próxima data.
+            </p>
+          }
         }
       </div>
     </div>
   }
+  }
+
+  @if (servicoParaEditar(); as se) {
+    <app-modal-servico [servico]="se" (fechou)="servicoParaEditar.set(null)" (salvou)="aoSalvarServico($event)" />
   }
 
   @if (selo(); as s) {

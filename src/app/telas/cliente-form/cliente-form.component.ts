@@ -7,23 +7,29 @@ import { DadosService } from '../../nucleo/dados.service';
 import { ErroApi } from '../../nucleo/api.service';
 import { placa as fPlaca } from '../../nucleo/formato';
 import { SeloComponent } from '../../partes/selo/selo.component';
+import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
+import { EtiquetaService, INTERVALOS_COMUNS } from '../../nucleo/etiqueta.service';
 
 @Component({
   selector: 'app-cliente-form',
   standalone: true,
-  imports: [FormsModule, SeloComponent],
+  imports: [FormsModule, SeloComponent, PlacaMercosulComponent],
   templateUrl: './cliente-form.component.html'
 })
 export class ClienteFormComponent implements OnInit {
   private dados = inject(DadosService);
   private rota = inject(ActivatedRoute);
   private router = inject(Router);
+  private etiquetaService = inject(EtiquetaService);
 
   enviando = signal(false);
   erro = signal<ErroApi | null>(null);
   duplicado = signal<string | null>(null);
   selo = signal<{ titulo: string; linha: string } | null>(null);
   comVeiculo = signal(true);
+
+  readonly intervalosComuns = INTERVALOS_COMUNS;
+  intervaloPreferido = signal<number>(7000);
 
   f = {
     nome: '', telefone: '', nascimento: '', aceita_aviso: true, obs: '',
@@ -86,6 +92,13 @@ export class ClienteFormComponent implements OnInit {
         this.enviando.set(false);
         // a API não bloqueia telefone repetido, mas avisa — o balcão decide
         if (r.aviso) this.duplicado.set(r.aviso);
+        if (r.cliente?.id) {
+          this.etiquetaService.salvarIntervalo(
+            this.intervaloPreferido(),
+            r.cliente.id,
+            r.veiculo?.placa || this.f.placa
+          );
+        }
         this.selo.set({
           titulo: 'Cliente cadastrado',
           linha: r.veiculo ? `${this.f.nome} · ${fPlaca(r.veiculo.placa)}` : this.f.nome

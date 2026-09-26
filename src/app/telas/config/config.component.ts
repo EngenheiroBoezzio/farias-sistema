@@ -10,6 +10,11 @@ import { ConfigService, TamanhoFonte, TemaApp, FrequenciaAtualizacao, TipoGrafic
 import { DadosService } from '../../nucleo/dados.service';
 import { SinoComponent } from '../../partes/sino/sino.component';
 
+import { UsuariosService, UsuarioSistema } from '../../nucleo/usuarios.service';
+import { VERSAO } from '../../nucleo/versao';
+
+export type SecaoConfig = 'perfil' | 'aparencia' | 'loja' | 'conexao' | 'atualizacoes' | 'usuarios';
+
 @Component({
   selector: 'app-config',
   standalone: true,
@@ -20,6 +25,7 @@ export class ConfigComponent implements OnInit {
   auth = inject(AuthService);
   cfg = inject(ConfigService);
   private dados = inject(DadosService);
+  private usuariosService = inject(UsuariosService);
 
   f = {
     apiUrl: '',
@@ -31,6 +37,11 @@ export class ConfigComponent implements OnInit {
     tipoGrafico: 'linha' as TipoGrafico,
     menuFixado: false
   };
+
+  /* Qual seção está aberta. A tela era um scroll de sete painéis empilhados;
+     para trocar o tamanho da letra era preciso passar por perfil, senha e
+     gráfico. Agora é uma de cada vez. */
+  secao = signal<SecaoConfig>('perfil');
 
   testando = signal(false);
   salvando = signal(false);
@@ -44,6 +55,25 @@ export class ConfigComponent implements OnInit {
   nomeUsuario = '';
   salvandoPerfil = signal(false);
   salvoPerfil = signal<string | null>(null);
+
+  // Gestão de Usuários Master
+  usuarios = signal<UsuarioSistema[]>([]);
+  carregandoUsuarios = signal(false);
+  modalNovoUsuario = signal(false);
+  usuarioParaAlterarSenha = signal<UsuarioSistema | null>(null);
+  novaSenhaOperador = '';
+  salvandoSenhaOperador = signal(false);
+
+  // Formulário Minha Senha
+  minhaSenha = { atual: '', nova: '', confirmacao: '' };
+  salvandoMinhaSenha = signal(false);
+  sucessoMinhaSenha = signal<string | null>(null);
+  erroMinhaSenha = signal<string | null>(null);
+
+  // Formulário Novo Usuário
+  novoUsuario = { nome: '', usuario: '', senha: '', papel: 'atendente' as 'admin' | 'atendente' };
+  salvandoNovoUsuario = signal(false);
+  erroNovoUsuario = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
     const c = this.cfg.config();
@@ -61,6 +91,114 @@ export class ConfigComponent implements OnInit {
     try {
       if (window.farias?.versao) this.versao.set(await window.farias.versao());
     } catch { /* fora do Electron não tem versão de instalador */ }
+    /* Sem o Electron por perto, vale a do package.json gravada no build —
+       melhor um número certo do que um travessão. */
+    if (this.versao() === '—') this.versao.set(VERSAO);
+
+    if (this.auth.ehAdmin()) {
+      this.carregarUsuarios();
+    }
+  }
+
+  carregarUsuarios(): void {
+    this.carregandoUsuarios.set(true);
+    this.usuariosService.listarUsuarios().subscribe({
+      next: lista => {
+        this.usuarios.set(lista);
+        this.carregandoUsuarios.set(false);
+      },
+      error: () => this.carregandoUsuarios.set(false)
+    });
+  }
+
+  alterarMinhaSenha(): void {
+    this.erroMinhaSenha.set(null);
+    this.sucessoMinhaSenha.set(null);
+
+    if (!this.minhaSenha.nova || this.minhaSenha.nova.length < 4) {
+      this.erroMinhaSenha.set('A nova senha deve ter pelo menos 4 caracteres.');
+      return;
+    }
+    if (this.minhaSenha.nova !== this.minhaSenha.confirmacao) {
+      this.erroMinhaSenha.set('A confirmação da nova senha não confere.');
+      return;
+    }
+
+    this.salvandoMinhaSenha.set(true);
+    this.usuariosService.trocarMinhaSenha(this.minhaSenha.atual, this.minhaSenha.nova).subscribe({
+      next: res => {
+        this.salvandoMinhaSenha.set(false);
+        this.sucessoMinhaSenha.set(res.mensagem || 'Senha alterada com sucesso no banco de dados!');
+        this.minhaSenha = { atual: '', nova: '', confirmacao: '' };
+        setTimeout(() => this.sucessoMinhaSenha.set(null), 4000);
+      },
+      error: (e: any) => {
+        this.salvandoMinhaSenha.set(false);
+        this.erroMinhaSenha.set(e.mensagem || 'Não foi possível alterar a senha.');
+      }
+    });
+  }
+
+  abrirModalSenhaOperador(u: UsuarioSistema): void {
+    this.usuarioParaAlterarSenha.set(u);
+    this.novaSenhaOperador = '';
+  }
+
+  salvarSenhaOperador(): void {
+    const u = this.usuarioParaAlterarSenha();
+    if (!u) return;
+    if (!this.novaSenhaOperador || this.novaSenhaOperador.length < 4) {
+      alert('A senha deve ter no mínimo 4 caracteres.');
+      return;
+    }
+
+    this.salvandoSenhaOperador.set(true);
+    this.usuariosService.alterarSenhaUsuario(u.id, this.novaSenhaOperador).subscribe({
+      next: () => {
+        this.salvandoSenhaOperador.set(false);
+        this.usuarioParaAlterarSenha.set(null);
+        this.salvoPerfil.set(`Senha do operador ${u.nome} atualizada com sucesso!`);
+        setTimeout(() => this.salvoPerfil.set(null), 4000);
+      },
+      error: () => this.salvandoSenhaOperador.set(false)
+    });
+  }
+
+  salvarNovoUsuario(): void {
+    this.erroNovoUsuario.set(null);
+    if (!this.novoUsuario.nome.trim() || !this.novoUsuario.usuario.trim() || !this.novoUsuario.senha) {
+      this.erroNovoUsuario.set('Preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    this.salvandoNovoUsuario.set(true);
+    this.usuariosService.criarUsuario(this.novoUsuario).subscribe({
+      next: res => {
+        this.salvandoNovoUsuario.set(false);
+        this.modalNovoUsuario.set(false);
+        this.novoUsuario = { nome: '', usuario: '', senha: '', papel: 'atendente' };
+        this.carregarUsuarios();
+        this.salvoPerfil.set(`Usuário ${res.usuario.nome} cadastrado com sucesso!`);
+        setTimeout(() => this.salvoPerfil.set(null), 4000);
+      },
+      error: (e: any) => {
+        this.salvandoNovoUsuario.set(false);
+        this.erroNovoUsuario.set(e.mensagem || 'Erro ao cadastrar usuário.');
+      }
+    });
+  }
+
+  excluirUsuario(u: UsuarioSistema): void {
+    if (confirm(`Tem certeza que deseja remover o acesso de ${u.nome} (${u.usuario})?`)) {
+      this.usuariosService.excluirUsuario(u.id).subscribe({
+        next: () => {
+          this.carregarUsuarios();
+          this.salvoPerfil.set(`Acesso de ${u.nome} removido.`);
+          setTimeout(() => this.salvoPerfil.set(null), 3000);
+        },
+        error: (e: any) => alert(e.mensagem || 'Não foi possível excluir o usuário.')
+      });
+    }
   }
 
   selecionarFonte(tf: TamanhoFonte): void {
@@ -133,6 +271,11 @@ export class ConfigComponent implements OnInit {
 
   selecionarTipoGrafico(tipo: TipoGrafico): void {
     this.f.tipoGrafico = tipo;
+    this.mudarAparencia();
+  }
+
+  trocarTema(t: TemaApp): void {
+    this.f.tema = t;
     this.mudarAparencia();
   }
 

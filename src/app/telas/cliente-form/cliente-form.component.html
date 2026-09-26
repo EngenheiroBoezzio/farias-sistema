@@ -14,14 +14,12 @@
   }
 
   @if (duplicado(); as d) {
-    <div class="alerta" role="alert" style="margin-bottom:14px">
-      <b>Atenção</b><span>{{ d }}</span>
-    </div>
+    <div class="alerta" role="alert"><b>Confira antes de gravar</b><span>{{ d }}</span></div>
   }
 
   <form (ngSubmit)="salvar()" novalidate>
     <div class="panel">
-      <div class="panel-h"><b>Cliente</b></div>
+      <div class="panel-h"><h2>Cliente</h2></div>
       <div class="panel-b">
         <div class="f-row c2">
           <label class="f"><span>Nome *</span>
@@ -30,28 +28,50 @@
             <input name="tel" [(ngModel)]="f.telefone" maxlength="20"
                    inputmode="tel" placeholder="(55) 99999-9999"></label>
         </div>
-        <div class="f-row c2">
-          <label class="f"><span>Nascimento</span>
-            <input type="date" name="nasc" [(ngModel)]="f.nascimento"></label>
-          <label class="f"><span>Observação</span>
-            <input name="obs" [(ngModel)]="f.obs" maxlength="255"></label>
-        </div>
+
         <label class="check">
           <input type="checkbox" name="aviso" [(ngModel)]="f.aceita_aviso">
-          <span>Aceita receber avisos no WhatsApp</span>
+          <span>Aceita receber aviso de troca no WhatsApp</span>
         </label>
-        <p class="hint">
-          O aniversário só serve se for preenchido: hoje só 1% da base tem essa data.
-        </p>
+
+        <div class="bloco-intervalo">
+          <span class="rotulo">Intervalo da próxima troca</span>
+          <span class="ajuda">Vai no adesivo do vidro. Dá para mudar depois na ficha do carro.</span>
+          <div class="seg" role="group" aria-label="Intervalo da próxima troca">
+            @for (int of intervalosComuns; track int) {
+              <button type="button" [class.on]="intervaloPreferido() === int"
+                      [attr.aria-pressed]="intervaloPreferido() === int"
+                      (click)="intervaloPreferido.set(int)">
+                +{{ (int / 1000).toLocaleString('pt-BR') }} mil km
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Nascimento e observação saíram da linha de frente.
+
+             O aniversário ocupava metade de uma linha do formulário principal
+             e a dica embaixo dele dizia que só 1% da base tem essa data — ou
+             seja, 99 de cada 100 cadastros passavam por cima de um campo que
+             tomava espaço de quem preenche com o cliente esperando. -->
+        <details class="mais-dados">
+          <summary>Mais dados <span>opcional</span></summary>
+          <div class="f-row c2">
+            <label class="f"><span>Nascimento</span>
+              <input type="date" name="nasc" [(ngModel)]="f.nascimento"></label>
+            <label class="f"><span>Observação</span>
+              <input name="obs" [(ngModel)]="f.obs" maxlength="255"
+                     placeholder="algo que o balcão precisa lembrar"></label>
+          </div>
+        </details>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-h">
-        <b>Veículo</b>
-        <label class="check" style="margin:0">
-          <input type="checkbox" [checked]="comVeiculo()"
-                 (change)="comVeiculo.set(!comVeiculo())">
+        <h2>Veículo</h2>
+        <label class="check sem-margem">
+          <input type="checkbox" [checked]="comVeiculo()" (change)="comVeiculo.set(!comVeiculo())">
           <span>cadastrar agora</span>
         </label>
       </div>
@@ -59,8 +79,12 @@
         <div class="panel-b">
           <div class="f-row c3">
             <label class="f"><span>Placa *</span>
-              <input name="placa" [(ngModel)]="f.placa" maxlength="8"
-                     autocapitalize="characters" placeholder="ABC1D23"></label>
+              <span class="campo-placa">
+                <input name="placa" [(ngModel)]="f.placa" maxlength="8"
+                       autocapitalize="characters" placeholder="ABC1D23">
+                @if (f.placa) { <app-placa-mercosul [placa]="f.placa" tamanho="sm" /> }
+              </span>
+            </label>
             <label class="f"><span>Marca</span>
               <input name="marca" [(ngModel)]="f.marca" maxlength="40"></label>
             <label class="f"><span>Modelo</span>
@@ -68,8 +92,7 @@
           </div>
           <div class="f-row c2">
             <label class="f"><span>Motor</span>
-              <input name="cil" [(ngModel)]="f.cilindrada" maxlength="4"
-                     placeholder="1.0"></label>
+              <input name="cil" [(ngModel)]="f.cilindrada" maxlength="4" placeholder="1.0"></label>
             <label class="f"><span>Ano</span>
               <input type="number" name="ano" [(ngModel)]="f.ano" min="1950" max="2027"
                      inputmode="numeric"></label>
@@ -79,32 +102,33 @@
             Sem eles a sugestão fica fraca.
           </p>
 
-          <div class="panel-h" style="margin-top:14px;padding-left:0">
-            <b>Filtros</b><span>opcional — dá para preencher depois</span>
-          </div>
-          <div class="f-row c2">
-            <label class="f"><span>Óleo</span>
-              <input name="fo" [(ngModel)]="f.filtro_oleo" maxlength="40"
-                     autocapitalize="characters"></label>
-            <label class="f"><span>Ar</span>
-              <input name="fa" [(ngModel)]="f.filtro_ar" maxlength="40"
-                     autocapitalize="characters"></label>
-          </div>
-          <div class="f-row c2">
-            <label class="f"><span>Cabine</span>
-              <input name="fc" [(ngModel)]="f.filtro_cabine" maxlength="40"
-                     autocapitalize="characters"></label>
-            <label class="f"><span>Combustível</span>
-              <input name="fk" [(ngModel)]="f.filtro_combustivel" maxlength="40"
-                     autocapitalize="characters"></label>
-          </div>
+          <details class="mais-dados">
+            <summary>Filtros <span>dá para preencher depois</span></summary>
+            <div class="f-row c2">
+              <label class="f"><span>Óleo</span>
+                <input name="fo" [(ngModel)]="f.filtro_oleo" maxlength="40"
+                       autocapitalize="characters"></label>
+              <label class="f"><span>Ar</span>
+                <input name="fa" [(ngModel)]="f.filtro_ar" maxlength="40"
+                       autocapitalize="characters"></label>
+            </div>
+            <div class="f-row c2">
+              <label class="f"><span>Cabine</span>
+                <input name="fc" [(ngModel)]="f.filtro_cabine" maxlength="40"
+                       autocapitalize="characters"></label>
+              <label class="f"><span>Combustível</span>
+                <input name="fk" [(ngModel)]="f.filtro_combustivel" maxlength="40"
+                       autocapitalize="characters"></label>
+            </div>
+          </details>
         </div>
       }
     </div>
 
-    <div class="form-actions" style="margin-top: 24px; display: flex; gap: 12px; align-items: center;">
+    <div class="form-actions">
       <button type="submit" class="btn btn-p btn-lg" [disabled]="enviando()">
-        {{ enviando() ? 'Gravando…' : 'Cadastrar Cliente' }}
+        @if (enviando()) { <span class="girando" aria-hidden="true"></span> }
+        {{ enviando() ? 'Gravando…' : 'Cadastrar cliente' }}
       </button>
       <a routerLink="/clientes" class="btn btn-s">Cancelar</a>
     </div>

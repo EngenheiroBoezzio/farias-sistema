@@ -29,6 +29,13 @@ export class FiltrosComponent implements OnInit {
   selo = signal<{ titulo: string; linha: string } | null>(null);
   duvida = signal<{ v: PendenteFiltro; motivo: string } | null>(null);
 
+  /* Qual carro está aberto no painel da direita. A tela virou triagem: fila à
+     esquerda, um carro por vez à direita. Antes cada carro era um painel
+     inteiro e aprovar o quinto exigia rolar por quatro. */
+  selecionado = signal<PendenteFiltro | null>(null);
+
+  selecionar(v: PendenteFiltro): void { this.selecionado.set(v); }
+
   fPlaca = fPlaca; rotuloSituacao = rotuloSituacao;
 
   ngOnInit(): void { this.buscar(); }
@@ -36,7 +43,14 @@ export class FiltrosComponent implements OnInit {
   buscar(): void {
     this.carregando.set(true); this.erro.set(null);
     this.dados.filaFiltros({ pagina: this.pagina(), limite: 25 }).subscribe({
-      next: r => { this.lista.set(r.veiculos); this.total.set(r.total); this.carregando.set(false); },
+      next: r => {
+        this.lista.set(r.veiculos);
+        this.total.set(r.total);
+        /* Abre o primeiro sozinho: chegar numa fila e ter que clicar para
+           ela começar é um passo que não serve a ninguém. */
+        this.selecionado.set(r.veiculos[0] ?? null);
+        this.carregando.set(false);
+      },
       error: (e: ErroApi) => { this.erro.set(e); this.carregando.set(false); }
     });
   }
@@ -57,8 +71,14 @@ export class FiltrosComponent implements OnInit {
           linha: `${fPlaca(v.placa)} · ${v.modelo || 'veículo'}`
         });
         // some da fila: ela mostra só quem ainda não tem filtro
-        this.lista.update(l => l.filter(x => x.id !== v.id));
+        const antes = this.lista();
+        const pos = antes.findIndex(x => x.id === v.id);
+        const resto = antes.filter(x => x.id !== v.id);
+        this.lista.set(resto);
         this.total.update(t => Math.max(0, t - 1));
+        /* Já abre o próximo da fila — o que estava embaixo do que acabou de
+           sair. É o que faz a triagem andar sem tirar a mão do trabalho. */
+        this.selecionado.set(resto[Math.min(pos, resto.length - 1)] ?? null);
       },
       error: (e: ErroApi) => {
         this.gravando.set(null);

@@ -7,11 +7,12 @@ import { Painel } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
 import { dinheiro, inteiro, num, data, mesCurto, placa } from '../../nucleo/formato';
 import { SinoComponent } from '../../partes/sino/sino.component';
+import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
 
 @Component({
   selector: 'app-painel',
   standalone: true,
-  imports: [RouterLink, SinoComponent],
+  imports: [RouterLink, SinoComponent, PlacaMercosulComponent],
   templateUrl: './painel.component.html'
 })
 export class PainelComponent implements OnInit, OnDestroy {
@@ -28,6 +29,13 @@ export class PainelComponent implements OnInit, OnDestroy {
 
   dinheiro = dinheiro; inteiro = inteiro; data = data;
   mesCurto = mesCurto; placa = placa; num = num;
+
+  /* A data por extenso no subtítulo. Parece detalhe, mas é o que faz a tela
+     parecer de hoje: "Quinta, 24 de setembro" diz que o número é de agora,
+     coisa que "Como a oficina está hoje" não dizia. */
+  hoje = new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long', day: 'numeric', month: 'long'
+  }).replace(/^./, c => c.toUpperCase());
 
   /** Fatia de cada situação, para a barra de composição. */
   situacoes = computed(() => {
@@ -89,6 +97,23 @@ export class PainelComponent implements OnInit, OnDestroy {
       this.chartInstancia = undefined;
     }
 
+    /* As cores do gráfico saem do CSS, não ficam cravadas aqui.
+
+       Estavam sete valores escritos à mão neste arquivo — #B91C1C, #F59E0B,
+       #18181B, #FEE2E2, #64748B e dois rgba de slate. Dois problemas: eles
+       não acompanhavam a paleta (o vermelho daqui era o do Tailwind, não o da
+       logo) e no tema escuro o eixo ficava cinza-claro sobre fundo escuro.
+       Lendo do :root, o gráfico segue o tema sozinho. */
+    const tok = (nome: string) =>
+      getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
+    const corMarca = tok('--b-700') || '#8E0A10';
+    const corMarcaFraca = tok('--b-300') || '#EE8387';
+    const corEixo = tok('--n-400') || '#8A817B';
+    const corGrade = tok('--n-100') || '#E7E2DC';
+    const corTinta = tok('--n-900') || '#1A1512';
+    const corPapel = tok('--n-0') || '#FFFFFF';
+    const paletaSerie = ['--c1','--c2','--c3','--c4','--c5','--c6'].map(v => tok(v));
+
     const serie = painel.serie || [];
     if (serie.length === 0) return;
 
@@ -101,13 +126,13 @@ export class PainelComponent implements OnInit, OnDestroy {
     const tipo = this.tipoGrafico();
 
     const gradiente = ctx.createLinearGradient(0, 0, 0, 220);
-    gradiente.addColorStop(0, 'rgba(185, 28, 28, 0.32)');
-    gradiente.addColorStop(1, 'rgba(185, 28, 28, 0.01)');
+    gradiente.addColorStop(0, corMarca + '55');
+    gradiente.addColorStop(1, corMarca + '03');
 
     const tooltipConfig = {
-      backgroundColor: '#18181B',
-      titleColor: '#FEE2E2',
-      bodyColor: '#FFFFFF',
+      backgroundColor: corTinta,
+      titleColor: corMarcaFraca,
+      bodyColor: corPapel,
       padding: 10,
       cornerRadius: 8,
       displayColors: tipo === 'pizza',
@@ -127,15 +152,15 @@ export class PainelComponent implements OnInit, OnDestroy {
       x: {
         grid: { display: false },
         ticks: {
-          color: '#64748B',
+          color: corEixo,
           font: { family: 'inherit', size: 11 },
           maxRotation: 0
         }
       },
       y: {
-        grid: { color: 'rgba(203, 213, 225, 0.4)' },
+        grid: { color: corGrade },
         ticks: {
-          color: '#64748B',
+          color: corEixo,
           font: { family: 'inherit', size: 11 },
           callback: (val: any) => {
             const n = Number(val);
@@ -153,8 +178,15 @@ export class PainelComponent implements OnInit, OnDestroy {
           datasets: [{
             label: 'Entrada (R$)',
             data: valores,
-            backgroundColor: serie.map((_, idx) => idx === serie.length - 1 ? '#F59E0B' : '#B91C1C'),
-            borderRadius: 6,
+            /* O mês em aberto era uma barra DOURADA: 2,2:1 de contraste sobre
+               branco, ou seja, o mês que mais importa era o que menos se
+               enxergava. Agora ele é a mesma cor, mas vazado com contorno —
+               que além de visível diz POR QUE ele é diferente. */
+            backgroundColor: serie.map((_, idx) =>
+              idx === serie.length - 1 ? corMarca + '33' : corMarca),
+            borderColor: corMarca,
+            borderWidth: serie.map((_, idx) => idx === serie.length - 1 ? 2 : 0),
+            borderRadius: 4,
             borderSkipped: false,
             maxBarThickness: 38
           }]
@@ -170,11 +202,7 @@ export class PainelComponent implements OnInit, OnDestroy {
         }
       });
     } else if (tipo === 'pizza') {
-      const paleta = [
-        '#9E1822', '#B91C1C', '#DC2626', '#EF4444',
-        '#F59E0B', '#16855A', '#2563EB', '#7C3AED',
-        '#DB2777', '#EA580C', '#475569', '#0D9488'
-      ];
+      const paleta = paletaSerie;
       this.chartInstancia = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -184,7 +212,7 @@ export class PainelComponent implements OnInit, OnDestroy {
             data: valores,
             backgroundColor: paleta.slice(0, rotulos.length),
             borderWidth: 2,
-            borderColor: '#FFFFFF'
+            borderColor: corPapel
           }]
         },
         options: {
@@ -209,13 +237,13 @@ export class PainelComponent implements OnInit, OnDestroy {
           datasets: [{
             label: 'Entrada (R$)',
             data: valores,
-            borderColor: '#9E1822',
+            borderColor: corMarca,
             backgroundColor: gradiente,
             borderWidth: 2.5,
             fill: true,
             tension: 0.38,
-            pointBackgroundColor: '#9E1822',
-            pointBorderColor: '#FFFFFF',
+            pointBackgroundColor: corMarca,
+            pointBorderColor: corPapel,
             pointBorderWidth: 2,
             pointRadius: 4,
             pointHoverRadius: 7
@@ -240,13 +268,13 @@ export class PainelComponent implements OnInit, OnDestroy {
           datasets: [{
             label: 'Entrada (R$)',
             data: valores,
-            borderColor: '#B91C1C',
-            backgroundColor: '#B91C1C',
+            borderColor: corMarca,
+            backgroundColor: corMarca,
             borderWidth: 2.5,
             fill: false,
             tension: 0.32,
-            pointBackgroundColor: '#B91C1C',
-            pointBorderColor: '#FFFFFF',
+            pointBackgroundColor: corMarca,
+            pointBorderColor: corPapel,
             pointBorderWidth: 2,
             pointRadius: 4,
             pointHoverRadius: 7

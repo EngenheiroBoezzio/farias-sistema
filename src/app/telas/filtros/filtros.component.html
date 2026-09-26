@@ -2,8 +2,8 @@
   <div class="head">
     <div>
       <h1>Fila de filtros</h1>
-      <p>Carros ativos sem filtro definido, com a sugestão do catálogo Wega ao lado.
-         Comece pelos de mais visitas — são os que voltam.</p>
+      <p>Carros ativos sem filtro definido, com a sugestão do catálogo Wega ao
+         lado. Os de mais visitas vêm primeiro — são os que voltam.</p>
     </div>
     <div class="head-act">
       <span class="pill p-mute">{{ total() }} na fila</span>
@@ -22,81 +22,108 @@
   } @else if (lista().length === 0) {
     <p class="vazio"><b>Nenhum carro pendente</b>Todos os veículos ativos já têm filtro definido.</p>
   } @else {
-    @for (v of lista(); track v.id) {
-      <div class="panel" style="margin-bottom:12px">
-        <div class="panel-h">
-          <b class="id">{{ fPlaca(v.placa) }}</b>
-          <span>
-            {{ v.modelo || 'modelo não informado' }}
-            @if (v.ano) { · {{ v.ano }} }
-            @if (v.cilindrada) { · {{ v.cilindrada }} }
-            · {{ v.visitas }} visitas · {{ v.cliente }}
-          </span>
-          @if (v.sugestao.confianca != null) {
-            <span class="pill" [class]="'pill ' + tom(v.sugestao.confianca)">
-              {{ v.sugestao.confianca }}%
+
+    <!-- Isto é triagem, não relatório.
+
+         Cada carro era um painel inteiro, 25 por página: para aprovar o quinto
+         era preciso rolar por quatro painéis completos. Agora a fila fica à
+         esquerda e o carro escolhido à direita — aprova e já pula para o
+         próximo, que é como se trabalha numa fila. -->
+    <div class="triagem">
+      <div class="triagem-fila" role="listbox" aria-label="Carros na fila">
+        @for (v of lista(); track v.id) {
+          <button type="button" role="option" class="fila-item"
+                  [class.on]="selecionado()?.id === v.id"
+                  [attr.aria-selected]="selecionado()?.id === v.id"
+                  (click)="selecionar(v)">
+            <span class="topo">
+              <span class="placa-txt">{{ fPlaca(v.placa) }}</span>
+              @if (v.sugestao.confianca != null) {
+                <span class="pill" [class]="'pill ' + tom(v.sugestao.confianca)">{{ v.sugestao.confianca }}%</span>
+              } @else {
+                <span class="pill p-mute">sem par</span>
+              }
             </span>
-          }
-        </div>
-        <div class="panel-b">
-          @if (v.sugestao.itens.length) {
-            <ul class="pecas">
-              @for (i of v.sugestao.itens; track i.tipo) {
-                <li>
-                  <span class="tipo">{{ i.rotulo }}</span>
-                  <b class="cod">{{ i.codigo }}</b>
-                  @if (i.alternativo) { <span class="alt">ou {{ i.alternativo }}</span> }
-                </li>
-              }
-            </ul>
-            <p class="fonte">
-              <b>{{ v.sugestao.origem }}</b>
-              @if (v.sugestao.pagina_pdf) {
-                <span class="hint">Catálogo Wega, página {{ v.sugestao.pagina_pdf }}.</span>
-              }
-            </p>
-            <div class="head-act" style="margin-top:12px">
-              <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir ficha</a>
-              <button type="button" class="btn btn-p"
-                      [disabled]="gravando() === v.id" (click)="aceitar(v)">
-                {{ gravando() === v.id ? 'Gravando…' : 'Conferi, pode gravar' }}
-              </button>
-            </div>
-          } @else {
-            <p class="vazio">
-              <b>Sem par no catálogo</b>
-              Este modelo não casou com nenhuma aplicação. Preencha à mão na ficha.
-            </p>
-            <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir ficha</a>
-          }
-        </div>
+            <span class="modelo">{{ v.modelo || 'modelo não informado' }}</span>
+            <span class="meta-item">{{ v.visitas }} {{ v.visitas === 1 ? 'visita' : 'visitas' }} · {{ v.cliente }}</span>
+          </button>
+        }
       </div>
-    }
+
+      <div class="triagem-detalhe">
+        @if (selecionado(); as v) {
+          <div class="panel">
+            <div class="panel-h">
+              <h2>{{ fPlaca(v.placa) }}</h2>
+              <span class="meta">
+                {{ v.modelo || 'modelo não informado' }}@if (v.ano) { · {{ v.ano }} }@if (v.cilindrada) { · {{ v.cilindrada }} }
+              </span>
+            </div>
+            <div class="panel-b">
+              @if (v.sugestao.itens.length) {
+                <ul class="pecas">
+                  @for (i of v.sugestao.itens; track i.tipo) {
+                    <li>
+                      <span class="tipo">{{ i.rotulo }}</span>
+                      <b class="cod">{{ i.codigo }}</b>
+                      @if (i.alternativo) { <span class="alt">ou {{ i.alternativo }}</span> }
+                    </li>
+                  }
+                </ul>
+                <p class="fonte">
+                  <b>{{ v.sugestao.origem }}</b>
+                  @if (v.sugestao.pagina_pdf) {
+                    <span class="hint">Catálogo Wega, página {{ v.sugestao.pagina_pdf }}.</span>
+                  }
+                </p>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-p btn-lg"
+                          [disabled]="gravando() === v.id" (click)="aceitar(v)">
+                    @if (gravando() === v.id) { <span class="girando" aria-hidden="true"></span> }
+                    {{ gravando() === v.id ? 'Gravando…' : 'Conferi, pode gravar' }}
+                  </button>
+                  <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir a ficha</a>
+                </div>
+                <p class="hint">
+                  Confira a peça no carro antes de gravar. Código errado é peça
+                  errada no motor de um cliente.
+                </p>
+              } @else {
+                <p class="vazio">
+                  <b>Sem par no catálogo</b>
+                  Este modelo não casou com nenhuma aplicação. Preencha à mão na ficha.
+                </p>
+                <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir a ficha</a>
+              }
+            </div>
+          </div>
+        } @else {
+          <p class="vazio"><b>Escolha um carro na fila</b>A sugestão do catálogo aparece aqui.</p>
+        }
+      </div>
+    </div>
 
     <div class="tbl-foot">
-      <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">
-        Anterior
-      </button>
-      <span>página {{ pagina() }}</span>
-      <button type="button" class="btn btn-s" (click)="proxima()"
-              [disabled]="lista().length < 25">Próxima</button>
+      <span>{{ lista().length }} de {{ total() }} na fila</span>
+      <span class="espaco"></span>
+      <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">Anterior</button>
+      <span>página <b>{{ pagina() }}</b></span>
+      <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="lista().length < 25">Próxima</button>
     </div>
   }
 
   @if (duvida(); as d) {
-    <div class="ok-veil" (click)="duvida.set(null)">
-      <div class="ok-card" (click)="$event.stopPropagation()">
-        <h3>Confiança baixa</h3>
+    <div class="modal-overlay" (click)="duvida.set(null)">
+      <div class="modal-box" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="cb">
+        <h2 id="cb">Confiança baixa</h2>
         <p>{{ d.motivo }}</p>
-        <p class="ok-meta">
+        <p class="hint">
           O catálogo não tem certeza para {{ fPlaca(d.v.placa) }}.
           Confira a peça no carro antes de gravar.
         </p>
-        <div class="head-act" style="justify-content:center;margin-top:16px">
+        <div class="modal-acoes">
           <button type="button" class="btn btn-s" (click)="duvida.set(null)">Cancelar</button>
-          <button type="button" class="btn btn-w" (click)="aceitar(d.v, true)">
-            Conferi, gravar mesmo assim
-          </button>
+          <button type="button" class="btn btn-p" (click)="aceitar(d.v, true)">Conferi, gravar mesmo assim</button>
         </div>
       </div>
     </div>

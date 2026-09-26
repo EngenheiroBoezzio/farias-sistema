@@ -44,6 +44,13 @@ export const rotas: Routes = [
         loadComponent: () => import('./telas/placa/placa.component').then(m => m.PlacaComponent)
       },
       {
+        /* Os links do painel e das tabelas apontam para cá com a placa junto
+           (/placa/IVT4A19). Sem esta rota eles caíam no ** e voltavam para o
+           painel — clicar numa placa não fazia nada. */
+        path: 'placa/:placa', title: 'Consulta de placa — Farias',
+        loadComponent: () => import('./telas/placa/placa.component').then(m => m.PlacaComponent)
+      },
+      {
         path: 'filtros', title: 'Fila de filtros — Farias',
         loadComponent: () => import('./telas/filtros/filtros.component').then(m => m.FiltrosComponent)
       },

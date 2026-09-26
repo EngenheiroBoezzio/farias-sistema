@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../nucleo/auth.service';
 import { ConfigService } from '../../nucleo/config.service';
 import { ErroApi } from '../../nucleo/api.service';
+import { VERSAO } from '../../nucleo/versao';
 
 @Component({
   selector: 'app-entrar',
@@ -19,6 +20,10 @@ export class EntrarComponent implements OnInit {
   private router = inject(Router);
   private rota = inject(ActivatedRoute);
   cfg = inject(ConfigService);
+
+  /* Vem do package.json na hora de compilar. Estava escrita à mão no
+     rodapé e marcava 1.0.8 enquanto o pacote já ia na 1.0.11. */
+  versao = VERSAO;
 
   usuario = '';
   senha = '';
@@ -42,8 +47,12 @@ export class EntrarComponent implements OnInit {
     // se o servidor nem responde, dizer isso ANTES de a pessoa errar a senha
     this.cfg.testar().then(r => {
       if (!r.ok) {
+        /* O endereço do servidor não vai para a tela: a oficina não tem o que
+           fazer com ele e ele não é assunto de quem está no balcão. Para o
+           suporte, a versão e a hora da última resposta já identificam a
+           instalação. */
         this.erro.set('O sistema não está respondendo.');
-        this.dica.set(`${r.erro} Endereço configurado: ${this.cfg.apiUrl}`);
+        this.dica.set('Avise quem cuida do sistema. Não é a sua senha.');
       }
     });
   }
@@ -63,7 +72,7 @@ export class EntrarComponent implements OnInit {
     try {
       await this.auth.entrar(this.usuario.trim(), this.senha, this.lembrar);
       this.splash.set(true);
-      await new Promise(res => setTimeout(res, 1000));
+      await new Promise(res => setTimeout(res, 550));
       const volta = this.rota.snapshot.queryParamMap.get('volta');
       this.router.navigateByUrl(volta && volta !== '/entrar' ? volta : '/painel');
     } catch (e) {

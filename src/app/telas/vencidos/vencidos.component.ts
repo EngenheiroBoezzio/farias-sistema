@@ -2,18 +2,19 @@
    O link do WhatsApp vem pronto do servidor, com o texto montado a partir do
    carro. Quem clica e envia é o atendente — envio automático em massa derruba
    o número da oficina. */
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DadosService } from '../../nucleo/dados.service';
 import { ItemFila, ResultadoAvisos } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
 import { data, km, placa as fPlaca, telefone, haQuanto } from '../../nucleo/formato';
 import { SinoComponent } from '../../partes/sino/sino.component';
+import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
 
 @Component({
   selector: 'app-vencidos',
   standalone: true,
-  imports: [RouterLink, SinoComponent],
+  imports: [RouterLink, SinoComponent, PlacaMercosulComponent],
   templateUrl: './vencidos.component.html'
 })
 export class VencidosComponent implements OnInit {
@@ -29,6 +30,33 @@ export class VencidosComponent implements OnInit {
   avisados = signal<Set<number>>(new Set());
 
   data = data; km = km; fPlaca = fPlaca; telefone = telefone; haQuanto = haQuanto;
+
+  /* A fila agrupada por quanto tempo faz desde a última troca.
+
+     Isto não é enfeite: quem venceu há pouco ainda lembra da oficina e volta
+     muito mais do que quem sumiu há dois anos. Chamar na ordem certa é a
+     diferença entre uma tarde bem gasta e uma lista de números frios. A API
+     já devolve a fila ordenada, então aqui é só recortar em faixas.
+
+     O recorte vale para a PÁGINA atual, não para os 211 da base — por isso o
+     cabeçalho de cada faixa conta os itens que estão à vista, e não promete
+     um total que ele não tem. */
+  grupos = computed(() => {
+    const faixas = [
+      { chave: 'recente', ate: 365, rotulo: 'Última troca há menos de um ano',
+        dica: 'é quem mais volta — comece por aqui' },
+      { chave: 'meio',    ate: 730, rotulo: 'Entre um e dois anos', dica: '' },
+      { chave: 'antigo',  ate: Infinity, rotulo: 'Mais de dois anos',
+        dica: 'muitos já trocam em outro lugar' }
+    ];
+    return faixas
+      .map(f => ({
+        ...f,
+        itens: this.fila().filter(i =>
+          i.dias <= f.ate && i.dias > (faixas[faixas.indexOf(f) - 1]?.ate ?? -1))
+      }))
+      .filter(f => f.itens.length > 0);
+  });
 
   ngOnInit(): void {
     this.buscar();

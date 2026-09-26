@@ -1,54 +1,106 @@
-<section>
+<section class="financeiro">
   <div class="head">
     <div>
       <h1>Financeiro</h1>
-      <p>Consolidação de faturamento, despesas operacionais e lucro líquido calculados sobre as ordens da oficina.</p>
+      <p>Ordens faturadas e despesas da oficina · {{ rotuloPeriodo() }}</p>
     </div>
     <div class="head-act">
-      <!-- Seletor rápido de período -->
-      <div style="display:inline-flex; background:var(--surface-2); border:1px solid var(--bd-strong); border-radius:var(--r-sm); padding:2px; gap:2px">
-        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
-                [style.background]="periodo() === '6m' ? 'var(--surface)' : 'transparent'"
-                [style.fontWeight]="periodo() === '6m' ? '600' : 'normal'"
-                [style.boxShadow]="periodo() === '6m' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-                (click)="selecionarPeriodo('6m')">
-          6 meses
-        </button>
-        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
-                [style.background]="periodo() === '12m' ? 'var(--surface)' : 'transparent'"
-                [style.fontWeight]="periodo() === '12m' ? '600' : 'normal'"
-                [style.boxShadow]="periodo() === '12m' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-                (click)="selecionarPeriodo('12m')">
-          12 meses
-        </button>
-        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
-                [style.background]="periodo() === 'ano' ? 'var(--surface)' : 'transparent'"
-                [style.fontWeight]="periodo() === 'ano' ? '600' : 'normal'"
-                [style.boxShadow]="periodo() === 'ano' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-                (click)="selecionarPeriodo('ano')">
-          Ano atual
-        </button>
-        <button type="button" class="btn btn-g" style="height:30px; font-size:12px; padding:0 10px; border-radius:var(--r-xs)"
-                [style.background]="periodo() === 'tudo' ? 'var(--surface)' : 'transparent'"
-                [style.fontWeight]="periodo() === 'tudo' ? '600' : 'normal'"
-                [style.boxShadow]="periodo() === 'tudo' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
-                (click)="selecionarPeriodo('tudo')">
-          Histórico
-        </button>
-      </div>
-
-      <button type="button" class="btn btn-s" (click)="buscar()" [disabled]="carregando()" title="Recarregar dados">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-        </svg>
-        Atualizar
-      </button>
       <app-sino />
     </div>
   </div>
 
+  <!-- A barra de comandos.
+
+       Os botões estavam espalhados: "Nova despesa" dentro do painel de
+       despesas, a busca dentro do cabeçalho de cada aba, o seletor de período
+       no canto do título, o de gráfico dentro do painel do gráfico. Para
+       lançar uma conta era preciso primeiro achar a aba certa.
+
+       Agora é tudo no topo, em grupos nomeados — a anatomia da faixa do Excel,
+       que é justamente o programa que quem administra a oficina já usa. -->
+  <div class="cmd" role="toolbar" aria-label="Comandos do financeiro">
+    <div class="cmd-grupo">
+      <div class="cmd-botoes">
+        <button type="button" class="btn btn-p" (click)="abrirNovaDespesa()">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+               stroke-width="2.2" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>
+          Nova despesa
+        </button>
+        <button type="button" class="btn btn-s" (click)="imprimirRelatorio()" title="Imprimir o relatório">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+               stroke-width="1.5" aria-hidden="true">
+            <path d="M4.5 6V2h7v4M4.5 12H3V7h10v5h-1.5"/><rect x="4.5" y="10" width="7" height="4"/>
+          </svg>
+          Imprimir
+        </button>
+      </div>
+      <span class="cmd-nome">Lançar</span>
+    </div>
+
+    <div class="cmd-sep" aria-hidden="true"></div>
+
+    <div class="cmd-grupo">
+      <div class="cmd-botoes">
+        <div class="seg" role="group" aria-label="Período">
+          <button type="button" [class.on]="periodo() === '6m'" [attr.aria-pressed]="periodo() === '6m'"
+                  (click)="selecionarPeriodo('6m')">6 meses</button>
+          <button type="button" [class.on]="periodo() === '12m'" [attr.aria-pressed]="periodo() === '12m'"
+                  (click)="selecionarPeriodo('12m')">12 meses</button>
+          <button type="button" [class.on]="periodo() === 'ano'" [attr.aria-pressed]="periodo() === 'ano'"
+                  (click)="selecionarPeriodo('ano')">Ano atual</button>
+          <button type="button" [class.on]="periodo() === 'tudo'" [attr.aria-pressed]="periodo() === 'tudo'"
+                  (click)="selecionarPeriodo('tudo')">Tudo</button>
+        </div>
+      </div>
+      <span class="cmd-nome">Período</span>
+    </div>
+
+    @if (abaAtiva() === 'visao_geral') {
+      <div class="cmd-sep" aria-hidden="true"></div>
+      <div class="cmd-grupo">
+        <div class="cmd-botoes">
+          <div class="seg" role="group" aria-label="Formato do gráfico">
+            <button type="button" [class.on]="tipoGrafico() === 'barras'"
+                    [attr.aria-pressed]="tipoGrafico() === 'barras'"
+                    (click)="alternarTipoGrafico('barras')">Barras</button>
+            <button type="button" [class.on]="tipoGrafico() === 'linha'"
+                    [attr.aria-pressed]="tipoGrafico() === 'linha'"
+                    (click)="alternarTipoGrafico('linha')">Linha</button>
+          </div>
+        </div>
+        <span class="cmd-nome">Gráfico</span>
+      </div>
+    }
+
+    @if (abaAtiva() === 'ordens' || abaAtiva() === 'despesas') {
+      <div class="cmd-sep" aria-hidden="true"></div>
+      <div class="cmd-grupo cresce">
+        <div class="cmd-botoes">
+          @if (abaAtiva() === 'ordens') {
+            <label for="bo" class="visualmente-oculto">Buscar ordem</label>
+            <input id="bo" type="search" class="cmd-busca" [ngModel]="buscaOrdens()"
+                   (ngModelChange)="buscaOrdens.set($event)" placeholder="Placa, cliente ou modelo">
+          } @else {
+            <label for="bd" class="visualmente-oculto">Buscar despesa</label>
+            <input id="bd" type="search" class="cmd-busca" [ngModel]="buscaDespesas()"
+                   (ngModelChange)="buscaDespesas.set($event)" placeholder="Descrição da despesa">
+            <label for="cf" class="visualmente-oculto">Filtrar categoria</label>
+            <select id="cf" class="cmd-select" [ngModel]="categoriaFiltro()"
+                    (ngModelChange)="categoriaFiltro.set($event)">
+              <option value="todas">Todas as categorias</option>
+              @for (c of categorias; track c.chave) {
+                <option [value]="c.chave">{{ c.rotulo }} — {{ c.ajuda }}</option>
+              }
+            </select>
+          }
+        </div>
+        <span class="cmd-nome">Filtrar</span>
+      </div>
+    }
+  </div>
+
   @if (carregando()) {
-    <p class="carregando">Consolidando entradas, despesas e margens…</p>
+    <p class="carregando">Carregando faturamento e despesas…</p>
   } @else if (erro()) {
     <div class="falha" role="alert">
       <b>{{ erro()!.mensagem }}</b>
@@ -57,167 +109,352 @@
     </div>
   } @else {
 
-    <!-- Cards de Indicadores Consolidados -->
-    <div class="strip">
-      <div class="stat">
-        <span class="stat-l">Faturamento bruto</span>
-        <span class="stat-v" style="color:var(--tx)">{{ dinheiro(totais().faturamento) }}</span>
-        <span class="stat-d"><b>{{ inteiro(totais().ordens) }}</b> ordens faturadas</span>
+    <!-- O que sobrou lidera: é o número que responde "a oficina deu lucro?".
+         Os outros quatro são o caminho até ele. -->
+    <div class="kpi">
+      <div class="kpi-destaque" [class.alerta]="!totais().positivo">
+        <span class="rot">{{ totais().positivo ? 'Sobrou' : 'Faltou' }}</span>
+        <span class="val">{{ dinheiro(totais().lucroLiquido) }}</span>
+        <span class="sub">margem de {{ totais().margemLiquida.toFixed(1) }}%</span>
       </div>
-
-      <div class="stat">
-        <span class="stat-l">Custos / Despesas</span>
-        <span class="stat-v" style="color:var(--tx-2)">{{ dinheiro(totais().custos) }}</span>
-        <span class="stat-d">peças, filtros e lubrificantes</span>
-      </div>
-
-      <!-- Destaque visual expressivo: cor de destaque diferente se positivo ou negativo -->
-      <div class="stat"
-           [style.background]="totais().positivo ? 'var(--pos-bg)' : 'var(--crit-bg)'"
-           [style.borderLeft]="totais().positivo ? '3px solid var(--pos)' : '3px solid var(--crit)'">
-        <span class="stat-l" [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'" style="font-weight:600">
-          Lucro Líquido
-        </span>
-        <span class="stat-v" [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'">
-          {{ dinheiro(totais().lucro) }}
-        </span>
-        <span class="stat-d" [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'">
-          <b>{{ totais().margem.toFixed(1) }}%</b> de margem de lucro líquida
-        </span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-l">Ticket Médio</span>
-        <span class="stat-v"><small>R$ </small>{{ totais().ticketMedio.toFixed(2) }}</span>
-        <span class="stat-d">por troca de óleo atendida</span>
-      </div>
-    </div>
-
-    <!-- Painel do Gráfico Evolutivo -->
-    <div class="panel" style="margin-bottom:16px">
-      <div class="panel-h">
-        <div>
-          <h2>Evolução de Faturamento, Custos e Lucro</h2>
-          <span class="meta">comparativo temporal ({{ mesesFiltrados().length }} meses)</span>
+      <div class="kpi-linha">
+        <div class="kpi-item">
+          <span class="rot">Faturamento</span>
+          <span class="val">{{ dinheiro(totais().faturamento) }}</span>
+          <span class="sub">{{ inteiro(totais().ordens) }} ordens faturadas</span>
         </div>
-        <div style="margin-left:auto; display:flex; align-items:center; gap:6px">
-          <span style="font-size:12px; color:var(--tx-3); margin-right:4px">Visualização:</span>
-          <button type="button" class="btn btn-s" style="height:28px; padding:0 10px; font-size:12px"
-                  [style.background]="tipoGrafico() === 'barras' ? 'var(--surface-2)' : 'transparent'"
-                  [style.borderColor]="tipoGrafico() === 'barras' ? 'var(--b-600)' : 'var(--bd-strong)'"
-                  [style.fontWeight]="tipoGrafico() === 'barras' ? '600' : 'normal'"
-                  (click)="alternarTipoGrafico('barras')">
-            Barras
-          </button>
-          <button type="button" class="btn btn-s" style="height:28px; padding:0 10px; font-size:12px"
-                  [style.background]="tipoGrafico() === 'linha' ? 'var(--surface-2)' : 'transparent'"
-                  [style.borderColor]="tipoGrafico() === 'linha' ? 'var(--b-600)' : 'var(--bd-strong)'"
-                  [style.fontWeight]="tipoGrafico() === 'linha' ? '600' : 'normal'"
-                  (click)="alternarTipoGrafico('linha')">
-            Linhas
-          </button>
-        </div>
-      </div>
-      <div class="panel-b">
-        <div style="position:relative; height:260px; width:100%">
-          <canvas #graficoCanvas></canvas>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:14px; padding-top:10px; border-top:1px solid var(--bd)">
-          <div class="legend" style="margin:0">
-            <span><i style="background:#9E1822"></i> Faturamento</span>
-            <span><i style="background:#EA580C"></i> Custos / Insumos</span>
-            <span><i style="background:#16855A"></i> Lucro Líquido</span>
-          </div>
-          <span class="hint" style="margin:0">
-            Valores obtidos do fechamento de cada ordem de serviço cadastrada.
+        <div class="kpi-item">
+          <span class="rot">Despesas lançadas</span>
+          <span class="val">{{ dinheiro(totais().despesasTotais) }}</span>
+          <span class="sub">
+            @if (totais().contasPendentes > 0) {
+              {{ dinheiro(totais().contasPendentes) }} ainda a pagar
+            } @else {
+              {{ todasDespesas().length }} contas
+            }
           </span>
         </div>
+        <div class="kpi-item">
+          <span class="rot">Ticket médio</span>
+          <span class="val">{{ dinheiro(totais().ticketMedio) }}</span>
+          <span class="sub">por atendimento</span>
+        </div>
       </div>
     </div>
 
-    <!-- Tabela Resumo por Mês / Período -->
-    <div class="panel">
-      <div class="panel-h">
-        <div>
-          <h2>Resumo Analítico por Mês</h2>
-          <span class="meta">detalhamento financeiro mês a mês</span>
+    <!-- ===================== RESUMO ===================== -->
+    @if (abaAtiva() === 'visao_geral') {
+      <div class="grid two">
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Entrou e saiu, mês a mês</h2>
+            <span class="meta">{{ mesesFiltrados().length }} meses</span>
+          </div>
+          <div class="panel-b">
+            <div class="tela-grafico alta">
+              <canvas #graficoCanvas></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Para onde foi o dinheiro</h2>
+            <span class="meta">no período</span>
+          </div>
+          <div class="panel-b sem-respiro">
+            <table>
+              <tbody>
+                <tr>
+                  <td>Faturamento bruto</td>
+                  <td class="num forte">{{ dinheiro(totais().faturamento) }}</td>
+                  <td class="num pct">100,0%</td>
+                </tr>
+                <tr class="recuo">
+                  <td>(−) Insumos e peças</td>
+                  <td class="num">({{ dinheiro(totais().custosInsumos) }})</td>
+                  <td class="num pct">{{ fatia(totais().custosInsumos) }}</td>
+                </tr>
+                <tr class="recuo">
+                  <td>(−) Pessoal</td>
+                  <td class="num">({{ dinheiro(totais().despesasPessoal) }})</td>
+                  <td class="num pct">{{ fatia(totais().despesasPessoal) }}</td>
+                </tr>
+                <tr class="recuo">
+                  <td>(−) Contas fixas</td>
+                  <td class="num">({{ dinheiro(totais().despesasFixas) }})</td>
+                  <td class="num pct">{{ fatia(totais().despesasFixas) }}</td>
+                </tr>
+                <tr class="recuo">
+                  <td>(−) Operacional e o resto</td>
+                  <td class="num">({{ dinheiro(outrasSaidas()) }})</td>
+                  <td class="num pct">{{ fatia(outrasSaidas()) }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="fecha">
+                  <td>{{ totais().positivo ? 'Sobrou' : 'Faltou' }}</td>
+                  <td class="num" [class.positivo]="totais().positivo" [class.negativo]="!totais().positivo">
+                    {{ dinheiro(totais().lucroLiquido) }}
+                  </td>
+                  <td class="num pct" [class.positivo]="totais().positivo" [class.negativo]="!totais().positivo">
+                    {{ totais().margemLiquida.toFixed(1) }}%
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+            <p class="nota-atencao">
+              Isto desconta só o que foi <b>lançado à mão</b> em Despesas. O óleo
+              e o filtro que saem do estoque a cada ordem ainda não entram na
+              conta, então a sobra real é menor que a de cima.
+            </p>
+          </div>
         </div>
       </div>
-      <div class="panel-b" style="padding:0">
+
+      <div class="grid two">
+        <div class="panel">
+          <div class="panel-h"><h2>Óleos que mais faturam</h2></div>
+          <div class="panel-b">
+            @if (topOleos().length === 0) {
+              <p class="vazio">Nenhuma troca registrada ainda.</p>
+            } @else {
+              <div class="rank">
+                @for (o of topOleos(); track o.nome) {
+                  <div class="rank-row">
+                    <span class="nm">{{ o.nome }}</span>
+                    <span class="tr"><i [style.width.%]="o.pct"></i></span>
+                    <span class="vl">{{ o.qtd }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Últimos atendimentos</h2>
+            <button type="button" class="meta-link" (click)="mudarAba('ordens')">Ver todas</button>
+          </div>
+          <div class="panel-b sem-respiro">
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>Placa</th><th>Cliente e carro</th><th class="num">Total</th></tr>
+                </thead>
+                <tbody>
+                  @for (o of todasOrdens().slice(0, 5); track o.id) {
+                    <tr>
+                      <td><a class="placa-txt" [routerLink]="['/placa', o.placa]">{{ o.placa }}</a></td>
+                      <td>
+                        <span class="who">{{ o.cliente || 'Consumidor no balcão' }}</span>
+                        <span class="sub">{{ o.modelo || '—' }} · {{ data(o.data) }}</span>
+                      </td>
+                      <td class="num forte">{{ dinheiro(o.total) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ===================== ORDENS ===================== -->
+    @if (abaAtiva() === 'ordens') {
+      <div class="panel">
+        @if (ordensFiltradas().length === 0) {
+          <p class="vazio"><b>Nenhuma ordem encontrada</b>Tente outro termo de busca.</p>
+        } @else {
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th><th>Placa</th><th>Cliente</th><th>Carro</th>
+                  <th>Óleo</th><th class="num">Litros</th><th class="num">Total</th>
+                  <th class="acao-col">Ficha</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (o of ordensFiltradas(); track o.id) {
+                  <tr>
+                    <td class="mono">{{ data(o.data) }}</td>
+                    <td><a class="placa-txt" [routerLink]="['/placa', o.placa]">{{ o.placa }}</a></td>
+                    <td><span class="who">{{ o.cliente || 'Consumidor no balcão' }}</span></td>
+                    <td>{{ o.modelo || '—' }}</td>
+                    <td>{{ o.oleo || '—' }}</td>
+                    <td class="num">{{ o.litros ? o.litros + ' L' : '—' }}</td>
+                    <td class="num forte">{{ dinheiro(o.total) }}</td>
+                    <td class="acao-col">
+                      @if (o.placa) {
+                        <a [routerLink]="['/placa', o.placa]" class="btn btn-s btn-sm">Abrir</a>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="fecha">
+                  <td colspan="5">{{ ordensFiltradas().length }} ordens na lista</td>
+                  <td class="num"></td>
+                  <td class="num">{{ dinheiro(somaOrdensFiltradas()) }}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ===================== DESPESAS ===================== -->
+    @if (abaAtiva() === 'despesas') {
+      <div class="panel">
+        @if (todasDespesas().length === 0) {
+          <div class="vazio-acao">
+            <b>Nenhuma despesa lançada</b>
+            <p>Enquanto não houver contas aqui, o faturamento acima é receita
+               bruta: aluguel, luz e compra de estoque não estão descontados.</p>
+            <button type="button" class="btn btn-p btn-lg" (click)="abrirNovaDespesa()">
+              Lançar a primeira despesa
+            </button>
+          </div>
+        } @else if (despesasFiltradas().length === 0) {
+          <p class="vazio"><b>Nenhuma despesa encontrada</b>Tente outro termo ou outra categoria.</p>
+        } @else {
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Descrição</th><th>Categoria</th><th>Vencimento</th>
+                  <th class="num">Valor</th><th>Repete</th><th>Situação</th>
+                  <th class="acao-col">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (d of despesasFiltradas(); track d.id) {
+                  <tr>
+                    <td>
+                      <span class="who">{{ d.descricao }}</span>
+                      @if (d.obs) { <span class="sub">{{ d.obs }}</span> }
+                    </td>
+                    <td>
+                      <span class="pill" [style.color]="rotulosCategorias[d.categoria].cor">
+                        {{ rotulosCategorias[d.categoria].rotulo }}
+                      </span>
+                    </td>
+                    <td class="mono">{{ data(d.dataVencimento) }}</td>
+                    <td class="num forte">{{ dinheiro(d.valor) }}</td>
+                    <td>
+                      @if (d.recorrente) { <span class="pill p-mute">todo mês</span> }
+                      @else { <span class="tx-3">uma vez</span> }
+                    </td>
+                    <td>
+                      <button type="button" class="pill-btn"
+                              [class.p-pos]="d.status === 'pago'"
+                              [class.p-warn]="d.status !== 'pago'"
+                              (click)="alternarStatusDespesa(d)"
+                              title="Clique para trocar entre pago e a pagar">
+                        {{ d.status === 'pago' ? 'Pago' : 'A pagar' }}
+                      </button>
+                    </td>
+                    <td class="acao-col">
+                      <button type="button" class="btn btn-s btn-sm" (click)="editarDespesa(d)">Editar</button>
+                      <button type="button" class="btn btn-g btn-sm perigo" (click)="excluirDespesa(d)"
+                              [title]="'Excluir ' + d.descricao">Excluir</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="fecha">
+                  <td colspan="3">{{ despesasFiltradas().length }} contas na lista</td>
+                  <td class="num">{{ dinheiro(somaDespesasFiltradas()) }}</td>
+                  <td colspan="3"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ===================== FECHAMENTO ===================== -->
+    @if (abaAtiva() === 'dre') {
+      <div class="panel">
         <div class="tbl-wrap">
           <table>
             <thead>
               <tr>
-                <th>Mês / Período</th>
-                <th class="num">Ordens</th>
-                <th class="num">Ticket Médio</th>
-                <th class="num">Faturamento</th>
-                <th class="num">Custos / Despesas</th>
-                <th class="num">Lucro Líquido</th>
-                <th class="num">Margem</th>
-                <th style="text-align:center">Situação</th>
+                <th>Mês</th><th class="num">Ordens</th><th class="num">Ticket médio</th>
+                <th class="num">Faturamento</th><th class="num">Despesas</th>
+                <th class="num">Sobrou</th><th class="num">Margem</th>
               </tr>
             </thead>
             <tbody>
               @for (m of mesesFiltrados(); track m.mes) {
                 <tr>
-                  <td>
-                    <span style="font-weight:600">{{ m.mesExtenso }}</span>
-                    <br><small class="id" style="color:var(--tx-3)">{{ m.mes }}</small>
-                  </td>
+                  <td><span class="who">{{ rotuloMes(m.mes) }}</span></td>
                   <td class="num">{{ inteiro(m.ordens) }}</td>
-                  <td class="num">{{ dinheiro(m.ticket) }}</td>
-                  <td class="num" style="font-weight:600; color:var(--tx)">
-                    {{ dinheiro(m.faturamento) }}
+                  <td class="num">{{ dinheiro(m.ticketMedio) }}</td>
+                  <td class="num forte">{{ dinheiro(m.faturamentoTotal) }}</td>
+                  <td class="num">({{ dinheiro(m.despesasTotais) }})</td>
+                  <td class="num forte" [class.positivo]="m.positivo" [class.negativo]="!m.positivo">
+                    {{ dinheiro(m.lucroLiquido) }}
                   </td>
-                  <td class="num" style="color:var(--tx-2)">
-                    {{ dinheiro(m.custos) }}
-                  </td>
-                  <td class="num"
-                      [style.color]="m.positivo ? 'var(--pos)' : 'var(--crit)'"
-                      style="font-weight:700">
-                    {{ dinheiro(m.lucro) }}
-                  </td>
-                  <td class="num"
-                      [style.color]="m.positivo ? 'var(--pos)' : 'var(--crit)'"
-                      style="font-weight:600">
-                    {{ m.margem.toFixed(1) }}%
-                  </td>
-                  <td style="text-align:center">
-                    <span class="pill" [class.p-pos]="m.positivo" [class.p-crit]="!m.positivo">
-                      {{ m.positivo ? 'Lucro' : 'Prejuízo' }}
-                    </span>
+                  <td class="num" [class.positivo]="m.positivo" [class.negativo]="!m.positivo">
+                    {{ m.margemLiquida.toFixed(1) }}%
                   </td>
                 </tr>
               }
             </tbody>
             <tfoot>
-              <tr style="background:var(--surface-2); font-weight:700; border-top:2px solid var(--bd-strong)">
-                <td style="padding:14px 12px">Total consolidado do período</td>
+              <tr class="fecha">
+                <td>Total do período</td>
                 <td class="num">{{ inteiro(totais().ordens) }}</td>
                 <td class="num">{{ dinheiro(totais().ticketMedio) }}</td>
-                <td class="num" style="color:var(--tx)">{{ dinheiro(totais().faturamento) }}</td>
-                <td class="num" style="color:var(--tx-2)">{{ dinheiro(totais().custos) }}</td>
-                <td class="num"
-                    [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'"
-                    style="font-size:15px">
-                  {{ dinheiro(totais().lucro) }}
+                <td class="num">{{ dinheiro(totais().faturamento) }}</td>
+                <td class="num">({{ dinheiro(totais().despesasTotais) }})</td>
+                <td class="num" [class.positivo]="totais().positivo" [class.negativo]="!totais().positivo">
+                  {{ dinheiro(totais().lucroLiquido) }}
                 </td>
-                <td class="num"
-                    [style.color]="totais().positivo ? 'var(--pos)' : 'var(--crit)'">
-                  {{ totais().margem.toFixed(1) }}%
-                </td>
-                <td style="text-align:center">
-                  <span class="pill" [class.p-pos]="totais().positivo" [class.p-crit]="!totais().positivo">
-                    {{ totais().positivo ? 'Superávit' : 'Déficit' }}
-                  </span>
+                <td class="num" [class.positivo]="totais().positivo" [class.negativo]="!totais().positivo">
+                  {{ totais().margemLiquida.toFixed(1) }}%
                 </td>
               </tr>
             </tfoot>
           </table>
         </div>
       </div>
-    </div>
+    }
 
+    <!-- As abas ficam no rodapé e grudadas nele, como as abas de uma planilha.
+         É onde quem usa Excel procura, e sticky para não sumirem ao rolar. -->
+    <div class="abas" role="tablist" aria-label="Seções do financeiro">
+      <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'visao_geral'"
+              [class.on]="abaAtiva() === 'visao_geral'" (click)="mudarAba('visao_geral')">Resumo</button>
+      <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'ordens'"
+              [class.on]="abaAtiva() === 'ordens'" (click)="mudarAba('ordens')">
+        Ordens faturadas <span class="conta">{{ todasOrdens().length }}</span>
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'despesas'"
+              [class.on]="abaAtiva() === 'despesas'" (click)="mudarAba('despesas')">
+        Despesas <span class="conta">{{ todasDespesas().length }}</span>
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'dre'"
+              [class.on]="abaAtiva() === 'dre'" (click)="mudarAba('dre')">Fechamento mensal</button>
+    </div>
+  }
+
+  @if (modalDespesaAberto()) {
+    <app-modal-despesa [despesa]="despesaParaEditar()"
+                       (fechou)="modalDespesaAberto.set(false); despesaParaEditar.set(null)"
+                       (salvou)="aoSalvarDespesa($event)" />
+  }
+
+  @if (selo(); as s) {
+    <app-selo [titulo]="s" [duracao]="2000" (fechou)="selo.set(null)" />
   }
 </section>

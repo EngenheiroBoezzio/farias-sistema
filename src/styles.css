@@ -1,423 +1,280 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 /* ===========================================================
    Farias Troca de Óleo — folha de estilo
-   Base: Kit Petrel, com a marca trocada para o vermelho da logo.
-   Só os 9 valores --b-* mudam se um dia outro cliente usar o sistema.
+
+   Os nove --b-* saem do vermelho da logo. Trocar esses nove troca a marca do
+   sistema inteiro — e nada abaixo daqui tem permissão de escrever cor à mão.
    =========================================================== */
 :root{
-  --b-900:#520C10; --b-800:#7D1218; --b-700:#9E1822; --b-600:#B91C1C;
-  --b-500:#DC2626; --b-400:#EF4444; --b-300:#F87171; --b-100:#FEE2E2; --b-50:#FEF2F2;
-  --gold:#F59E0B; --gold-light:#FDE68A;
-  --n-0:#FFFFFF; --n-25:#F8FAFC; --n-50:#F1F5F9; --n-100:#E2E8F0; --n-200:#CBD5E1;
-  --n-300:#94A3B8; --n-400:#64748B; --n-500:#475569; --n-700:#334155; --n-900:#0F172A;
-  --pos:#16855A; --pos-bg:#E4F3EC; --pos-bd:#A9DCC4;
-  --warn:#9A6708; --warn-bg:#FBF1DC; --warn-bd:#E6C783;
-  --crit:#B4362A; --crit-bg:#FBE8E5; --crit-bd:#EDB3AA;
-  --info:#2A6AA8; --info-bg:#E5EFF8; --info-bd:#AFCBE7;
-  --c1:#12657A; --c2:#E29A2D; --c3:#5B6BB5; --c4:#3F9E7C; --c5:#B4536A; --c6:#8C989D;
+  /* A marca. O vermelho da logo é o --b-500; os outros são ele mais claro
+     ou mais escuro. --b-600 dá 7,2:1 com branco e --b-700 dá 9,5:1, que é
+     por que o botão usa um e a barra lateral usa o outro. */
+  --b-900:#3A0508; --b-800:#5C070C; --b-700:#8E0A10; --b-600:#B00C13;
+  --b-500:#D91018; --b-400:#E8434A; --b-300:#EE8387; --b-100:#FCE3E4; --b-50:#FDF4F4;
+
+  /* Neutros quentes. O cinza azulado (slate) briga com vermelho: põe os dois
+     lado a lado e o vermelho puxa para rosa. Estes têm a mesma temperatura
+     da marca. */
+  --n-0:#FFFFFF; --n-25:#FBFAF8; --n-50:#F6F3EF; --n-100:#E7E2DC; --n-200:#D3CCC4;
+  --n-300:#B5ADA6; --n-400:#8A817B; --n-500:#5C534D; --n-700:#3D3730; --n-900:#1A1512;
+
+  /* Estado: SÓ estes quatro podem colorir alguma coisa. Cor decorativa tira a
+     cor de aviso do lugar — quando tudo é colorido, "vencido" deixa de saltar.
+     Os três primeiros também se separam por tom, não só por matiz, para quem
+     não distingue verde de vermelho. */
+  --pos:#0F6B45; --pos-bg:#E3F1EA; --pos-bd:#A8D5BF;
+  --warn:#8A5A00; --warn-bg:#FAF0DA; --warn-bd:#E3C784;
+  --crit:#8E0A10; --crit-bg:#FCE3E4; --crit-bd:#F2C4C6;
+  --info:#1F5B8F; --info-bg:#E4EDF5; --info-bd:#AEC8DE;
+
+  /* Séries de gráfico, na ordem de uso. Variam em claro/escuro de propósito:
+     impressa em preto e branco a série ainda se lê. */
+  --c1:#8E0A10; --c2:#5C534D; --c3:#1F5B8F; --c4:#0F6B45; --c5:#8A5A00; --c6:#B5ADA6;
+
   --ground:var(--n-25); --surface:var(--n-0); --surface-2:var(--n-50);
   --bd:var(--n-100); --bd-strong:var(--n-200);
   --tx:var(--n-900); --tx-2:var(--n-500); --tx-3:var(--n-400);
-  --rail:#9E1822; --rail-tx:#FEE2E2; --rail-hover:#801119; --rail-on:#B91C1C;
-  --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-full:999px;
-  --e-pop:0 12px 32px -8px rgba(158,24,34,.22), 0 4px 8px -2px rgba(158,24,34,.10);
+
+  --rail:#8E0A10; --rail-tx:#F6D6D7; --rail-2:#E8A9AC; --rail-3:#F0BFC1;
+  --rail-hover:rgba(255,255,255,.10); --rail-on:#B00C13;
+
+  /* Três raios e uma sombra. Não existe um quarto raio: se algo pede outro,
+     é sinal de que o componente está errado, não a escala. */
+  --r-xs:4px; --r-sm:6px; --r-md:8px; --r-lg:8px; --r-full:999px;
+  --e-pop:0 16px 40px -14px rgba(26,21,18,.38);
+
+  /* A escala de texto: seis tamanhos, e nada entre eles. Antes eram catorze —
+     11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15.5, 16, 17, 18, 19 e 24. */
+  --t-xs:13px; --t-sm:14px; --t-md:15px; --t-lg:16px; --t-xl:19px; --t-2xl:30px;
+
+  /* Altura de qualquer coisa em que se clica ou se digita. */
+  --alvo:40px;
+
   --ui:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
   --code:"IBM Plex Mono",ui-monospace,Consolas,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --n-0:#161313; --n-25:#0F0D0D; --n-50:#201B1B; --n-100:#312A2A;
-  --n-200:#453B3B; --n-300:#6E6060; --n-400:#968888; --n-500:#B8A8A8;
-  --n-700:#DDD2D2; --n-900:#F8F4F4;
-  --pos:#4CC08C; --pos-bg:#12281F; --pos-bd:#1E4835;
-  --warn:#DDA54A; --warn-bg:#2A2114; --warn-bd:#4A3A1C;
-  --crit:#E8796A; --crit-bg:#2D1917; --crit-bd:#4E2A25;
-  --info:#6FA8E0; --info-bg:#15222E; --info-bd:#243B4F;
-  --rail:#831219; --rail-hover:#6E0D13; --rail-tx:#FEE2E2;
-}}
+
+/* O tema escuro existe UMA vez.
+   Antes eram dois blocos idênticos de 18 linhas — um dentro de
+   prefers-color-scheme e outro em data-theme — e manter os dois em dia era
+   questão de tempo até divergirem. Agora quem resolve "automático" é o
+   ConfigService: ele lê a preferência do sistema, escreve data-theme no
+   <html> e fica ouvindo mudanças. O CSS só conhece claro e escuro. */
 :root[data-theme="dark"]{
-  --n-0:#161313; --n-25:#0F0D0D; --n-50:#201B1B; --n-100:#312A2A;
-  --n-200:#453B3B; --n-300:#6E6060; --n-400:#968888; --n-500:#B8A8A8;
-  --n-700:#DDD2D2; --n-900:#F8F4F4;
-  --pos:#4CC08C; --pos-bg:#12281F; --pos-bd:#1E4835;
-  --warn:#DDA54A; --warn-bg:#2A2114; --warn-bd:#4A3A1C;
-  --crit:#E8796A; --crit-bg:#2D1917; --crit-bd:#4E2A25;
-  --info:#6FA8E0; --info-bg:#15222E; --info-bd:#243B4F;
-  --rail:#831219; --rail-hover:#6E0D13; --rail-tx:#FEE2E2;
+  --n-0:#171310; --n-25:#100D0B; --n-50:#211B17; --n-100:#332B25;
+  --n-200:#473C34; --n-300:#6F625A; --n-400:#978A81; --n-500:#B9ABA1;
+  --n-700:#DCD3CB; --n-900:#F8F5F1;
+  --pos:#5BC492; --pos-bg:#11291D; --pos-bd:#1F4A33;
+  --warn:#DCA94E; --warn-bg:#2A2013; --warn-bd:#4B391B;
+  --crit:#EE8387; --crit-bg:#2D1618; --crit-bd:#4E2629;
+  --info:#7DB1E2; --info-bg:#14212E; --info-bd:#23394F;
+  --c1:#EE8387; --c2:#B9ABA1; --c3:#7DB1E2; --c4:#5BC492; --c5:#DCA94E; --c6:#6F625A;
+  --rail:#6B080D; --rail-on:#8E0A10;
+  --e-pop:0 16px 40px -14px rgba(0,0,0,.7);
 }
-html[data-font-size="media"] body { font-size: 16px; }
-html[data-font-size="grande"] body { font-size: 18px; }
+
+/* Modo grande: não é só a letra do corpo. Sobe a escala inteira e o alvo de
+   clique junto, senão o texto cresce e o campo de 40px continua de 40px —
+   que era exatamente o problema de quem enxerga pouco. */
+html[data-font-size="media"]{
+  --t-xs:14px; --t-sm:15px; --t-md:16px; --t-lg:17px; --t-xl:20px; --t-2xl:32px;
+  --alvo:44px;
+}
+html[data-font-size="media"] body{font-size:16px}
+html[data-font-size="grande"]{
+  --t-xs:15px; --t-sm:16px; --t-md:18px; --t-lg:20px; --t-xl:23px; --t-2xl:34px;
+  --alvo:48px;
+}
+html[data-font-size="grande"] body{font-size:18px}
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--ground);color:var(--tx);font-family:var(--ui);
-  font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  font-size:var(--t-md);line-height:1.5;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
 
-/* ============ LOGIN MODERNO & PREMIUM ============ */
-.login {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: radial-gradient(circle at 50% 10%, #2A1012 0%, #150809 45%, #0A0405 100%);
-  position: relative;
-  overflow: hidden;
-}
-.login::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: 
-    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(220, 38, 38, 0.28), transparent 70%),
-    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.12), transparent 45%),
-    linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
-  pointer-events: none;
-}
-.login::after {
-  content: "";
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(185, 28, 28, 0.15) 0%, transparent 70%);
-  top: -150px;
-  left: 50%;
-  transform: translateX(-50%);
-  filter: blur(40px);
-  pointer-events: none;
-}
+/* ============ ENTRADA ============ */
+/* O contrário do que estava aqui: nada de vidro, halo, grade de pontinhos nem
+   anel dourado. É a tela mais vista do dia numa oficina que abre às 8h — a
+   marca de um lado, dois campos do outro, e acabou. */
+.login{min-height:100vh;display:flex;background:var(--surface)}
 
-.login-card {
-  position: relative;
-  width: 100%;
-  max-width: 440px;
-  background: rgba(30, 24, 23, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(245, 158, 11, 0.2);
-  border-radius: 20px;
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    0 24px 64px -12px rgba(0, 0, 0, 0.85),
-    0 0 40px -10px rgba(185, 28, 28, 0.25);
-  padding: 38px 36px 32px;
-  text-align: center;
-  color: #FFF;
-  z-index: 2;
-  animation: pop .35s cubic-bezier(.16,1,.3,1) both;
-}
+.login-marca{width:430px;flex-shrink:0;background:var(--b-700);color:#fff;
+  padding:46px 40px 32px;display:flex;flex-direction:column}
+.login-marca img{width:104px;height:104px;border-radius:var(--r-full);display:block;
+  background:#fff;object-fit:cover}
+.login-marca h1{margin:26px 0 0;font-size:38px;font-weight:800;letter-spacing:-.035em;
+  line-height:1.04}
+.login-marca p{margin:14px 0 0;font-size:var(--t-lg);line-height:1.5;color:var(--b-100);
+  max-width:26ch}
+.login-marca .rodape{margin-top:auto;border-top:1px solid rgba(255,255,255,.18);
+  padding-top:14px;font-size:var(--t-xs);color:var(--rail-2)}
 
-.login-brand-ring {
-  width: 92px;
-  height: 92px;
-  margin: 0 auto 16px;
-  border-radius: 50%;
-  padding: 3px;
-  background: linear-gradient(135deg, var(--gold) 0%, #9E1822 50%, var(--gold-dark) 100%);
-  box-shadow: 0 8px 24px -4px rgba(220, 38, 38, 0.5), 0 0 16px rgba(245, 158, 11, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.login-brand-ring img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  background: #000;
-}
+/* A coluna tem largura de leitura e fica centrada no espaço que sobra.
+   Sem o max-width, num monitor de 1440 o formulário de 420px encostava
+   na esquerda com meio metro de branco do lado. */
+.login-entrada{flex:1;min-width:0;max-width:560px;margin:0 auto;
+  padding:72px 40px 34px;display:flex;flex-direction:column}
+.login-entrada h2{margin:0 0 6px;font-size:27px;font-weight:700;letter-spacing:-.025em}
+.login-entrada .saudacao{margin:0 0 28px;font-size:var(--t-md);color:var(--tx-2)}
+.login-form{display:flex;flex-direction:column;gap:18px}
+.login-campo{display:flex;flex-direction:column;gap:7px}
+.login-campo .topo{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.login-campo label{font-size:var(--t-sm);font-weight:600;color:var(--tx);margin:0}
+.login-ver{background:none;border:0;padding:0;font:inherit;font-size:var(--t-xs);
+  font-weight:600;color:var(--b-700);cursor:pointer;text-decoration:underline;
+  text-underline-offset:3px}
+.login-ver:hover{color:var(--b-600)}
+.login-erro{background:var(--crit-bg);border:1px solid var(--crit-bd);color:var(--crit);
+  border-radius:var(--r-sm);padding:11px 14px;font-size:var(--t-sm);line-height:1.5}
+.login-erro b{display:block;font-weight:700}
+.login-rodape{margin-top:auto;border-top:1px solid var(--bd);padding-top:14px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:var(--t-xs);color:var(--tx-2)}
+.login-rodape .versao{font-family:var(--code);color:var(--tx-3)}
 
-.login-title {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -.02em;
-  margin: 0 0 4px;
-  color: #FFF;
-}
-.login-subtitle {
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0 0 24px;
-  font-weight: 500;
-}
+/* A entrada: o logo aparece, segura meio segundo e some. Sem brilho pulsando,
+   sem pistão girando — na primeira vez é bonito, nas outras trezentas é
+   pedágio. Quem marcou "reduzir animações" não vê nada disto. */
+.login-splash{position:fixed;inset:0;background:var(--b-800);display:grid;
+  place-items:center;z-index:150;animation:telaFadeIn .25s ease-out}
+.splash-content{text-align:center;color:#fff;animation:pop .3s cubic-bezier(.16,1,.3,1) both}
+.splash-content img{width:96px;height:96px;border-radius:var(--r-full);background:#fff;
+  display:block;margin:0 auto 18px}
+.splash-content b{display:block;font-size:20px;font-weight:700;letter-spacing:-.02em}
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: left;
-}
-
-.login-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.login-field label {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: .02em;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.login-input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.login-input-icon {
-  position: absolute;
-  left: 14px;
-  color: rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color .2s ease;
-}
-.login-input-wrap input {
-  width: 100%;
-  height: 46px;
-  padding: 0 14px 0 44px;
-  background: rgba(18, 14, 13, 0.7);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  color: #FFF;
-  font-family: inherit;
-  font-size: 14.5px;
-  font-weight: 500;
-  transition: all .2s ease;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-}
-.login-input-wrap input:focus {
-  outline: none;
-  border-color: var(--gold);
-  background: rgba(25, 18, 17, 0.95);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2), inset 0 2px 4px rgba(0,0,0,0.2);
-}
-.login-input-wrap input:focus + .login-input-icon,
-.login-input-wrap:focus-within .login-input-icon {
-  color: var(--gold);
-}
-
-.login-toggle-pass {
-  position: absolute;
-  right: 12px;
-  background: transparent;
-  border: 0;
-  color: rgba(255, 255, 255, 0.45);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .15s ease;
-}
-.login-toggle-pass:hover {
-  color: #FFF;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Opção "Manter Conectado" */
-.login-lembrar-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 4px 0 6px;
-  user-select: none;
-}
-.login-checkbox-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  cursor: pointer;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-}
-.login-checkbox-label input[type="checkbox"] {
-  width: 17px;
-  height: 17px;
-  accent-color: var(--b-600);
-  cursor: pointer;
-}
-
-.btn-login-submit {
-  height: 48px;
-  margin-top: 8px;
-  background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  color: #FFF;
-  font-size: 15.5px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: all .2s cubic-bezier(.16,1,.3,1);
-  box-shadow: 0 4px 18px rgba(185, 28, 28, 0.45);
-  letter-spacing: .01em;
-}
-.btn-login-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.55);
-}
-.btn-login-submit:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.login-err {
-  background: rgba(220, 38, 38, 0.18);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #FCA5A5;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.login-err b {
-  color: #FFF;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.login-footer-info {
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.login-footer-info span.status-dot {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #34D399;
-  font-weight: 600;
-}
-.login-footer-info span.status-dot::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  background: #10B981;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #10B981;
+@media(max-width:860px){
+  .login{flex-direction:column}
+  .login-marca{width:auto;padding:32px 28px 26px}
+  .login-marca h1{font-size:30px}
+  .login-marca img{width:76px;height:76px}
+  .login-entrada{padding:32px 28px 24px}
 }
 
 /* ============ APP ============ */
-.app{display:flex;min-height:100%;padding-left:64px;transition:padding-left .18s cubic-bezier(.3,0,.2,1)}
-.app.rail-fixada{padding-left:230px}
+/* A barra lateral fica aberta, e pronto.
 
-.rail{position:fixed;left:0;top:0;bottom:0;width:64px;z-index:60;
+   Ela abria no hover, e isso obrigava cada rótulo, cada badge e cada separador
+   a existir em dois estados: eram seis blocos de :hover e :has(:focus-visible)
+   só para esconder e revelar texto. Foi de lá que saíram o "Operaçã" cortado
+   (rótulo de 11px renderizado numa faixa de 62px com overflow:hidden) e a
+   necessidade do alfinete para fixar.
+
+   Aberta, some tudo isso e sobra lugar para o que faltava: a busca de placa
+   sempre à mão, os 211 vencidos à vista o dia inteiro, e um segundo nível de
+   menu. Abaixo de 1280px ela recolhe para os 72px de ícone. */
+.app{display:flex;min-height:100%;padding-left:248px}
+
+.rail{position:fixed;left:0;top:0;bottom:0;width:248px;z-index:60;
   background:var(--rail);color:var(--rail-tx);display:flex;flex-direction:column;
-  padding:12px 0 0;padding-top:calc(12px + env(safe-area-inset-top,0px));
-  overflow:hidden;white-space:nowrap;
-  transition:width .18s cubic-bezier(.3,0,.2,1),box-shadow .18s;
+  padding-top:env(safe-area-inset-top,0px);overflow:hidden;white-space:nowrap;
   user-select:none}
-.rail:hover,.rail:has(:focus-visible),.app.rail-fixada .rail{
-  width:230px;box-shadow:6px 0 28px -6px rgba(0,0,0,.36)}
 
-.rail-brand{display:flex;align-items:center;gap:12px;padding:0 14px 16px;height:52px;position:relative;overflow:hidden}
+.rail-brand{display:flex;align-items:center;gap:11px;padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,.14);flex-shrink:0}
 .rail-brand img{width:36px;height:36px;border-radius:var(--r-full);flex-shrink:0;
-  display:block;box-shadow:0 0 0 2px rgba(255,255,255,.3);background:#fff}
-.rail-brand b{color:#fff;font-size:14.5px;font-weight:700;letter-spacing:-.01em;line-height:1.15;
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s,transform .18s;transform:translateX(-6px)}
-.rail:hover .rail-brand b,.app.rail-fixada .rail .rail-brand b{
-  opacity:1;visibility:visible;pointer-events:auto;transform:none}
-.rail-brand b span{display:block;font-size:11.5px;opacity:.78;font-weight:400;color:var(--gold-light)}
+  display:block;background:#fff}
+.rail-brand b{color:#fff;font-size:var(--t-sm);font-weight:700;line-height:1.15;min-width:0}
+.rail-brand b span{display:block;font-size:var(--t-xs);font-weight:400;color:var(--rail-3);
+  overflow:hidden;text-overflow:ellipsis}
 
-.rail-pin{margin-left:auto;background:none;border:0;color:#fff;opacity:.6;cursor:pointer;
-  padding:6px;border-radius:var(--r-xs);display:grid;place-items:center;transition:opacity .15s;
-  position:relative;z-index:2;flex-shrink:0;pointer-events:auto}
-.rail-pin:hover{opacity:1;background:rgba(255,255,255,.15)}
+/* A busca fica aqui porque consultar placa é o que mais se faz no balcão.
+   Antes era preciso navegar até a tela de Consulta para digitar uma placa. */
+.rail-busca{padding:12px 12px 10px;position:relative;display:flex;align-items:center;
+  flex-shrink:0}
+.rail-busca svg{position:absolute;left:22px;color:var(--rail-2);pointer-events:none}
+.rail-busca input{width:100%;height:var(--alvo);padding:0 46px 0 32px;
+  background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.22);
+  border-radius:var(--r-sm);color:#fff;font-family:inherit;font-size:var(--t-sm)}
+.rail-busca input::placeholder{color:var(--rail-2);opacity:1}
+.rail-busca input:focus{outline:none;border-color:rgba(255,255,255,.55);background:rgba(0,0,0,.34)}
+.rail-busca kbd{position:absolute;right:21px;font-family:var(--code);font-size:11px;
+  color:var(--rail-2);border:1px solid rgba(255,255,255,.26);border-radius:var(--r-xs);
+  padding:2px 5px}
 
-.rail-group{padding:0 10px;margin-bottom:6px;position:relative}
-.rail-group+.rail-group{padding-top:11px;margin-top:5px}
-.rail-group+.rail-group::before{content:"";position:absolute;top:0;left:14px;width:36px;
-  height:1px;background:rgba(255,255,255,.14);transition:width .18s}
-.rail:hover .rail-group+.rail-group::before,.app.rail-fixada .rail .rail-group+.rail-group::before{
-  width:calc(100% - 28px)}
+.rail-rolagem{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:0 12px}
+.rail-rolagem::-webkit-scrollbar{width:8px}
+.rail-rolagem::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
 
-/* Rótulos dos grupos: TOTALMENTE OCULTOS na barra compacta */
-.rail-group>p{font-size:11px;color:var(--gold-light);opacity:0;visibility:hidden;margin:0 0 5px;
-  padding:0 8px;height:16px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;
-  transition:opacity .15s,transform .18s;transform:translateX(-6px)}
-.rail:hover .rail-group>p,.app.rail-fixada .rail .rail-group>p{
-  opacity:.88;visibility:visible;transform:none}
+.rail-group{margin-bottom:2px}
+.rail-group+.rail-group{border-top:1px solid rgba(255,255,255,.14);margin-top:8px;padding-top:14px}
+.rail-group>p{font-size:11px;color:var(--rail-2);margin:6px 0 6px;padding:0 10px;
+  font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  overflow:hidden;text-overflow:ellipsis}
 
-.rail button,.rail a{display:flex;align-items:center;gap:0;padding:0 8px;height:38px;
-  border-radius:var(--r-sm);color:rgba(255,255,255,.82);background:transparent;border:0;font:inherit;
-  font-size:13.5px;width:100%;text-align:left;cursor:pointer;line-height:1.3;
-  position:relative;margin:2px 0;text-decoration:none;outline:none;
+/* Escopo na área de rolagem, não na barra inteira: ".rail a" pegava
+   também o avatar e o nome do rodapé, que viravam item de menu de 40px
+   com display:flex — e aí o nome encolhia para "R." porque virava um
+   flex-item que podia encolher. */
+.rail-rolagem a:not(.rail-sub),.rail-rolagem button.item{display:flex;align-items:center;gap:12px;padding:0 10px;
+  height:var(--alvo);border-radius:var(--r-sm);color:var(--rail-tx);background:transparent;
+  border:0;font:inherit;font-size:var(--t-sm);width:100%;text-align:left;cursor:pointer;
+  position:relative;margin:1px 0;text-decoration:none;outline:none;
   transition:background .12s,color .12s}
-.rail button>svg,.rail a>svg{width:18px;height:18px;flex-shrink:0;opacity:.9;margin:0 12px 0 2px}
-.rail button:hover,.rail a:hover{background:rgba(255,255,255,.10);color:#fff}
-.rail button[aria-current],.rail a[aria-current],
-.rail button.ativo,.rail a.ativo{
-  background:rgba(255,255,255,.18);color:#fff;font-weight:600;box-shadow:none;border:0;outline:none}
-.rail button[aria-current]>svg,.rail a[aria-current]>svg,
-.rail button.ativo>svg,.rail a.ativo>svg{opacity:1}
-.rail button[aria-current]::before,.rail a[aria-current]::before,
-.rail button.ativo::before,.rail a.ativo::before{
-  content:"";position:absolute;left:0;top:7px;bottom:7px;width:3.5px;
-  border-radius:0 3px 3px 0;background:var(--gold)}
-.rail button:focus-visible:not(:active),.rail a:focus-visible:not(:active){
-  outline:2px solid rgba(255,255,255,.45);outline-offset:1px}
+.rail-rolagem a>svg,.rail-rolagem button.item>svg{width:18px;height:18px;flex-shrink:0}
+.rail-rolagem a:not(.rail-sub):hover,.rail-rolagem button.item:hover{background:var(--rail-hover);color:#fff}
+.rail-rolagem a[aria-current],.rail-rolagem a.ativo{background:var(--rail-on);color:#fff;font-weight:600}
+/* A marca do item aberto é uma barra branca, e ela sangra para fora do padding
+   do grupo — por isso o -12px. O fundo sozinho dava 1,4:1 contra o vizinho,
+   que é diferença que ninguém enxerga. */
+.rail-rolagem a[aria-current]::before,.rail-rolagem a.ativo::before{content:"";position:absolute;
+  left:-12px;top:0;bottom:0;width:3px;background:#fff}
+.rail-rolagem a:focus-visible,.rail-rolagem button.item:focus-visible{outline:2px solid rgba(255,255,255,.7);
+  outline-offset:-2px}
 
-/* Rótulos e badges dos links: estritamente escondidos no modo compacto */
-.rail .lab{flex:1;min-width:0;overflow:hidden;opacity:0;visibility:hidden;
-  transition:opacity .15s,transform .18s;transform:translateX(-6px)}
-.rail .badge{margin-left:auto;margin-right:10px;background:rgba(255,255,255,.2);
-  border-radius:var(--r-full);padding:1px 8px;font-size:11.5px;font-weight:600;
-  opacity:0;visibility:hidden;transition:opacity .15s}
-.rail:hover .lab,.rail:hover .badge,.app.rail-fixada .rail .lab,.app.rail-fixada .rail .badge{
-  opacity:1;visibility:visible;transform:none}
+.rail .lab{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* O número fica sempre visível: antes só aparecia no hover, e no lugar dele
+   ficava uma bolinha dourada que não dizia quanto. */
+.rail .conta{margin-left:auto;font-family:var(--code);font-size:var(--t-xs);
+  color:var(--rail-2);flex-shrink:0}
+.rail .conta-forte{margin-left:auto;font-family:var(--code);font-size:12px;font-weight:600;
+  color:var(--b-700);background:#fff;border-radius:var(--r-full);padding:2px 8px;flex-shrink:0}
 
-.rail button .dot-alert,.rail a .dot-alert{position:absolute;left:27px;top:9px;width:7px;height:7px;
-  border-radius:var(--r-full);background:var(--gold);box-shadow:0 0 0 2px var(--rail);
-  transition:opacity .13s}
-.rail:hover .dot-alert,.app.rail-fixada .rail .dot-alert{opacity:0}
+.rail-sub{display:block;padding:0 10px 0 40px;height:34px;line-height:34px;
+  border-radius:var(--r-sm);color:var(--rail-3);font-size:var(--t-xs);text-decoration:none}
+.rail-sub:hover{background:var(--rail-hover);color:#fff}
+.rail-sub.ativo{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
 
-.rail-foot{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,.12);
-  display:flex;align-items:center;gap:11px;
-  padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
-.rail-foot .av{width:32px;height:32px;border-radius:var(--r-full);background:#fff;
-  color:var(--b-700);display:grid;place-items:center;font-size:12px;font-weight:700;
-  flex-shrink:0;margin-left:6px;border:2px solid rgba(255,255,255,.3);cursor:pointer;
-  box-shadow:0 2px 5px rgba(0,0,0,.2);overflow:hidden;text-decoration:none;transition:transform .15s}
-.rail-foot .av:hover{transform:scale(1.06)}
-.rail-foot .av img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
-.rail-foot .txt{opacity:0;visibility:hidden;transition:opacity .15s,transform .18s;transform:translateX(-6px);
-  text-decoration:none;color:inherit;cursor:pointer}
-.rail:hover .rail-foot .txt,.app.rail-fixada .rail .rail-foot .txt{
-  opacity:1;visibility:visible;transform:none}
-.rail-foot b{display:block;font-size:13px;color:#fff;font-weight:600;transition:color .13s}
-.rail-foot .txt:hover b{color:var(--gold-light)}
-.rail-foot .txt span{font-size:11.5px;opacity:.75;color:var(--gold-light)}
-.rail-foot .sair{margin-left:auto;margin-right:6px;background:none;border:0;
-  color:inherit;opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;padding:7px;border-radius:var(--r-xs);
-  width:auto;height:auto;display:grid;place-items:center;transition:opacity .15s,transform .18s;transform:translateX(-4px)}
-.rail:hover .rail-foot .sair,.app.rail-fixada .rail .rail-foot .sair{
-  opacity:.8;visibility:visible;pointer-events:auto;transform:none}
-.rail:hover .rail-foot .sair:hover,.app.rail-fixada .rail .rail-foot .sair:hover{
-  opacity:1;background:var(--rail-hover)}
+.rail-foot{border-top:1px solid rgba(255,255,255,.14);padding:10px 12px;
+  display:flex;align-items:center;gap:11px;flex-shrink:0}
+.rail-foot .av{width:34px;height:34px;border-radius:var(--r-full);background:#fff;
+  color:var(--b-700);display:grid;place-items:center;font-size:var(--t-xs);font-weight:700;
+  flex-shrink:0;overflow:hidden;text-decoration:none}
+.rail-foot .av img{width:100%;height:100%;object-fit:cover;display:block}
+.rail-foot .txt{flex:1;min-width:0;text-decoration:none;color:inherit}
+.rail-foot b{display:block;font-size:var(--t-xs);color:#fff;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis}
+.rail-foot .txt span{font-size:12px;color:var(--rail-2)}
+.rail-foot .sair{margin-left:auto;background:none;border:0;color:var(--rail-3);
+  cursor:pointer;padding:7px;border-radius:var(--r-xs);display:grid;place-items:center;
+  width:auto;height:auto;flex-shrink:0}
+.rail-foot .sair:hover{background:rgba(255,255,255,.16);color:#fff}
+
+/* O estado do servidor, e ele diz a verdade: a hora da última resposta do
+   /health. Se a API cair no meio do expediente, a hora para de andar e o
+   balcão vê. Uma bolinha verde fixa acenderia igual com o servidor fora. */
+.rail-estado{background:rgba(0,0,0,.22);padding:7px 14px;display:flex;align-items:center;
+  gap:7px;font-size:12px;color:var(--rail-3);flex-shrink:0}
+.rail-estado i{width:7px;height:7px;border-radius:var(--r-full);background:#6FD39F;flex-shrink:0}
+.rail-estado.fora i{background:var(--b-300)}
+
+/* Monitor pequeno: recolhe para o ícone. A busca some porque vira um campo de
+   28px inútil; quem está aqui usa o item Consulta, que continua no menu. */
+@media(max-width:1279px){
+  .app{padding-left:72px}
+  .rail{width:72px}
+  .rail-brand{justify-content:center;padding:14px 0}
+  .rail-brand b,.rail-busca,.rail-group>p,.rail .lab,.rail .conta,.rail-sub,
+  .rail-foot .txt,.rail-foot .sair{display:none}
+  .rail-rolagem{padding:8px}
+  .rail-rolagem a,.rail-rolagem button.item{justify-content:center;padding:0;gap:0}
+  .rail-rolagem a[aria-current]::before,.rail-rolagem a.ativo::before{left:-8px}
+  .rail .conta-forte{position:absolute;top:2px;right:2px;margin:0;padding:0 5px;font-size:10px}
+  .rail-foot{justify-content:center;padding:10px 0}
+  .rail-estado{justify-content:center;padding:7px 0}
+  .rail-estado span{display:none}
+}
 
 main{flex:1;min-width:0;padding:24px;padding-bottom:48px}
 .head{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
@@ -425,7 +282,7 @@ main{flex:1;min-width:0;padding:24px;padding-bottom:48px}
 .head p{margin:0;color:var(--tx-2);font-size:13px;max-width:64ch}
 .head-act{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-.btn{font-family:inherit;font-size:13.5px;font-weight:500;height:36px;padding:0 14px;
+.btn{font-family:inherit;text-decoration:none;font-size:13.5px;font-weight:500;height:36px;padding:0 14px;
   border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;
   justify-content:center;gap:7px;border:1px solid transparent;
   transition:background .13s,border-color .13s}
@@ -521,7 +378,7 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--tx-2);margin-bo
    Agora é o contrário: estiliza TUDO que é campo de digitar e tira da conta
    só o que não é caixa de texto (caixa de marcar, botão, arquivo). Assim
    esquecer o type deixa de ser um defeito visual. */
-input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]):not([type=reset]):not([type=file]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]),
+input:where(:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]):not([type=reset]):not([type=file]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden])),
 select,textarea{width:100%;
   min-height:38px;padding:9px 11px;font:inherit;font-size:14px;color:var(--tx);
   background:var(--surface);border:1px solid var(--bd-strong);border-radius:var(--r-xs);
@@ -870,16 +727,17 @@ router-outlet { display: none; }
   color: #FFFFFF;
 }
 .action-card .action-icon svg { width: 22px; height: 22px; }
-.action-card .action-info h3 {
-  margin: 0;
-  font-size: 15px;
+.action-card .action-info b {
+  display: block;
+  font-size: var(--t-xl);
   font-weight: 700;
-  letter-spacing: -.01em;
+  letter-spacing: -.015em;
 }
-.action-card .action-info p {
-  margin: 2px 0 0;
-  font-size: 12.5px;
-  opacity: .82;
+.action-card .action-info span {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--t-sm);
+  opacity: .84;
   color: inherit;
 }
 
@@ -917,6 +775,160 @@ router-outlet { display: none; }
   flex-shrink: 0;
 }
 .placa-badge span.br { font-size: 7px; opacity: .9; }
+
+/* ---------- PLACA MERCOSUL OFICIAL BRASILEIRA ---------- */
+.placa-mercosul {
+  display: inline-flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1.5px solid #1e293b;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  vertical-align: middle;
+  text-decoration: none;
+  user-select: none;
+  line-height: 1;
+  box-sizing: border-box;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+
+a.placa-mercosul:hover,
+button.placa-mercosul:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.22);
+}
+
+.placa-mercosul .pm-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #003399;
+  padding: 1px 4px;
+  gap: 3px;
+  color: #ffffff;
+}
+
+.placa-mercosul .pm-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.placa-mercosul .pm-pais {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-align: center;
+  flex: 1;
+}
+
+.placa-mercosul .pm-bandeira {
+  flex-shrink: 0;
+  border-radius: 1px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.placa-mercosul .pm-codigo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #111827;
+  font-family: "Consolas", "Lucida Console", "Courier New", monospace, var(--code);
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 1.5px;
+}
+
+/* Tamanho XS (Tabelas Densas / Listas) */
+.placa-mercosul.pm-xs {
+  width: 82px;
+  height: 25px;
+}
+.placa-mercosul.pm-xs .pm-topo {
+  height: 8px;
+  padding: 0 2px;
+}
+.placa-mercosul.pm-xs .pm-pais {
+  font-size: 6px;
+  letter-spacing: 0.5px;
+}
+.placa-mercosul.pm-xs .pm-codigo {
+  height: 15px;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+}
+
+/* Tamanho SM (Padrão de Linhas de Tabela / Badges) */
+.placa-mercosul,
+.placa-mercosul.pm-sm {
+  width: 96px;
+  height: 29px;
+}
+.placa-mercosul .pm-topo,
+.placa-mercosul.pm-sm .pm-topo {
+  height: 9px;
+  padding: 0 4px;
+}
+.placa-mercosul .pm-pais,
+.placa-mercosul.pm-sm .pm-pais {
+  font-size: 6.5px;
+  letter-spacing: 0.8px;
+}
+.placa-mercosul .pm-codigo,
+.placa-mercosul.pm-sm .pm-codigo {
+  height: 18px;
+  font-size: 13px;
+  letter-spacing: 1.2px;
+}
+
+/* Tamanho MD (Médio / Cards) */
+.placa-mercosul.pm-md {
+  width: 120px;
+  height: 38px;
+  border-width: 1.8px;
+}
+.placa-mercosul.pm-md .pm-topo {
+  height: 12px;
+  padding: 1px 5px;
+}
+.placa-mercosul.pm-md .pm-pais {
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+.placa-mercosul.pm-md .pm-codigo {
+  height: 24px;
+  font-size: 16px;
+  letter-spacing: 1.8px;
+}
+
+/* Tamanho LG (Grande / Destaque / Ficha do Veículo) */
+.placa-mercosul.pm-lg {
+  width: 175px;
+  height: 56px;
+  border-width: 2.2px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+.placa-mercosul.pm-lg .pm-topo {
+  height: 16px;
+  padding: 2px 7px;
+}
+.placa-mercosul.pm-lg .pm-pais {
+  font-size: 10px;
+  letter-spacing: 1.8px;
+}
+.placa-mercosul.pm-lg .pm-codigo {
+  height: 37px;
+  font-size: 24px;
+  letter-spacing: 2.5px;
+}
 .search-card-h h2 { margin: 0; font-size: 17px; font-weight: 700; }
 .search-card-h p { margin: 2px 0 0; font-size: 13px; color: var(--tx-2); }
 .search-form-row {
@@ -946,81 +958,6 @@ router-outlet { display: none; }
   border-color: var(--b-600);
   box-shadow: 0 0 0 4px var(--b-100);
 }
-
-/* ===========================================================
-   Animações de Pistão e Óleo
-   =========================================================== */
-@keyframes pistaoEsq {
-  0%, 100% { transform: translateY(0) rotate(-15deg); }
-  50% { transform: translateY(-7px) rotate(-15deg); }
-}
-@keyframes pistaoDir {
-  0%, 100% { transform: translateY(-7px) rotate(15deg); }
-  50% { transform: translateY(0) rotate(15deg); }
-}
-@keyframes gotaOleo {
-  0% { transform: translateY(-10px) scale(.6); opacity: 0; }
-  30% { opacity: 1; transform: translateY(0) scale(1); }
-  75% { transform: translateY(16px) scale(1.1); opacity: 1; }
-  100% { transform: translateY(26px) scale(.4); opacity: 0; }
-}
-@keyframes giroSuave {
-  to { transform: rotate(360deg); }
-}
-.piston-anim-box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: 64px;
-  height: 64px;
-}
-.piston-l {
-  animation: pistaoEsq .75s ease-in-out infinite;
-  transform-origin: center bottom;
-}
-.piston-r {
-  animation: pistaoDir .75s ease-in-out infinite;
-  transform-origin: center bottom;
-}
-.oil-drop {
-  position: absolute;
-  top: 10px;
-  animation: gotaOleo 1.1s ease-in infinite;
-  color: var(--gold);
-}
-
-/* ===========================================================
-   Splash de Login e Boas-Vindas
-   =========================================================== */
-.login-splash {
-  position: fixed;
-  inset: 0;
-  background: var(--b-900);
-  display: grid;
-  place-items: center;
-  z-index: 150;
-  animation: telaFadeIn .3s ease-out;
-}
-.splash-content {
-  text-align: center;
-  color: #fff;
-  animation: pop .4s cubic-bezier(.2,.9,.3,1.2) both;
-}
-.splash-content img {
-  width: 104px;
-  height: 104px;
-  border-radius: var(--r-full);
-  box-shadow: 0 0 0 4px var(--gold), 0 12px 36px rgba(0,0,0,.6);
-  margin-bottom: 20px;
-  animation: pulseGlow 1.5s ease-in-out infinite;
-}
-@keyframes pulseGlow {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px var(--gold), 0 12px 36px rgba(0,0,0,.6); }
-  50% { transform: scale(1.04); box-shadow: 0 0 0 6px var(--gold-light), 0 16px 44px rgba(220,38,38,.5); }
-}
-.splash-content h2 { font-size: 22px; margin: 0 0 6px; letter-spacing: -.02em; }
-.splash-content p { font-size: 14px; opacity: .8; margin: 0 0 18px; }
 
 /* Transição suave de telas */
 .fade-in {
@@ -1057,293 +994,6 @@ router-outlet { display: none; }
 }
 .modal-box h2 { font-size: 19px; font-weight: 700; margin: 0 0 6px; letter-spacing: -.02em; }
 .modal-box p { font-size: 13px; color: var(--tx-2); margin: 0 0 18px; line-height: 1.5; }
-
-/* ===========================================================
-   Seletor e Visualizador 3D de Tipo de Gráfico
-   =========================================================== */
-.grafico-3d-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin-top: 12px;
-}
-.grafico-3d-card {
-  background: var(--surface);
-  border: 2px solid var(--bd);
-  border-radius: var(--r-lg);
-  padding: 14px;
-  cursor: pointer;
-  text-align: left;
-  transition: all .24s cubic-bezier(.16,1,.3,1);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
-}
-.grafico-3d-card:hover {
-  border-color: var(--bd-strong);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px -6px rgba(0,0,0,.12);
-}
-.grafico-3d-card.ativo {
-  border-color: var(--b-700);
-  background: var(--surface);
-  box-shadow: 0 0 0 1px var(--b-700), 0 12px 28px -6px rgba(185, 28, 28, 0.22);
-}
-.grafico-3d-card-h {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.grafico-3d-card-h b {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--tx);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.grafico-3d-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: var(--r-full);
-  background: var(--surface-2);
-  color: var(--tx-2);
-  border: 1px solid var(--bd);
-  transition: all .2s ease;
-}
-.grafico-3d-card.ativo .grafico-3d-badge {
-  background: var(--b-600);
-  color: #fff;
-  border-color: var(--b-700);
-  box-shadow: 0 2px 6px rgba(185, 28, 28, .35);
-}
-
-/* Palco de Renderização Tridimensional */
-.grafico-3d-stage {
-  height: 135px;
-  width: 100%;
-  border-radius: var(--r-md);
-  background: radial-gradient(circle at 50% 30%, #262120 0%, #141110 100%);
-  position: relative;
-  perspective: 750px;
-  transform-style: preserve-3d;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
-}
-:root[data-theme="dark"] .grafico-3d-stage {
-  background: radial-gradient(circle at 50% 30%, #1F1B1A 0%, #0D0B0A 100%);
-  border-color: rgba(255,255,255,0.08);
-}
-
-/* Grid Isométrico de Piso */
-.stage-grid-floor {
-  position: absolute;
-  width: 160px;
-  height: 120px;
-  bottom: 8px;
-  transform: rotateX(60deg) rotateZ(-20deg);
-  background-image: 
-    linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px);
-  background-size: 20px 20px;
-  border-radius: 6px;
-  pointer-events: none;
-}
-
-/* --- 1. Gráfico 3D Linha Neon --- */
-.stage-3d-line-wrap {
-  width: 150px;
-  height: 100px;
-  position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(48deg) rotateZ(-18deg);
-  transition: transform .4s ease;
-}
-.grafico-3d-card:hover .stage-3d-line-wrap {
-  transform: rotateX(42deg) rotateZ(-12deg) scale(1.06);
-}
-.stage-3d-svg-line {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 6px 12px rgba(220, 38, 38, 0.75));
-}
-.stage-3d-pillar {
-  position: absolute;
-  width: 2px;
-  bottom: 12px;
-  background: linear-gradient(to top, rgba(245, 158, 11, 0.1), rgba(220, 38, 38, 0.8));
-  box-shadow: 0 0 6px rgba(220, 38, 38, 0.6);
-  border-radius: 1px;
-}
-.stage-3d-node {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #FFF;
-  border: 2px solid var(--b-500);
-  box-shadow: 0 0 10px #FFF, 0 0 16px var(--b-500);
-  transform: translate(-50%, -50%);
-}
-.stage-3d-node.highlight {
-  background: var(--gold-light);
-  border-color: var(--gold);
-  box-shadow: 0 0 14px var(--gold), 0 0 20px var(--gold-dark);
-}
-
-/* --- 2. Gráfico 3D Barras / Colunas Isométricas --- */
-.stage-3d-bars-wrap {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 16px;
-  width: 160px;
-  height: 90px;
-  position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(54deg) rotateZ(-22deg);
-  transition: transform .4s ease;
-}
-.grafico-3d-card:hover .stage-3d-bars-wrap {
-  transform: rotateX(46deg) rotateZ(-16deg) scale(1.06);
-}
-.iso-bar {
-  width: 20px;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: height .3s ease;
-}
-.iso-bar-front {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, #DC2626, #8B0000);
-  border-radius: 2px 0 0 0;
-}
-.iso-bar-top {
-  position: absolute;
-  top: -12px;
-  left: 6px;
-  width: 20px;
-  height: 12px;
-  background: #EF4444;
-  transform: skewX(-45deg);
-  box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
-}
-.iso-bar-side {
-  position: absolute;
-  top: -6px;
-  right: -12px;
-  width: 12px;
-  height: 100%;
-  background: #6B0808;
-  transform: skewY(-45deg);
-}
-/* Barra de Destaque Dourada */
-.iso-bar.gold .iso-bar-front {
-  background: linear-gradient(to bottom, #F59E0B, #B45309);
-}
-.iso-bar.gold .iso-bar-top {
-  background: #FDE68A;
-}
-.iso-bar.gold .iso-bar-side {
-  background: #92400E;
-}
-.iso-bar-shadow {
-  position: absolute;
-  bottom: -6px;
-  left: 6px;
-  width: 26px;
-  height: 12px;
-  background: rgba(0,0,0,0.55);
-  transform: skewX(-45deg);
-  filter: blur(2px);
-}
-
-/* --- 3. Gráfico 3D Donut / Disco Extrudado --- */
-.stage-3d-donut-wrap {
-  width: 110px;
-  height: 110px;
-  position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(56deg) rotateZ(24deg);
-  transition: transform .4s ease;
-}
-.grafico-3d-card:hover .stage-3d-donut-wrap {
-  transform: rotateX(48deg) rotateZ(32deg) scale(1.08);
-}
-.stage-3d-donut-shadow {
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.65);
-  transform: translateZ(-24px) scale(0.95);
-  filter: blur(8px);
-}
-.stage-3d-donut-body {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: 
-    0 1px 0 #570000,
-    0 3px 0 #4a0000,
-    0 6px 0 #3d0000,
-    0 9px 0 #300000,
-    0 12px 0 #240000,
-    0 15px 0 #180000,
-    0 18px 12px rgba(0,0,0,0.8);
-  transform: translateZ(10px);
-}
-.stage-3d-donut-svg {
-  width: 100%;
-  height: 100%;
-  transform: translateZ(12px);
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
-}
-
-/* --- 4. Gráfico 3D Área / Topografia --- */
-.stage-3d-area-wrap {
-  width: 150px;
-  height: 95px;
-  position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(50deg) rotateZ(-18deg);
-  transition: transform .4s ease;
-}
-.grafico-3d-card:hover .stage-3d-area-wrap {
-  transform: rotateX(44deg) rotateZ(-12deg) scale(1.06);
-}
-.stage-3d-area-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 8px 16px rgba(185, 28, 28, 0.45));
-}
-
-.grafico-3d-desc {
-  font-size: 12px;
-  color: var(--tx-2);
-  line-height: 1.45;
-  margin: 0;
-}
-.grafico-3d-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11.5px;
-  color: var(--tx-3);
-  font-weight: 500;
-  margin-top: auto;
-}
 
 
 /* ===========================================================
@@ -1421,3 +1071,395 @@ router-outlet { display: none; }
 }
 
 
+
+
+/* ===========================================================
+   Duas peças pequenas que faltavam
+   =========================================================== */
+
+/* Rótulo que o leitor de tela lê e o olho não vê. Campo sem <label> é campo
+   que quem usa leitor de tela não sabe para que serve — e "tem um ícone de
+   lupa do lado" não chega até lá. */
+.visualmente-oculto{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.modal-acoes{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+
+/* ===========================================================
+   Peças que faltavam ou que voltaram menores
+   =========================================================== */
+
+/* Botão trabalhando. Antes cada botão trazia um pistão animado dentro
+   (.piston-anim-box), e o desenho do pistão não dizia nada sobre o que estava
+   acontecendo — dizia só "isto é uma oficina", que a pessoa já sabia. Um
+   círculo girando é o gesto que todo mundo já leu mil vezes. */
+.girando{width:1em;height:1em;flex-shrink:0;border:2px solid currentColor;
+  border-top-color:transparent;border-radius:var(--r-full);
+  animation:girar .7s linear infinite}
+
+/* A gota caindo no selo de confirmação. Ela fica: não é enfeite genérico, é a
+   coisa que a oficina faz, e aparece meio segundo quando a ordem grava. */
+.oil-drop{position:absolute;color:var(--b-600);animation:gota 1.4s ease-in infinite}
+@keyframes gota{
+  0%{transform:translateY(-8px) scale(.6);opacity:0}
+  30%{transform:translateY(0) scale(1);opacity:1}
+  75%{transform:translateY(14px) scale(1.05);opacity:1}
+  100%{transform:translateY(22px) scale(.4);opacity:0}
+}
+
+/* Botão menor, para dentro de tabela e de cabeçalho de painel. Estava sendo
+   usado em quatro telas e NUNCA existiu no CSS: os botões "pequenos" saíam do
+   mesmo tamanho dos outros. */
+.btn-sm{height:32px;padding:0 11px;font-size:var(--t-xs)}
+
+/* O corpo do cartão de busca. Também era usado sem existir. */
+.search-card-b{padding:16px 18px}
+
+.form-actions{display:flex;gap:12px;align-items:center;margin-top:24px}
+
+@media (prefers-reduced-motion:reduce){
+  .girando,.oil-drop{animation:none}
+  .oil-drop{opacity:.85}
+}
+
+/* ===========================================================
+   A faixa de números do painel
+   =========================================================== */
+
+/* Os quatro cartões antigos tinham o mesmo peso, e nenhum era uma coisa que
+   se FAZ. O que exige ação lidera a faixa com o botão junto; o retrato da
+   base fica na linha calma ao lado. */
+.kpi{display:flex;background:var(--surface);border:1px solid var(--bd);
+  border-radius:var(--r-md);overflow:hidden;margin-bottom:16px;flex-wrap:wrap}
+.kpi-alerta{background:var(--crit-bg);border-right:1px solid var(--crit-bd);
+  padding:16px 22px;display:flex;align-items:center;gap:18px;flex-shrink:0}
+.kpi-alerta .rot{display:block;font-size:var(--t-xs);font-weight:600;color:var(--crit);
+  letter-spacing:.03em;text-transform:uppercase}
+.kpi-alerta .val{display:block;font-size:38px;font-weight:800;letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;color:var(--crit);line-height:1.05}
+.kpi-alerta .sub{display:block;font-size:var(--t-xs);color:var(--b-800);margin:0}
+.kpi-linha{flex:1;min-width:0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.kpi-item{padding:16px 20px;border-left:1px solid var(--bd)}
+.kpi-linha>.kpi-item:first-child{border-left:0}
+.kpi-item .rot{display:block;font-size:var(--t-xs);color:var(--tx-2)}
+.kpi-item .val{display:block;font-size:27px;font-weight:700;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;color:var(--tx);margin-top:2px;line-height:1.1}
+.kpi-item .val small{font-size:var(--t-md);font-weight:500;color:var(--tx-2)}
+.kpi-item .sub{display:block;font-size:12.5px;color:var(--tx-3);margin-top:2px}
+
+.tela-grafico{position:relative;height:240px;width:100%}
+.panel-b.sem-respiro{padding:0}
+.meta-link{margin-left:auto;font-size:var(--t-xs);color:var(--b-700);font-weight:600;
+  text-decoration:underline;text-underline-offset:3px}
+.meta-link:hover{color:var(--b-600)}
+.num.forte{font-weight:600}
+
+/* A placa na tabela é monoespaçada, não o desenho da placa Mercosul: numa
+   linha de tabela o desenho vira um selo de cinco tamanhos diferentes. O
+   desenho continua onde ele ajuda — na ficha do veículo. */
+.placa-txt{font-family:var(--code);font-size:var(--t-xs);font-weight:600;
+  letter-spacing:.04em;color:var(--tx);text-decoration:none;
+  background:var(--surface-2);border:1px solid var(--bd);border-radius:var(--r-xs);
+  padding:3px 8px;display:inline-block;white-space:nowrap}
+.placa-txt:hover{border-color:var(--b-300);color:var(--b-700)}
+
+/* Seletor de opções lado a lado. Existia copiado à mão em quatro lugares
+   (o período do Financeiro, o tipo de gráfico, o intervalo da etiqueta),
+   cada um com o estilo condicional escrito dentro do HTML. */
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--bd-strong);
+  border-radius:var(--r-sm);padding:3px;gap:3px;flex-wrap:wrap}
+.seg button{font-family:inherit;height:calc(var(--alvo) - 8px);padding:0 14px;
+  border-radius:var(--r-xs);border:0;background:transparent;color:var(--tx-2);
+  font-size:var(--t-sm);cursor:pointer;transition:background .12s,color .12s}
+.seg button:hover{color:var(--tx)}
+.seg button.on{background:var(--surface);color:var(--tx);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--b-500);outline-offset:1px}
+
+/* ===========================================================
+   A busca grande, a faixa de destaque e a fila de trabalho
+   =========================================================== */
+
+/* Campo de busca em tamanho de balcão: é a primeira coisa que se faz na tela
+   de Clientes, então ele tem altura de alvo grande e fonte de leitura. */
+.busca-grande{position:relative;display:flex;align-items:center;max-width:560px;
+  margin-bottom:16px}
+.busca-grande svg{position:absolute;left:16px;color:var(--tx-3);pointer-events:none}
+.busca-grande input{width:100%;height:calc(var(--alvo) + 12px);padding:0 16px 0 46px;
+  background:var(--surface);border:1.5px solid var(--bd-strong);border-radius:var(--r-md);
+  color:var(--tx);font-family:inherit;font-size:var(--t-lg)}
+.busca-grande input:focus{outline:none;border-color:var(--b-600);
+  box-shadow:0 0 0 3px var(--b-100)}
+
+/* O bloco da esquerda da faixa: o número que dá o assunto da tela. */
+.kpi-destaque{padding:16px 24px;background:var(--surface-2);
+  border-right:1px solid var(--bd);flex-shrink:0}
+.kpi-destaque.alerta{background:var(--crit-bg);border-right-color:var(--crit-bd)}
+.kpi-destaque .rot{display:block;font-size:var(--t-xs);color:var(--tx-2);font-weight:600}
+.kpi-destaque.alerta .rot{color:var(--crit)}
+.kpi-destaque .val{display:block;font-size:44px;font-weight:800;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;color:var(--tx);line-height:1.02;margin-top:2px}
+.kpi-destaque.alerta .val{color:var(--crit)}
+.kpi-destaque .sub{display:block;font-size:var(--t-xs);color:var(--tx-3);margin-top:2px}
+.kpi-destaque.alerta .sub{color:var(--b-800)}
+.kpi-item.destacado{background:var(--surface-2)}
+.val.vermelho{color:var(--crit)}
+.val.verde{color:var(--pos)}
+.tx-3{color:var(--tx-3)}
+.sub.aviso{color:var(--warn);font-weight:600}
+.num-tel{font-variant-numeric:tabular-nums}
+.acao-col{text-align:right;white-space:nowrap}
+th.acao-col{text-align:right}
+.tbl-foot .espaco{flex:1}
+
+/* A fila: cabeçalho de faixa + linha por carro. Não é tabela porque cada
+   linha é uma tarefa com um botão grande, não um dado para comparar coluna
+   a coluna. */
+.fila-grupo{display:flex;align-items:baseline;gap:12px;padding:12px 18px;
+  background:var(--surface-2);border-top:1px solid var(--bd);
+  border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.fila-grupo b{font-size:var(--t-lg);font-weight:700;color:var(--tx)}
+.fila-grupo span{font-size:var(--t-xs);color:var(--tx-2)}
+.fila-grupo .dica{margin-left:auto;color:var(--tx-3)}
+.panel>.fila-grupo:first-child{border-top:0}
+
+.fila-linha{display:flex;align-items:center;gap:18px;padding:13px 18px;
+  border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.fila-linha:last-of-type{border-bottom:0}
+.fila-linha .quem{width:200px;flex-shrink:0;min-width:0}
+.fila-linha .quem b{display:block;font-size:var(--t-md);font-weight:600;
+  overflow:hidden;text-overflow:ellipsis}
+.fila-linha .carro{width:270px;flex-shrink:0;min-width:0;display:flex;
+  flex-direction:column;align-items:flex-start;gap:3px}
+.fila-linha .carro .modelo{font-size:var(--t-sm);color:var(--tx-2)}
+.fila-linha .quando{width:150px;flex-shrink:0;font-size:var(--t-sm)}
+.fila-linha .rodou{width:110px;flex-shrink:0;font-size:var(--t-sm);color:var(--tx-2);
+  font-variant-numeric:tabular-nums}
+.fila-linha .acao{margin-left:auto;flex-shrink:0}
+
+/* Já chamado hoje: some do caminho sem sumir da tela, para dar a noção de
+   quanto da fila já andou. */
+.fila-linha.feito{background:var(--surface-2)}
+.fila-linha.feito .quem b{color:var(--tx-3);text-decoration:line-through}
+.fila-linha.feito .carro,.fila-linha.feito .quando,.fila-linha.feito .rodou{color:var(--tx-3)}
+.fila-linha.feito .placa-txt{opacity:.6}
+
+@media(max-width:1100px){
+  .fila-linha .quem,.fila-linha .carro,.fila-linha .quando,.fila-linha .rodou{width:auto}
+  .fila-linha .acao{margin-left:0;width:100%}
+}
+
+/* Título e legenda do cabeçalho de painel saíam colados — "Gestão de Usuários
+   & Acessos da Oficinacontrole de atendentes" — porque o gap do .panel-h só
+   vale para filhos diretos, e nessas telas os dois estão dentro de um <div>. */
+.panel-h b + span,.panel-h h2 + span{margin-left:8px}
+.panel-h div > span.meta{margin-left:0;display:inline}
+
+/* ===========================================================
+   Financeiro: barra de comandos e abas de planilha
+   =========================================================== */
+
+/* Os comandos ficavam espalhados dentro de cada aba — "Nova despesa" no painel
+   de despesas, a busca no cabeçalho de cada tabela, o período no canto do
+   título. Para lançar uma conta era preciso primeiro achar a aba certa.
+   Agrupados e nomeados, viram a faixa do Excel, que é o programa que quem
+   cuida das contas da oficina já usa todo dia. */
+.cmd{display:flex;align-items:stretch;background:var(--surface);
+  border:1px solid var(--bd);border-radius:var(--r-md);padding:0 6px;
+  margin-bottom:16px;flex-wrap:wrap}
+.cmd-grupo{display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:8px 12px 5px}
+.cmd-grupo.cresce{flex:1;min-width:260px;align-items:stretch}
+.cmd-botoes{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cmd-grupo.cresce .cmd-botoes{flex-wrap:nowrap}
+.cmd-nome{font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--tx-3);font-weight:600}
+.cmd-sep{width:1px;background:var(--bd);margin:10px 0}
+.cmd-busca,.cmd-select{height:var(--alvo);min-width:0;flex:1;
+  padding:0 12px;border:1px solid var(--bd-strong);border-radius:var(--r-sm);
+  font-family:inherit;font-size:var(--t-sm);color:var(--tx);background:var(--surface)}
+
+/* As abas ficam no rodapé e grudadas nele, como as de uma planilha. */
+.abas{position:sticky;bottom:0;z-index:20;display:flex;gap:2px;flex-wrap:wrap;
+  background:var(--surface-2);border:1px solid var(--bd);border-radius:var(--r-md);
+  padding:4px 6px 0;margin-top:16px}
+.abas button{font-family:inherit;font-size:var(--t-sm);color:var(--tx-2);
+  background:transparent;border:1px solid transparent;border-bottom:0;
+  border-radius:var(--r-sm) var(--r-sm) 0 0;padding:0 16px;height:38px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.abas button:hover{color:var(--tx)}
+.abas button.on{background:var(--surface);border-color:var(--bd);color:var(--tx);
+  font-weight:600}
+.abas .conta{font-family:var(--code);font-size:12px;color:var(--tx-3)}
+.abas button.on .conta{color:var(--tx-2)}
+
+/* A cascata do "para onde foi o dinheiro". Parênteses são saída — é a
+   convenção de quem lê balanço, e evita o sinal de menos passar despercebido. */
+.recuo td:first-child{padding-left:30px;color:var(--tx-2)}
+tr.fecha td{background:var(--surface-2);border-top:2px solid var(--bd-strong);
+  font-weight:700;padding-top:13px;padding-bottom:13px}
+td.pct{color:var(--tx-2);width:74px}
+td.positivo,td.num.positivo{color:var(--pos)}
+td.negativo,td.num.negativo{color:var(--crit)}
+td.mono{font-family:var(--code);font-size:var(--t-xs)}
+.tela-grafico.alta{height:300px}
+
+.nota-atencao{margin:0;padding:13px 17px;background:var(--warn-bg);
+  border-top:1px solid var(--warn-bd);font-size:var(--t-xs);line-height:1.55;
+  color:var(--warn)}
+.nota-atencao b{color:var(--n-900)}
+:root[data-theme="dark"] .nota-atencao b{color:var(--warn)}
+
+/* Pílula que também é botão: trocar "a pagar" para "pago" é um clique. */
+.pill-btn{font-family:inherit;font-size:var(--t-xs);font-weight:600;
+  padding:3px 11px;border-radius:var(--r-full);border:1px solid;cursor:pointer;
+  background:var(--surface-2);color:var(--tx-2);border-color:var(--bd-strong)}
+.pill-btn.p-pos{color:var(--pos);background:var(--pos-bg);border-color:var(--pos-bd)}
+.pill-btn.p-warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-bd)}
+.btn-g.perigo{color:var(--crit)}
+.btn-g.perigo:hover{background:var(--crit-bg)}
+
+.vazio-acao{padding:44px 24px;text-align:center}
+.vazio-acao b{display:block;font-size:var(--t-lg);margin-bottom:6px}
+.vazio-acao p{max-width:52ch;margin:0 auto 18px;color:var(--tx-2);
+  font-size:var(--t-sm);line-height:1.55}
+
+/* Impressão: o relatório saía com a barra vermelha e os cartões. */
+@media print{
+  .rail,.cmd,.abas,.head-act,.acao-col,.meta-link{display:none!important}
+  .app{padding-left:0}
+  body{background:#fff}
+  .panel{border-color:#bbb;break-inside:avoid}
+  .kpi{border-color:#bbb}
+  .kpi-destaque,.kpi-item.destacado,tr.fecha td,th{background:#fff!important}
+  a{text-decoration:none;color:#000}
+}
+
+/* ===========================================================
+   Configuração: seções à esquerda, ajustes em linha à direita
+   =========================================================== */
+.cfg{display:flex;gap:0;background:var(--surface);border:1px solid var(--bd);
+  border-radius:var(--r-md);overflow:hidden;align-items:stretch}
+.cfg-secoes{width:236px;flex-shrink:0;border-right:1px solid var(--bd);
+  background:var(--ground);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.cfg-secoes button{display:flex;align-items:center;gap:10px;height:var(--alvo);
+  padding:0 13px;border:0;border-radius:var(--r-sm);background:transparent;
+  font-family:inherit;font-size:var(--t-sm);color:var(--tx);cursor:pointer;text-align:left}
+.cfg-secoes button i{font-size:16px;color:var(--tx-3);flex-shrink:0}
+.cfg-secoes button:hover{background:var(--surface-2)}
+.cfg-secoes button.on{background:var(--b-100);color:var(--b-700);font-weight:600}
+.cfg-secoes button.on i{color:var(--b-700)}
+.cfg-secoes .conta{margin-left:auto;font-family:var(--code);font-size:12px;color:var(--tx-3)}
+.cfg-corpo{flex:1;min-width:0;padding:22px 24px 26px;display:flex;
+  flex-direction:column;gap:14px}
+.cfg-titulo{margin:0;font-size:var(--t-xl);font-weight:700;letter-spacing:-.02em}
+.cfg-ajuda{margin:-10px 0 0;font-size:var(--t-sm);color:var(--tx-2)}
+
+/* Um ajuste é uma LINHA: o que é à esquerda, o controle à direita. Antes cada
+   opção era um cartão com selo "✓ Selecionado", prévia e parágrafo — três
+   cartões só para escolher o tamanho da letra. */
+.lin{display:flex;align-items:flex-start;gap:24px;padding:16px 20px;
+  border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.lin.sem-borda{border-bottom:0}
+.lin-t{width:290px;flex-shrink:0}
+.lin-t b{display:block;font-size:var(--t-md);font-weight:600;margin-bottom:2px}
+.lin-t span{display:block;font-size:var(--t-xs);color:var(--tx-2);line-height:1.5}
+.lin-t code{font-family:var(--code);font-size:12.5px;background:var(--surface-2);
+  border:1px solid var(--bd);border-radius:var(--r-xs);padding:1px 5px}
+.lin-c{flex:1;min-width:240px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lin-c.coluna{flex-direction:column;align-items:flex-start;gap:9px}
+.lin-c.coluna .junto{display:flex;gap:9px;width:100%;align-items:center}
+.lin-c input,.lin-c select{max-width:340px}
+.lin-c .mono-campo{font-family:var(--code);font-size:var(--t-xs);max-width:none;flex:1}
+.lin-c.foto{align-items:center}
+.lin-c .botoes{display:flex;gap:8px}
+
+.av-grande{width:72px;height:72px;border-radius:var(--r-full);background:var(--b-700);
+  color:#fff;display:grid;place-items:center;font-size:24px;font-weight:700;
+  flex-shrink:0;overflow:hidden}
+.av-grande img{width:100%;height:100%;object-fit:cover;display:block}
+
+.hint.solta,.nota-atencao.solta{margin-top:4px}
+.nota-atencao.solta{border:1px solid var(--warn-bd);border-radius:var(--r-sm)}
+
+@media(max-width:1000px){
+  .cfg{flex-direction:column}
+  .cfg-secoes{width:auto;border-right:0;border-bottom:1px solid var(--bd);
+    flex-direction:row;overflow-x:auto}
+  .cfg-secoes button{white-space:nowrap}
+  .lin-t{width:auto}
+}
+
+/* ===========================================================
+   Triagem da fila de filtros, e peças do cadastro
+   =========================================================== */
+.triagem{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;
+  align-items:start;margin-bottom:16px}
+.triagem-fila{background:var(--surface);border:1px solid var(--bd);
+  border-radius:var(--r-md);overflow:hidden;max-height:70vh;overflow-y:auto}
+.fila-item{display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;
+  padding:12px 14px;border:0;border-bottom:1px solid var(--bd);border-left:3px solid transparent;
+  background:transparent;font-family:inherit;cursor:pointer}
+.fila-item:last-child{border-bottom:0}
+.fila-item:hover{background:var(--surface-2)}
+.fila-item.on{background:var(--b-50);border-left-color:var(--b-600)}
+.fila-item .topo{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.fila-item .modelo{font-size:var(--t-sm);color:var(--tx);font-weight:500}
+.fila-item .meta-item{font-size:var(--t-xs);color:var(--tx-2)}
+.fila-item:focus-visible{outline:2px solid var(--b-500);outline-offset:-2px}
+
+/* "Mais dados": o que 99 de cada 100 cadastros pula não ocupa a linha de
+   frente de quem preenche com o cliente esperando. */
+.mais-dados{margin-top:14px;border-top:1px solid var(--bd);padding-top:12px}
+.mais-dados summary{cursor:pointer;font-size:var(--t-sm);font-weight:600;
+  color:var(--tx-2);list-style:none;display:flex;align-items:center;gap:8px}
+.mais-dados summary::-webkit-details-marker{display:none}
+.mais-dados summary::before{content:"▸";color:var(--tx-3);transition:transform .15s}
+.mais-dados[open] summary::before{transform:rotate(90deg)}
+.mais-dados summary span{font-weight:400;color:var(--tx-3);font-size:var(--t-xs)}
+.mais-dados > .f-row{margin-top:12px}
+
+.bloco-intervalo{margin-top:14px;padding-top:12px;border-top:1px solid var(--bd)}
+.bloco-intervalo .rotulo{display:block;font-size:var(--t-sm);font-weight:600;color:var(--tx)}
+.bloco-intervalo .ajuda{display:block;font-size:var(--t-xs);color:var(--tx-2);margin:2px 0 9px}
+.campo-placa{display:flex;align-items:center;gap:10px}
+.campo-placa input{text-transform:uppercase;font-weight:700}
+.check.sem-margem{margin:0}
+
+@media(max-width:1000px){
+  .triagem{grid-template-columns:1fr}
+  .triagem-fila{max-height:none}
+}
+
+.nota-medida{margin:0;padding:12px 17px;border-top:1px solid var(--bd);
+  background:var(--surface-2);font-size:var(--t-xs);color:var(--tx-2);line-height:1.55}
+.sub.mono{font-family:var(--code);font-size:12px}
+
+/* ===========================================================
+   Utilidades: os padrões que estavam escritos à mão no HTML
+   =========================================================== */
+.sem-margem{margin:0}
+.respiro{margin-top:12px}
+.respiro-baixo{margin-bottom:12px}
+.linha-flex{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.linha-flex.compacta{display:inline-flex;gap:6px;font-size:var(--t-xs);cursor:pointer}
+.titulo-carro{margin:0 0 4px;font-size:var(--t-xl);font-weight:700;letter-spacing:-.02em}
+
+/* A barra de fechamento da ordem: o total acompanha a tela enquanto o resto
+   é preenchido, em vez de esperar no fim de um scroll de quatro painéis. */
+.barra-fechar{position:sticky;bottom:0;z-index:20;display:flex;align-items:flex-end;
+  gap:16px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--bd-strong);
+  border-radius:var(--r-md);box-shadow:0 -6px 20px -14px rgba(26,21,18,.5);
+  padding:14px 18px;margin-top:16px}
+.barra-fechar .espaco{flex:1}
+.campo-total span:first-child{display:block;font-size:var(--t-xs);color:var(--tx-2);
+  font-weight:600;margin-bottom:5px}
+.campo-total .junto{display:flex;align-items:center;gap:8px}
+.campo-total i{font-style:normal;font-size:var(--t-lg);color:var(--tx-2);font-weight:600}
+.campo-total input{width:170px;height:calc(var(--alvo) + 6px);font-size:22px;
+  font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+
+/* Âncoras de tela. Servem para o @media print e para qualquer ajuste que
+   precise valer só dentro de uma delas — e deixam de ser classe sem dono. */
+.financeiro,.config{display:block}
+.triagem-detalhe{min-width:0}

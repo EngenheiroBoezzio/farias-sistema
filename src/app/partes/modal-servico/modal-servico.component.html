@@ -1,0 +1,122 @@
+<div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-edit-servico" (click)="$event.target === $event.currentTarget && fechar()">
+  <div class="modal-box" style="max-width: 520px; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+      <div>
+        <h2 id="tit-edit-servico" style="margin:0 0 4px; display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--b-600)">
+            <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          Editar atendimento
+        </h2>
+        <p style="margin:0; font-size:13px; color:var(--tx-2)">
+          Atualize a quilometragem ou outros dados deste atendimento.
+        </p>
+      </div>
+      <button type="button" class="btn btn-s" style="padding:4px 8px; font-size:16px; line-height:1; min-height:auto" (click)="fechar()" aria-label="Fechar">
+        ✕
+      </button>
+    </div>
+
+    @if (erro(); as err) {
+      <div class="falha" role="alert" style="margin-bottom:14px; padding:10px 14px;">
+        <b>{{ err.mensagem }}</b>
+        @if (err.detalhe) { <p style="margin:4px 0 0">{{ err.detalhe }}</p> }
+      </div>
+    }
+
+    <form (ngSubmit)="salvar()" class="f" novalidate>
+      <!-- Bloco de Destaque: Quilometragem -->
+      <div style="background:var(--surface-2); border:1px solid var(--b-100); border-radius:var(--r-md); padding:12px 14px; margin-bottom:14px;">
+        <label class="f sem-margem">
+          <span style="font-weight:600; color:var(--b-700); display:flex; align-items:center; gap:6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+            Quilometragem (Km)
+            <small style="font-weight:normal; color:var(--tx-2)">(Preencha se ficou em branco)</small>
+          </span>
+          <input type="number" name="km" [(ngModel)]="f.km" min="0" max="2000000" inputmode="numeric"
+                 placeholder="ex.: 96500" style="font-size:16px; font-weight:600;" autofocus>
+        </label>
+      </div>
+
+      <!-- Linha: Data e Valor Total -->
+      <div class="f-row c2">
+        <label class="f">
+          <span>Data do atendimento</span>
+          <input type="date" name="data" [(ngModel)]="f.data" required>
+        </label>
+        <label class="f">
+          <span>Valor total (R$)</span>
+          <input type="number" name="total" [(ngModel)]="f.total" step="0.01" min="0" placeholder="ex.: 250.00">
+        </label>
+      </div>
+
+      <!-- Linha: Óleo e Litros -->
+      <div class="f-row c2 respiro">
+        <label class="f">
+          <span>Óleo utilizado</span>
+          <input name="oleo" [(ngModel)]="f.oleo" maxlength="40" placeholder="ex.: 5W30 MOB" autocapitalize="characters">
+        </label>
+        <label class="f">
+          <span>Litros</span>
+          <input type="number" name="litros" [(ngModel)]="f.litros" step="0.25" min="0" max="40" placeholder="ex.: 3.5">
+        </label>
+      </div>
+
+      <!-- Bloco de Destaque: Filtro de Ar -->
+      <div style="background:var(--surface-2); border:1px solid var(--bd); border-radius:var(--r-md); padding:12px 14px; margin-top:12px;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; margin:0">
+          <input type="checkbox" name="trocou_ar" [(ngModel)]="f.trocou_filtro_ar" style="width:18px; height:18px; accent-color:var(--b-600)">
+          <span>Filtro de ar substituído nesta revisão</span>
+        </label>
+
+        @if (f.trocou_filtro_ar) {
+          <div class="f-row c2 respiro">
+            <label class="f sem-margem">
+              <span>Valor do filtro de ar (R$)</span>
+              <input type="number" name="vfa" [(ngModel)]="f.valor_filtro_ar" step="0.01" min="0" placeholder="ex.: 45.00">
+            </label>
+            <label class="f sem-margem">
+              <span>Código da peça</span>
+              <input name="fa" [(ngModel)]="f.cod_filtro_ar" maxlength="30" autocapitalize="characters" placeholder="ex.: FAP5303">
+            </label>
+          </div>
+        } @else {
+          <p class="hint" style="margin:6px 0 0; font-size:12px; color:var(--tx-2);">
+            Desmarcado: este atendimento constará como <b>sem troca de filtro de ar</b> no histórico.
+          </p>
+        }
+      </div>
+
+      <!-- Outros Filtros (opcional) -->
+      <div class="f-row c2" style="margin-top:12px;">
+        <label class="f">
+          <span>Filtro de óleo (cód.)</span>
+          <input name="fo" [(ngModel)]="f.cod_filtro_oleo" maxlength="30" autocapitalize="characters" placeholder="ex.: WO170">
+        </label>
+        <label class="f">
+          <span>Filtro de cabine (cód.)</span>
+          <input name="fc" [(ngModel)]="f.cod_filtro_cabine" maxlength="30" autocapitalize="characters" placeholder="ex.: AKX1215">
+        </label>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button type="button" class="btn btn-s" (click)="fechar()" [disabled]="gravando()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-p" [disabled]="gravando()">
+          @if (gravando()) {
+            <span class="girando" aria-hidden="true"></span>
+            Salvando…
+          } @else {
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+            Salvar alterações
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

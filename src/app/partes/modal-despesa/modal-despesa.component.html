@@ -1,0 +1,98 @@
+<div class="ok-veil" (click)="fechou.emit()">
+  <div class="ok-card" (click)="$event.stopPropagation()" style="max-width:560px; width:95%;">
+    <!-- Cabeçalho -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--bd); padding-bottom:10px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i class="bi bi-wallet2" style="font-size:22px; color:var(--b-700);"></i>
+        <h3 style="margin:0; font-size:18px;">{{ despesa ? 'Editar Despesa' : 'Nova Despesa / Custo da Oficina' }}</h3>
+      </div>
+      <button type="button" class="btn btn-g btn-sm" (click)="fechou.emit()" style="padding:4px 8px;">✕</button>
+    </div>
+
+    <!-- Atalhos Rápidos para despesas comuns -->
+    @if (!despesa) {
+      <div style="margin-bottom:14px; background:var(--surface-2); padding:10px 12px; border-radius:var(--r-md); border:1px solid var(--bd);">
+        <span style="font-size:11.5px; font-weight:600; color:var(--tx-2); display:block; margin-bottom:6px;">
+          Sugestões Frequentes (1 clique):
+        </span>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          @for (a of atalhosRapidos; track a.label) {
+            <button type="button" class="btn btn-s btn-sm" style="font-size:11.5px; padding:3px 8px; border-radius:12px;"
+                    (click)="aplicarAtalho(a)">
+              {{ a.label }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <form (ngSubmit)="salvar()" novalidate>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <!-- Descrição -->
+        <label class="f">
+          <span>Descrição da despesa *</span>
+          <input type="text" [(ngModel)]="f.descricao" name="descricao" placeholder="ex.: Aluguel da oficina, Tambor de Óleo 200L..." required autofocus>
+        </label>
+
+        <!-- Valor e Data -->
+        <div class="f-row c2">
+          <label class="f">
+            <span>Valor (R$) *</span>
+            <input type="number" [(ngModel)]="f.valor" name="valor" step="0.01" min="0.01" placeholder="0,00" required inputmode="decimal">
+          </label>
+          <label class="f">
+            <span>Data de Vencimento / Pagamento</span>
+            <input type="date" [(ngModel)]="f.dataVencimento" name="dataVencimento">
+          </label>
+        </div>
+
+        <!-- Categoria -->
+        <label class="f">
+          <span>Categoria da Despesa</span>
+          <select [(ngModel)]="f.categoria" name="categoria">
+            @for (c of categorias; track c) {
+              <option [value]="c">{{ rotulosCategorias[c].rotulo }}</option>
+            }
+          </select>
+        </label>
+
+        <!-- Status e Recorrência -->
+        <div class="f-row c2" style="align-items:center; background:var(--surface-2); padding:10px 12px; border-radius:var(--r-sm); margin-top:2px;">
+          <div>
+            <span style="font-size:12px; font-weight:600; color:var(--tx); display:block; margin-bottom:4px;">Status do Pagamento</span>
+            <div style="display:inline-flex; gap:8px;">
+              <label class="linha-flex compacta">
+                <input type="radio" name="status" value="pago" [(ngModel)]="f.status">
+                <span class="pill p-pos">Pago</span>
+              </label>
+              <label class="linha-flex compacta">
+                <input type="radio" name="status" value="pendente" [(ngModel)]="f.status">
+                <span class="pill p-warn">Pendente</span>
+              </label>
+            </div>
+          </div>
+
+          <label class="check" style="margin:0; font-size:12.5px;">
+            <input type="checkbox" [(ngModel)]="f.recorrente" name="recorrente">
+            <span><b>Repetir todo mês</b><br><small style="color:var(--tx-3);">Para contas fixas (aluguel, net, etc.)</small></span>
+          </label>
+        </div>
+
+        <!-- Observações -->
+        <label class="f">
+          <span>Observações adicionais (opcional)</span>
+          <input type="text" [(ngModel)]="f.obs" name="obs" placeholder="ex.: Nota fiscal 1234, pago via PIX...">
+        </label>
+      </div>
+
+      <!-- Botões de ação -->
+      <div class="head-act" style="justify-content:flex-end; gap:8px; margin-top:18px; border-top:1px solid var(--bd); padding-top:12px;">
+        <button type="button" class="btn btn-s" (click)="fechou.emit()">Cancelar</button>
+        <button type="submit" class="btn btn-p" [disabled]="!f.descricao.trim() || !f.valor">
+          <i class="bi bi-check-lg" style="margin-right:4px;"></i>
+          {{ despesa ? 'Salvar Alterações' : 'Registrar Despesa' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

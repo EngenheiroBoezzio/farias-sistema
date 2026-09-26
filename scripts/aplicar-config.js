@@ -98,6 +98,39 @@ function conferirDependencias() {
 
 conferirDependencias();
 
+/* ---------- a versão, escrita onde o Angular consegue ler ----------
+
+   O rodapé do login mostrava "v1.0.8" porque alguém digitou ali, e o
+   package.json já ia na 1.0.11. Número de versão errado manda o suporte
+   procurar problema na instalação errada, então ele deixa de ser digitado:
+   sai daqui, do package.json, a cada build. */
+function gravarVersao() {
+  const versao = JSON.parse(fs.readFileSync(path.join(RAIZ, 'package.json'), 'utf8')).version;
+  const destino = path.join(RAIZ, 'src', 'app', 'nucleo', 'versao.ts');
+  const conteudo =
+    `/* GERADO. Não edite à mão.\n` +
+    ` *\n` +
+    ` * Escrito por scripts/aplicar-config.js a partir do package.json, antes de\n` +
+    ` * cada build. Existe porque a versão estava digitada no rodapé do login e\n` +
+    ` * marcava 1.0.8 enquanto o pacote já ia na 1.0.11 — um número errado no\n` +
+    ` * rodapé é a primeira coisa que faz o suporte procurar problema no lugar\n` +
+    ` * errado. O valor abaixo é só o que fica no repositório entre um build e\n` +
+    ` * outro; quem manda é o package.json. */\n` +
+    `export const VERSAO = '${versao}';\n`;
+
+  /* Só grava se mudou: reescrever o arquivo a cada build faz o `ng build
+     --watch` recompilar em laço. */
+  let atual = null;
+  try { atual = fs.readFileSync(destino, 'utf8'); } catch {}
+  if (atual !== conteudo) {
+    fs.mkdirSync(path.dirname(destino), { recursive: true });
+    fs.writeFileSync(destino, conteudo, 'utf8');
+  }
+  console.log(`  versão no rodapé: ${versao}`);
+}
+
+gravarVersao();
+
 if (MODO_SERVIDOR) {
   const saidaS = {
     apiUrl: 'mesma-origem',

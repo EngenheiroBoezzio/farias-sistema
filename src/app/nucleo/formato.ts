@@ -8,7 +8,9 @@ import { Dec } from './tipos';
 
 export function num(v: Dec | undefined): number {
   if (v === null || v === undefined || v === '') return 0;
-  const n = typeof v === 'number' ? v : parseFloat(v);
+  if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
+  const limpo = String(v).trim().replace(',', '.');
+  const n = parseFloat(limpo);
   return Number.isFinite(n) ? n : 0;
 }
 
@@ -17,7 +19,10 @@ export function dinheiro(v: Dec | undefined): string {
 }
 
 export function inteiro(v: number | null | undefined): string {
-  return (v ?? 0).toLocaleString('pt-BR');
+  /* `?? 0` não pega NaN: null vira 0, mas NaN passa e sai "NaN" na tela — foi
+     o que apareceu em "NaN ordens faturadas" quando uma conta dividiu por uma
+     lista vazia. Um número absurdo na tela é pior do que um traço. */
+  return Number.isFinite(v) ? (v as number).toLocaleString('pt-BR') : '0';
 }
 
 export function litros(v: Dec | undefined): string {
@@ -84,4 +89,11 @@ export function haQuanto(dias: number | null | undefined): string {
   const meses = Math.floor(dias / 30);
   if (meses < 24) return `há ${meses} ${meses === 1 ? 'mês' : 'meses'}`;
   return `há ${Math.floor(dias / 365)} anos`;
+}
+
+/** Indica se o atendimento incluiu a substituição do filtro de ar:
+ *  Regra da oficina: se tem valor (> 0), foi trocado; se não tem valor, não foi trocado. */
+export function trocouFiltroAr(s: { valor_filtro_ar?: Dec } | null | undefined): boolean {
+  if (!s) return false;
+  return num(s.valor_filtro_ar) > 0;
 }

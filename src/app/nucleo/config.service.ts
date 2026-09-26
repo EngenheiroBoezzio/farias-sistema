@@ -181,14 +181,30 @@ export class ConfigService {
     } else if (t === 'claro') {
       temaEfetivo = 'light';
     } else {
-      // Adaptativo: baseado no sistema operacional ou horário (noite = dark)
-      const prefereEscuro = typeof window !== 'undefined' &&
-        window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-      const hora = new Date().getHours();
-      const ehNoite = hora < 6 || hora >= 18;
-      temaEfetivo = (prefereEscuro || ehNoite) ? 'dark' : 'light';
+      /* Adaptativo = o que o Windows está usando, e só isso.
+
+         Antes era `prefereEscuro || ehNoite`, com noite a partir das 18h: a
+         tela virava escura no fim da tarde mesmo com o Windows no claro, e
+         justamente no horário em que a oficina ainda está aberta. Ninguém
+         pediu, e não dava para entender por que tinha mudado. */
+      temaEfetivo = this.sistemaPrefereEscuro() ? 'dark' : 'light';
     }
     doc.setAttribute('data-theme', temaEfetivo);
+  }
+
+  private consultaEscuro?: MediaQueryList;
+
+  private sistemaPrefereEscuro(): boolean {
+    if (typeof window === 'undefined' || !window.matchMedia) return false;
+    if (!this.consultaEscuro) {
+      this.consultaEscuro = window.matchMedia('(prefers-color-scheme: dark)');
+      /* Quem escolheu "automático" espera que siga mesmo com o app aberto —
+         sem isto, só acompanhava quem fechasse e abrisse o programa. */
+      this.consultaEscuro.addEventListener('change', () => {
+        if (this.tema === 'adaptativo') this.aplicarAparencia();
+      });
+    }
+    return this.consultaEscuro.matches;
   }
 
   /** Determina se deve rodar a verificação de atualização periódica */
