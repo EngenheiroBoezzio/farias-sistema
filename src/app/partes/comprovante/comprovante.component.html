@@ -1,0 +1,38 @@
+<div class="modal-overlay" (click)="fechou.emit()">
+  <div class="modal-box comp-box" (click)="$event.stopPropagation()"
+       role="dialog" aria-modal="true" aria-labelledby="tit-comp">
+    <h2 id="tit-comp">Comprovante para o cliente</h2>
+
+    <!-- Os três passos, na ordem em que acontecem. O WhatsApp não aceita
+         receber imagem de fora — nem no canal, nem na conversa —, então
+         prometer "enviar" seria mentira na primeira vez que fosse usado. -->
+    <ol class="passos">
+      <li><b>Copiar a imagem</b> (ou baixar, se preferir anexar o arquivo)</li>
+      <li><b>Abrir a conversa</b> do cliente no WhatsApp</li>
+      <li><b>Colar</b> e enviar</li>
+    </ol>
+
+    <div class="comp-papel">
+      @if (gerando()) { <p class="carregando">Desenhando o comprovante…</p> }
+      <canvas #tela aria-label="Comprovante da ordem de serviço"></canvas>
+    </div>
+
+    @if (erroCopia(); as e) { <p class="hint erro">{{ e }}</p> }
+
+    <div class="modal-acoes">
+      <button type="button" class="btn btn-s" (click)="fechou.emit()">Fechar</button>
+      <span class="espaco"></span>
+      <button type="button" class="btn btn-s" (click)="baixar()" [disabled]="gerando()">Baixar PNG</button>
+      @if (dados().telefone) {
+        <button type="button" class="btn btn-s" (click)="abrirWhatsapp()">
+          Abrir conversa <span class="num-tel">{{ fTel(dados().telefone) }}</span>
+        </button>
+      } @else {
+        <span class="hint sem-tel">Este cliente não tem telefone cadastrado</span>
+      }
+      <button type="button" class="btn btn-p btn-lg" (click)="copiarImagem()" [disabled]="gerando()">
+        {{ copiado() ? 'Copiado!' : 'Copiar a imagem' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -92,14 +92,47 @@
                 </label>
                 <label class="f">
                   <span>Óleo utilizado</span>
-                  <input name="oleo" [(ngModel)]="f.oleo" maxlength="30"
+                  <input name="oleo" [(ngModel)]="f.oleo" (ngModelChange)="aoMudarOleo()"
+                         maxlength="30"
                          placeholder="ex.: 5W30 MOB" autocapitalize="characters">
                 </label>
                 <label class="f">
                   <span>Litros</span>
                   <input type="number" name="litros" [(ngModel)]="f.litros"
+                         (ngModelChange)="aoMudarOleo()"
                          min="0" max="30" step="0.25" inputmode="decimal" placeholder="ex.: 4.0">
                 </label>
+              </div>
+
+              <!-- O valor do óleo fica AQUI, colado no óleo e nos litros.
+
+                   Era o único item da ordem sem campo nenhum: sumia dentro do
+                   total junto com a mão de obra, e depois não havia como saber
+                   quanto daquela troca tinha sido óleo. Costuma ser o item mais
+                   caro da conta.
+
+                   O custo é o do litro vezes os litros — o mesmo óleo numa
+                   troca de 3,5 L e numa de 5 L não custa igual. -->
+              <div class="item-lin on item-oleo">
+                <div class="item-nome">
+                  <span class="item-marca item-fixo">Valor do óleo</span>
+                  <span class="item-custo">
+                    @if (custoOleo(); as cst) {
+                      custo {{ dinheiro(cst) }}
+                    } @else if (f.oleo) {
+                      <span class="sem-custo" title="Cadastre este óleo no Financeiro → Custos">sem custo</span>
+                    }
+                  </span>
+                </div>
+                <span class="item-cod item-vazio">
+                  @if (f.litros) { {{ f.litros }} L } @else { — }
+                </span>
+                <span class="item-val">
+                  <i aria-hidden="true">R$</i>
+                  <input type="number" name="vol" [(ngModel)]="f.valor_oleo"
+                         min="0" max="5000" step="0.01" inputmode="decimal"
+                         placeholder="0,00">
+                </span>
               </div>
 
               <!-- BLOCO DE CÁLCULO DA ETIQUETA / PRÓXIMA TROCA -->
@@ -182,6 +215,18 @@
             </div>
           </div>
 
+          <!-- Uma linha por filtro, com a marcação na frente.
+
+               Antes eram quatro caixas de código lado a lado e mais uma
+               caixinha de valor só para dois deles, noutro painel — e nada
+               dizia se a peça entrou ou não no carro. O catálogo sugere os
+               quatro códigos sempre; gravar todos faria o histórico dizer que
+               o carro trocou quatro filtros quando trocou um, e é justamente
+               esse histórico que a fila de recuperação lê para sugerir a
+               próxima visita.
+
+               Agora: marcou, entrou na ordem e soma no total. Não marcou, não
+               vai nada — nem código, nem valor. -->
           <div class="panel">
             <div class="panel-h">
               <b>Filtros</b>
@@ -190,60 +235,62 @@
                   <span class="pill p-pos"
                         title="O filtro de ar FOI substituído na última manutenção em {{ data(sfa.data) }}">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
-                    Filtro de ar trocado na última
+                    Ar trocado na última
                   </span>
                 } @else {
                   <span class="pill p-warn"
-                        title="O filtro de ar NÃO foi substituído na última manutenção em {{ data(sfa.data) }} — troca recomendada!">
+                        title="O filtro de ar NÃO foi substituído na última manutenção em {{ data(sfa.data) }} — troca recomendada">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                    Não trocou ar na última (Sugerir troca!)
+                    Não trocou ar na última
                   </span>
                 }
-              } @else {
-                <span class="meta">código da peça</span>
               }
+              <span class="meta">marque o que entrou no carro</span>
             </div>
-            <div class="panel-b">
-              <div class="f-row c2">
-                <label class="f"><span>Filtro de Óleo</span>
-                  <input name="cfo" [(ngModel)]="f.cod_filtro_oleo" maxlength="30"
-                         autocapitalize="characters" placeholder="ex.: WO170"></label>
-                <label class="f"><span>Filtro de Ar</span>
-                  <input name="cfa" [(ngModel)]="f.cod_filtro_ar" maxlength="30"
-                         autocapitalize="characters" placeholder="ex.: FAP5303"></label>
-              </div>
-              <div class="f-row c2">
-                <label class="f"><span>Filtro de Cabine</span>
-                  <input name="cfc" [(ngModel)]="f.cod_filtro_cabine" maxlength="30"
-                         autocapitalize="characters" placeholder="ex.: AKX1215"></label>
-                <label class="f"><span>Filtro de Combustível</span>
-                  <input name="cfk" [(ngModel)]="f.cod_filtro_combustivel" maxlength="30"
-                         autocapitalize="characters" placeholder="ex.: FCI1630"></label>
-              </div>
-              @if (c.filtros && c.filtros.origem) {
-                <p class="hint">Sugerido por: <b>{{ c.filtros.origem }}</b></p>
-              }
-            </div>
-          </div>
-        </div>
+            <div class="panel-b sem-respiro">
+              @for (def of FILTROS; track def.chave) {
+                <div class="item-lin" [class.on]="trocar[def.chave]">
+                  <div class="item-nome">
+                    <label class="check sem-margem item-marca">
+                      <input type="checkbox" [checked]="trocar[def.chave]"
+                             (change)="alternarFiltro(def.chave)">
+                      <span>{{ def.rotulo }}</span>
+                    </label>
+                    <span class="item-custo">
+                      @if (trocar[def.chave]) {
+                        @if (custoFiltro(def.chave); as cst) {
+                          custo {{ dinheiro(cst) }}
+                        } @else if (codDe(def.chave)) {
+                          <span class="sem-custo" title="Cadastre este código no Financeiro → Custos">sem custo</span>
+                        }
+                      }
+                    </span>
+                  </div>
 
-        <div class="panel">
-          <div class="panel-h"><h2>Valores</h2></div>
-          <div class="panel-b">
-            <div class="f-row c2">
-              <label class="f"><span>Filtro de óleo (R$)</span>
-                <input type="number" name="vfo" [(ngModel)]="f.valor_filtro_oleo"
-                       min="0" max="5000" step="0.01" inputmode="decimal"></label>
-              <label class="f"><span>Filtro de ar (R$)</span>
-                <input type="number" name="vfa" [(ngModel)]="f.valor_filtro_ar"
-                       min="0" max="5000" step="0.01" inputmode="decimal"></label>
+                  <input class="item-cod" [ngModel]="codDe(def.chave)"
+                         (ngModelChange)="setCod(def.chave, $event)"
+                         [ngModelOptions]="{ standalone: true }"
+                         [attr.name]="'cod_' + def.chave" maxlength="30"
+                         autocapitalize="characters" [placeholder]="def.exemplo"
+                         [disabled]="!trocar[def.chave]">
+
+                  <span class="item-val">
+                    <i aria-hidden="true">R$</i>
+                    <input type="number" [ngModel]="valorDe(def.chave)"
+                           (ngModelChange)="setValor(def.chave, $event)"
+                           [ngModelOptions]="{ standalone: true }"
+                           [attr.name]="'val_' + def.chave"
+                           min="0" max="5000" step="0.01" inputmode="decimal"
+                           placeholder="0,00" [disabled]="!trocar[def.chave]">
+                  </span>
+
+                </div>
+              }
+
+              @if (c.filtros && c.filtros.origem) {
+                <p class="hint recuo-lin">Códigos sugeridos por: <b>{{ c.filtros.origem }}</b></p>
+              }
             </div>
-            @if (somaItens() > 0) {
-              <p class="hint">
-                Filtros somam <b>{{ dinheiro(somaItens()) }}</b> — o total inclui
-                o óleo e a mão de obra.
-              </p>
-            }
           </div>
         </div>
 
@@ -262,14 +309,81 @@
                      min="0" max="20000" step="0.01" inputmode="decimal" placeholder="0,00">
             </span>
           </label>
+
+          <!-- A conta aberta, ao lado do total e não depois dele.
+
+               A tela NÃO preenche o total sozinha: a mão de obra não é
+               digitada em lugar nenhum, e fechar a conta pela soma das peças
+               cobraria a menos — erro que só apareceria no fechamento do mês.
+               Então ela mostra os dois lados e deixa quem está no balcão
+               decidir. -->
+          @if (somaItens() > 0 || custoTotal() > 0) {
+            <div class="fecha-conta">
+              <span class="fc-item">
+                <b>{{ dinheiro(somaItens()) }}</b>
+                <small>peças</small>
+              </span>
+              @if (f.total) {
+                <span class="fc-item">
+                  <b [class.negativo]="restoDoTotal() < 0">{{ dinheiro(restoDoTotal()) }}</b>
+                  <small>{{ restoDoTotal() < 0 ? 'peças passam do total' : 'mão de obra' }}</small>
+                </span>
+              }
+              @if (custoTotal() > 0) {
+                <span class="fc-item">
+                  <b>{{ dinheiro(custoTotal()) }}</b>
+                  <small>custo das peças</small>
+                </span>
+                @if (f.total) {
+                  <span class="fc-item fc-margem">
+                    <b [class.negativo]="margem() < 0"
+                       [class.positivo]="margem() >= 0">{{ dinheiro(margem()) }}</b>
+                    <small>{{ custoIncompleto() ? 'margem (incompleta)' : 'margem' }}</small>
+                  </span>
+                }
+              }
+            </div>
+          }
+
           <span class="espaco"></span>
           <button type="submit" class="btn btn-p btn-lg" [disabled]="enviando()">
             @if (enviando()) { <span class="girando" aria-hidden="true"></span> }
             {{ enviando() ? 'Gravando…' : 'Registrar a ordem' }}
           </button>
         </div>
+
+        <!-- Custo faltando não é custo zero. Uma margem calculada com item
+             sem cadastro parece exata e está alta: a tela diz isso em vez de
+             deixar o número sozinho. -->
+        @if (custoIncompleto() && custoTotal() > 0) {
+          <p class="hint aviso-custo">
+            Algum item desta ordem não tem custo cadastrado, então a margem
+            acima está <b>maior que a real</b>. Cadastre em
+            <a routerLink="/financeiro">Financeiro → Custos</a>.
+          </p>
+        }
       </form>
     </div>
+  }
+
+  <!-- Depois que a ordem entra, o comprovante fica à mão até a próxima busca.
+
+       Não abre sozinho: nem todo cliente quer receber, e um modal pulando na
+       cara de quem já está atendendo o próximo carro seria atrapalhar. -->
+  @if (comprovante(); as cp) {
+    <div class="alerta ok-comprovante" role="status">
+      <b>Ordem registrada · {{ cp.cliente }}</b>
+      <span>
+        Quer mandar o comprovante no WhatsApp dele?
+        <button type="button" class="btn btn-s" (click)="mostrarComprovante.set(true)">
+          Ver o comprovante
+        </button>
+      </span>
+    </div>
+  }
+
+  @if (mostrarComprovante() && comprovante(); as cp) {
+    <app-comprovante [dados]="cp" (fechou)="mostrarComprovante.set(false)" />
   }
 
   @if (selo(); as s) {

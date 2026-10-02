@@ -36,7 +36,12 @@ export interface Painel {
     com_telefone: number; com_nascimento: number;
     ticket: Dec;
   };
-  serie: { mes: string; n: number; valor: Dec }[];
+  /* `custo` é a soma, no banco, do custo copiado em cada ordem do mês.
+     `custo_conhecido` diz em quantas ordens desse mês havia algum custo
+     gravado — sem isso não dá para distinguir "o mês custou zero" de
+     "ninguém cadastrou preço ainda", que dão o mesmo número e significam
+     coisas opostas. */
+  serie: { mes: string; n: number; valor: Dec; custo?: Dec; custo_conhecido?: number }[];
   oleos: { nome: string; n: number }[];
   ultimas: {
     data: string; total: Dec; oleo: string | null;
@@ -214,8 +219,21 @@ export interface Servico {
   cliente?: string;
   veiculo_id?: number;
   cliente_id?: number;
+  /** quanto foi cobrado pelo óleo — nulo nas ordens anteriores a 26/09/2026 */
+  valor_oleo?: Dec;
   valor_filtro_oleo?: Dec;
   valor_filtro_ar?: Dec;
+  valor_filtro_cabine?: Dec;
+  valor_filtro_combustivel?: Dec;
+  /* Custo COPIADO no dia do lançamento, não lido da lista de preços na hora
+     de montar o relatório: se fosse lido, o fornecedor subir o óleo mudaria
+     a margem de ordens fechadas meses atrás. Nulo quer dizer "o item não
+     tinha custo cadastrado", que é diferente de "custou zero". */
+  custo_oleo?: Dec;
+  custo_filtro_oleo?: Dec;
+  custo_filtro_ar?: Dec;
+  custo_filtro_cabine?: Dec;
+  custo_filtro_combustivel?: Dec;
   cod_filtro_oleo?: string | null;
   cod_filtro_ar?: string | null;
   cod_filtro_cabine?: string | null;
@@ -333,3 +351,24 @@ export interface RespostaNotificacoes {
   erros: number;
   notificacoes: Notificacao[];
 }
+
+/* ---------- lista de preços da oficina ---------- */
+export type TipoPreco = 'oleo' | 'filtro_oleo' | 'filtro_ar'
+                      | 'filtro_cabine' | 'filtro_combustivel';
+
+export interface PrecoItem {
+  id: number;
+  tipo: TipoPreco;
+  /** o óleo como o balcão digita, ou o código do filtro — sempre em maiúscula */
+  chave: string;
+  descricao?: string | null;
+  /** óleo se compra por litro; filtro, por peça */
+  unidade: 'litro' | 'peca';
+  custo: Dec;
+  venda: Dec;
+  ativo?: 0 | 1;
+  atualizado_em?: string;
+  atualizado_por?: string | null;
+}
+
+export interface RespostaPrecos { itens: PrecoItem[]; total: number; }

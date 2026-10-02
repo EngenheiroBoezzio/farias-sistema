@@ -85,7 +85,9 @@ export class DadosService {
   }
   registrarServico(corpo: {
     placa: string; data?: string; km?: number; oleo?: string; litros?: number;
-    total?: number; valor_filtro_oleo?: number; valor_filtro_ar?: number;
+    total?: number; valor_oleo?: number;
+    valor_filtro_oleo?: number; valor_filtro_ar?: number;
+    valor_filtro_cabine?: number; valor_filtro_combustivel?: number;
     cod_filtro_oleo?: string; cod_filtro_ar?: string;
     cod_filtro_cabine?: string; cod_filtro_combustivel?: string;
   }) {
@@ -135,6 +137,23 @@ export class DadosService {
   }
   historicoAvisos(veiculo_id: number) {
     return this.api.get<{ avisos: any[] }>('/api/avisos', { veiculo_id });
+  }
+
+  /* ---------- lista de preços ---------- */
+  /* Quanto a oficina paga e quanto cobra, por óleo e por filtro. Qualquer um
+     logado LÊ — o balcão precisa ver o custo enquanto monta a ordem. Só admin
+     grava. O custo que vai para a ordem é copiado no servidor, nunca enviado
+     daqui: margem não pode depender do que o navegador manda. */
+  precos(tipo?: T.TipoPreco, todos = false) {
+    return this.api.get<T.RespostaPrecos>('/api/precos',
+      { tipo, todos: todos ? 1 : undefined });
+  }
+  salvarPreco(corpo: { tipo: T.TipoPreco; chave: string; descricao?: string | null;
+                       custo?: number | null; venda?: number | null }) {
+    return this.api.post<{ item: T.PrecoItem; aviso: string | null }>('/api/precos', corpo);
+  }
+  desativarPreco(id: number) {
+    return this.api.delete<{ ok: boolean; desativado: number }>(`/api/precos/${id}`);
   }
 
   /* ---------- configurações da loja ---------- */

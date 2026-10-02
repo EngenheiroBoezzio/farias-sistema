@@ -123,11 +123,17 @@
           <span class="val">{{ dinheiro(totais().faturamento) }}</span>
           <span class="sub">{{ inteiro(totais().ordens) }} ordens faturadas</span>
         </div>
+        <!-- O rótulo passou a ser "Tudo que saiu" porque o número deixou de
+             ser só conta lançada à mão: agora carrega junto o custo das peças
+             que saíram nas ordens. Manter "Despesas lançadas" com "0 contas"
+             embaixo e um valor em cima seria a tela se contradizendo. -->
         <div class="kpi-item">
-          <span class="rot">Despesas lançadas</span>
+          <span class="rot">Tudo que saiu</span>
           <span class="val">{{ dinheiro(totais().despesasTotais) }}</span>
           <span class="sub">
-            @if (totais().contasPendentes > 0) {
+            @if (totais().custoPecas > 0) {
+              {{ dinheiro(totais().custoPecas) }} em peças · {{ todasDespesas().length }} contas
+            } @else if (totais().contasPendentes > 0) {
               {{ dinheiro(totais().contasPendentes) }} ainda a pagar
             } @else {
               {{ todasDespesas().length }} contas
@@ -170,8 +176,17 @@
                   <td class="num forte">{{ dinheiro(totais().faturamento) }}</td>
                   <td class="num pct">100,0%</td>
                 </tr>
+                <!-- Duas linhas, e não uma: "compra lançada em Despesas" e
+                     "peça que saiu na ordem" são dinheiros diferentes, e
+                     juntar os dois num total só esconderia exatamente a
+                     dupla contagem que a nota abaixo avisa. -->
                 <tr class="recuo">
-                  <td>(−) Insumos e peças</td>
+                  <td>(−) Custo das peças nas ordens</td>
+                  <td class="num">({{ dinheiro(totais().custoPecas) }})</td>
+                  <td class="num pct">{{ fatia(totais().custoPecas) }}</td>
+                </tr>
+                <tr class="recuo">
+                  <td>(−) Insumos lançados em Despesas</td>
                   <td class="num">({{ dinheiro(totais().custosInsumos) }})</td>
                   <td class="num pct">{{ fatia(totais().custosInsumos) }}</td>
                 </tr>
@@ -203,11 +218,26 @@
                 </tr>
               </tfoot>
             </table>
-            <p class="nota-atencao">
-              Isto desconta só o que foi <b>lançado à mão</b> em Despesas. O óleo
-              e o filtro que saem do estoque a cada ordem ainda não entram na
-              conta, então a sobra real é menor que a de cima.
-            </p>
+            @if (totais().semCusto) {
+              <p class="nota-atencao">
+                Nenhuma ordem deste período tem <b>custo de peça gravado</b>, então
+                isto desconta só o que foi lançado à mão em Despesas e a sobra real
+                é menor que a de cima. Cadastre os óleos e filtros na aba
+                <b>Custos</b>: a partir daí toda ordem nova já entra com o custo.
+              </p>
+            } @else if (totais().riscoDuplicidade) {
+              <p class="nota-atencao">
+                <b>Cuidado com dinheiro contado duas vezes.</b> Este período tem
+                custo de peça nas ordens <i>e</i> despesas na categoria Insumos. Se
+                a compra do tambor de óleo foi lançada nas duas, a sobra está menor
+                que a real — use Insumos só para o que não sai por ordem.
+              </p>
+            } @else {
+              <p class="hint recuo-lin">
+                A sobra já desconta o óleo e os filtros que saíram nas ordens,
+                pelo custo do dia em que cada ordem foi lançada.
+              </p>
+            }
           </div>
         </div>
       </div>
@@ -430,6 +460,140 @@
       </div>
     }
 
+    <!-- ===================== CUSTOS ===================== -->
+    @if (abaAtiva() === 'custos') {
+      <div class="panel">
+        <div class="panel-h">
+          <h2>Custo do óleo e dos filtros</h2>
+          <span class="meta">
+            {{ precos().length }} {{ precos().length === 1 ? 'item' : 'itens' }}
+            @if (precosSemCusto() > 0) { · {{ precosSemCusto() }} sem custo }
+          </span>
+        </div>
+
+        <!-- Esta lista é a origem de TODO custo do sistema. Antes dela, o
+             banco só guardava o que foi cobrado do cliente; o que a oficina
+             paga não existia em lugar nenhum. Por isso a explicação fica em
+             cima e não escondida num rodapé. -->
+        <p class="nota-atencao">
+          <b>O custo entra aqui, e em nenhum outro lugar.</b> O que for
+          cadastrado nesta lista é copiado para dentro de cada ordem nova, no
+          dia em que ela é lançada — por isso subir o preço de um óleo hoje
+          não mexe na margem das ordens já fechadas.
+        </p>
+
+        <div class="panel-b">
+          <form class="preco-form" (ngSubmit)="salvarPreco()" novalidate>
+            <label class="f">
+              <span>Tipo</span>
+              <select [ngModel]="tipoNovo()" (ngModelChange)="tipoNovo.set($event)" name="tipo">
+                @for (d of TIPOS_PRECO; track d.tipo) {
+                  <option [value]="d.tipo">{{ d.rotulo }}</option>
+                }
+              </select>
+            </label>
+            <label class="f">
+              <span>{{ tipoNovo() === 'oleo' ? 'Óleo' : 'Código da peça' }}</span>
+              <input [(ngModel)]="novoPreco.chave" name="chave" maxlength="40"
+                     autocapitalize="characters" spellcheck="false"
+                     [placeholder]="tipoNovo() === 'oleo' ? 'ex.: 5W30 MOB' : 'ex.: WO170'">
+            </label>
+            <label class="f">
+              <span>Descrição <small>opcional</small></span>
+              <input [(ngModel)]="novoPreco.descricao" name="desc" maxlength="80"
+                     placeholder="ex.: Mobil Super 5W30">
+            </label>
+            <label class="f estreito">
+              <span>Custo (R$) <small>{{ tipoNovo() === 'oleo' ? 'por litro' : 'por peça' }}</small></span>
+              <input type="number" [(ngModel)]="novoPreco.custo" name="custo"
+                     min="0" max="99999" step="0.01" inputmode="decimal" placeholder="0,00">
+            </label>
+            <label class="f estreito">
+              <span>Venda (R$) <small>{{ tipoNovo() === 'oleo' ? 'por litro' : 'por peça' }}</small></span>
+              <input type="number" [(ngModel)]="novoPreco.venda" name="venda"
+                     min="0" max="99999" step="0.01" inputmode="decimal" placeholder="0,00">
+            </label>
+            <button type="submit" class="btn btn-p" [disabled]="salvandoPreco()">
+              @if (salvandoPreco()) { <span class="girando" aria-hidden="true"></span> }
+              {{ salvandoPreco() ? 'Gravando…' : 'Salvar item' }}
+            </button>
+          </form>
+
+          <!-- O óleo é o único item cujo custo depende da quantidade. Dizer
+               isto aqui evita alguém cadastrar o preço do tambor inteiro. -->
+          @if (tipoNovo() === 'oleo') {
+            <p class="hint">
+              Óleo é <b>por litro</b>: na ordem, o sistema multiplica pelos
+              litros que entraram no carro.
+            </p>
+          }
+
+          @if (erroPreco(); as e) { <p class="hint erro">{{ e }}</p> }
+          @if (avisoPreco(); as a) { <p class="hint aviso-custo">{{ a }}</p> }
+        </div>
+
+        @if (carregandoPrecos()) {
+          <p class="carregando">Buscando a lista de custos…</p>
+        } @else if (precos().length === 0) {
+          <div class="vazio-acao">
+            <b>Nenhum custo cadastrado ainda</b>
+            <p>Enquanto esta lista estiver vazia, o fechamento mensal continua
+               mostrando uma sobra maior que a real — ele desconta só o que foi
+               lançado à mão em Despesas. Comece pelos óleos que mais saem.</p>
+          </div>
+        } @else {
+          <div class="panel-b">
+            <input class="cmd-busca" [ngModel]="buscaPrecos()" (ngModelChange)="buscaPrecos.set($event)"
+                   name="buscaPrecos" placeholder="Buscar óleo ou código da peça"
+                   autocomplete="off" spellcheck="false">
+          </div>
+
+          @for (g of precosFiltrados(); track g.tipo) {
+            <div class="tbl-wrap">
+              <table>
+                <caption class="visualmente-oculto">{{ g.rotulo }}</caption>
+                <thead>
+                  <tr>
+                    <th>{{ g.rotulo }} <span class="sub">{{ g.unidade }}</span></th>
+                    <th>Descrição</th>
+                    <th class="num">Custo</th>
+                    <th class="num">Venda</th>
+                    <th class="num">Margem</th>
+                    <th class="acao-col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (i of g.itens; track i.id) {
+                    <tr [class.inativo]="i.ativo === 0">
+                      <td class="mono">{{ i.chave }}</td>
+                      <td>{{ i.descricao || '—' }}</td>
+                      <td class="num">
+                        @if (i.custo != null) { {{ dinheiro(i.custo) }} }
+                        @else { <span class="sem-custo">não cadastrado</span> }
+                      </td>
+                      <td class="num">{{ i.venda != null ? dinheiro(i.venda) : '—' }}</td>
+                      <td class="num">
+                        @if (margemDe(i); as m) {
+                          <b [class.positivo]="m >= 0" [class.negativo]="m < 0">{{ dinheiro(m) }}</b>
+                          @if (margemPct(i); as pct) { <small class="pct-inline">{{ pct }}%</small> }
+                        } @else { — }
+                      </td>
+                      <td class="acao-col">
+                        <button type="button" class="btn btn-g" (click)="editarPreco(i)">Editar</button>
+                        @if (i.ativo !== 0) {
+                          <button type="button" class="btn btn-g perigo" (click)="desativarPreco(i)">Desativar</button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        }
+      </div>
+    }
+
     <!-- As abas ficam no rodapé e grudadas nele, como as abas de uma planilha.
          É onde quem usa Excel procura, e sticky para não sumirem ao rolar. -->
     <div class="abas" role="tablist" aria-label="Seções do financeiro">
@@ -442,6 +606,10 @@
       <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'despesas'"
               [class.on]="abaAtiva() === 'despesas'" (click)="mudarAba('despesas')">
         Despesas <span class="conta">{{ todasDespesas().length }}</span>
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'custos'"
+              [class.on]="abaAtiva() === 'custos'" (click)="mudarAba('custos')">
+        Custos <span class="conta">{{ precos().length }}</span>
       </button>
       <button type="button" role="tab" [attr.aria-selected]="abaAtiva() === 'dre'"
               [class.on]="abaAtiva() === 'dre'" (click)="mudarAba('dre')">Fechamento mensal</button>

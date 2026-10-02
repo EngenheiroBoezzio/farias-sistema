@@ -26,7 +26,14 @@ export interface ConsolidadoMes {
   faturamentoOrdens: number;
   receitasExtras: number;
   faturamentoTotal: number;
-  custoInsumos: number; // Peças e lubrificantes comprados
+  custoInsumos: number; // Peças e lubrificantes lançados à mão em Despesas
+  /* Custo das peças que saíram nas ordens do mês, somado no banco a partir
+     do que foi copiado em cada ordem. É coisa DIFERENTE de custoInsumos: um
+     é a compra lançada como despesa, o outro é o consumo por ordem. Somar os
+     dois conta o mesmo dinheiro duas vezes — a tela avisa quando há risco. */
+  custoPecas: number;
+  /** Em quantas ordens do mês havia custo gravado. Zero = ninguém cadastrou. */
+  ordensComCusto: number;
   despesasFixas: number; // Aluguel, luz, água, internet
   despesasPessoal: number; // Salários e encargos
   despesasOperacionais: number; // Taxas de cartão, manutenção
@@ -134,7 +141,8 @@ export class FinanceiroService {
    * Consolida os números reais de um mês combinando o faturamento do banco de dados
    * com todas as despesas reais lançadas.
    */
-  consolidarMes(anoMes: string, faturamentoOrdens: number, numOrdens: number): ConsolidadoMes {
+  consolidarMes(anoMes: string, faturamentoOrdens: number, numOrdens: number,
+                custoPecas = 0, ordensComCusto = 0): ConsolidadoMes {
     const despesas = this.obterDespesasMes(anoMes);
 
     let custoInsumos = 0;
@@ -161,7 +169,12 @@ export class FinanceiroService {
     }
 
     const faturamentoTotal = Math.round(Number(faturamentoOrdens) * 100) / 100;
-    const despesasTotais = Math.round((custoInsumos + despesasFixas + despesasPessoal + despesasOperacionais) * 100) / 100;
+    const pecas = Math.round((Number(custoPecas) || 0) * 100) / 100;
+    /* O custo das peças entra no total de despesas do mês: é dinheiro que
+       saiu, mesmo tendo saído do estoque em vez do caixa. Sem ele, a "sobra"
+       era faturamento menos conta paga à mão — sempre maior que a real, que é
+       exatamente o que o aviso amarelo do Resumo dizia. */
+    const despesasTotais = Math.round((custoInsumos + pecas + despesasFixas + despesasPessoal + despesasOperacionais) * 100) / 100;
     const lucroLiquido = Math.round((faturamentoTotal - despesasTotais) * 100) / 100;
     const margemLiquida = faturamentoTotal > 0 ? (lucroLiquido / faturamentoTotal) * 100 : 0;
     const pontoEquilibrio = Math.round((despesasFixas + despesasPessoal + despesasOperacionais) * 100) / 100;
@@ -173,6 +186,8 @@ export class FinanceiroService {
       receitasExtras: 0,
       faturamentoTotal,
       custoInsumos: Math.round(custoInsumos * 100) / 100,
+      custoPecas: pecas,
+      ordensComCusto: Number(ordensComCusto) || 0,
       despesasFixas: Math.round(despesasFixas * 100) / 100,
       despesasPessoal: Math.round(despesasPessoal * 100) / 100,
       despesasOperacionais: Math.round(despesasOperacionais * 100) / 100,

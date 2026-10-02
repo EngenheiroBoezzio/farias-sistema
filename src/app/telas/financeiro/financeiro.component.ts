@@ -20,7 +20,7 @@ import { Chart } from 'chart.js/auto';
 import { DadosService } from '../../nucleo/dados.service';
 import { ConfigService, TipoGrafico } from '../../nucleo/config.service';
 import { FinanceiroService, Despesa, ConsolidadoMes, ROTULOS_CATEGORIAS } from '../../nucleo/financeiro.service';
-import { Painel, Servico } from '../../nucleo/tipos';
+import { Painel, Servico, PrecoItem, TipoPreco } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
 import { dinheiro, inteiro, num, mesCurto, data, placa } from '../../nucleo/formato';
 import { SinoComponent } from '../../partes/sino/sino.component';
@@ -28,7 +28,7 @@ import { SeloComponent } from '../../partes/selo/selo.component';
 import { ModalDespesaComponent } from '../../partes/modal-despesa/modal-despesa.component';
 
 export type FiltroPeriodo = '6m' | '12m' | 'ano' | 'tudo';
-export type AbaFinanceiro = 'visao_geral' | 'ordens' | 'despesas' | 'dre';
+export type AbaFinanceiro = 'visao_geral' | 'ordens' | 'despesas' | 'custos' | 'dre';
 
 const MESES_NOMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -67,6 +67,121 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
   buscaDespesas = signal('');
   categoriaFiltro = signal<string>('todas');
 
+  /* ---------- custos de óleo e filtro ----------
+
+     Esta lista não existia em lugar nenhum: toda coluna `valor_*` da ordem é
+     o que foi COBRADO do cliente, e os catálogos Wega e de óleo dizem qual
+     peça serve em qual carro, sem preço. Sem alguém cadastrar aqui, não há
+     de onde "puxar" custo — e a sobra do fechamento continua maior que a
+     real, como o aviso amarelo do Resumo diz. */
+  precos = signal<PrecoItem[]>([]);
+  carregandoPrecos = signal(false);
+  erroPreco = signal<string | null>(null);
+  avisoPreco = signal<string | null>(null);
+  salvandoPreco = signal(false);
+  buscaPrecos = signal('');
+  tipoNovo = signal<TipoPreco>('oleo');
+
+  novoPreco: { chave: string; descricao: string; custo: number | null; venda: number | null } =
+    { chave: '', descricao: '', custo: null, venda: null };
+
+  readonly TIPOS_PRECO: { tipo: TipoPreco; rotulo: string; exemplo: string; unidade: string }[] = [
+    { tipo: 'oleo',               rotulo: 'Óleo',                  exemplo: '5W30 MOB', unidade: 'por litro' },
+    { tipo: 'filtro_oleo',        rotulo: 'Filtro de óleo',        exemplo: 'WO170',    unidade: 'por peça' },
+    { tipo: 'filtro_ar',          rotulo: 'Filtro de ar',          exemplo: 'FAP5303',  unidade: 'por peça' },
+    { tipo: 'filtro_cabine',      rotulo: 'Filtro de cabine',      exemplo: 'AKX1215',  unidade: 'por peça' },
+    { tipo: 'filtro_combustivel', rotulo: 'Filtro de combustível', exemplo: 'FCI1630',  unidade: 'por peça' }
+  ];
+
+  rotuloTipo(t: TipoPreco): string {
+    return this.TIPOS_PRECO.find(x => x.tipo === t)?.rotulo || t;
+  }
+
+  /** A lista filtrada pela busca, agrupada por tipo para a tabela. */
+  precosFiltrados = computed(() => {
+    const b = this.buscaPrecos().trim().toUpperCase();
+    const itens = b
+      ? this.precos().filter(i =>
+          i.chave.toUpperCase().includes(b) ||
+          (i.descricao || '').toUpperCase().includes(b))
+      : this.precos();
+    return this.TIPOS_PRECO
+      .map(def => ({ ...def, itens: itens.filter(i => i.tipo === def.tipo) }))
+      .filter(g => g.itens.length > 0);
+  });
+
+  /** Quantos itens não têm custo — é o que falta para a margem fechar. */
+  precosSemCusto = computed(() => this.precos().filter(i => i.custo == null).length);
+
+  margemDe(i: PrecoItem): number | null {
+    if (i.custo == null || i.venda == null) return null;
+    return num(i.venda as any) - num(i.custo as any);
+  }
+
+  margemPct(i: PrecoItem): number | null {
+    const m = this.margemDe(i);
+    const v = num(i.venda as any);
+    if (m == null || !(v > 0)) return null;
+    return Math.round((m / v) * 100);
+  }
+
+  carregarPrecos(): void {
+    this.carregandoPrecos.set(true);
+    this.erroPreco.set(null);
+    this.dados.precos(undefined, true).subscribe({
+      next: r => { this.precos.set(r.itens || []); this.carregandoPrecos.set(false); },
+      error: (e: ErroApi) => {
+        this.carregandoPrecos.set(false);
+        this.erroPreco.set(e.status === 404
+          ? 'O servidor ainda não tem a rota de custos — atualize a API.'
+          : e.mensagem);
+      }
+    });
+  }
+
+  salvarPreco(): void {
+    const chave = (this.novoPreco.chave || '').trim();
+    if (!chave) { this.erroPreco.set('Informe o óleo ou o código do filtro.'); return; }
+    this.salvandoPreco.set(true);
+    this.erroPreco.set(null); this.avisoPreco.set(null);
+    this.dados.salvarPreco({
+      tipo: this.tipoNovo(),
+      chave,
+      descricao: this.novoPreco.descricao || null,
+      custo: this.novoPreco.custo,
+      venda: this.novoPreco.venda
+    }).subscribe({
+      next: r => {
+        this.salvandoPreco.set(false);
+        /* O servidor grava e AVISA quando a venda ficou abaixo do custo, em
+           vez de recusar: promoção e queima de estoque existem. Quem decide
+           é quem está olhando a tela. */
+        if (r.aviso) this.avisoPreco.set(r.aviso);
+        this.novoPreco = { chave: '', descricao: '', custo: null, venda: null };
+        this.selo.set('Custo salvo');
+        this.carregarPrecos();
+      },
+      error: (e: ErroApi) => { this.salvandoPreco.set(false); this.erroPreco.set(e.mensagem); }
+    });
+  }
+
+  editarPreco(i: PrecoItem): void {
+    this.tipoNovo.set(i.tipo);
+    this.novoPreco = {
+      chave: i.chave,
+      descricao: i.descricao || '',
+      custo: i.custo != null ? num(i.custo as any) : null,
+      venda: i.venda != null ? num(i.venda as any) : null
+    };
+  }
+
+  desativarPreco(i: PrecoItem): void {
+    this.dados.desativarPreco(i.id).subscribe({
+      next: () => { this.selo.set('Item desativado'); this.carregarPrecos(); },
+      error: (e: ErroApi) => this.erroPreco.set(e.mensagem)
+    });
+  }
+
   // Despesas
   todasDespesas = signal<Despesa[]>([]);
   modalDespesaAberto = signal(false);
@@ -83,9 +198,16 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
     .map(chave => ({ chave, ...ROTULOS_CATEGORIAS[chave] }));
 
   /** O que sobra das saídas depois de insumos, pessoal e contas fixas. */
+  /* O que sobra da conta depois das linhas nomeadas da cascata.
+
+     O custo das peças entrou em `despesasTotais` e ganhou linha própria; sem
+     descontá-lo aqui ele aparecia DUAS vezes na cascata — na linha dele e
+     dentro de "Operacional e o resto". O rodapé "Sobrou" continuava certo,
+     que é o pior jeito de errar: o total fecha e as linhas não. */
   outrasSaidas = computed(() => {
     const t = this.totais();
-    const resto = t.despesasTotais - t.custosInsumos - t.despesasPessoal - t.despesasFixas;
+    const resto = t.despesasTotais - t.custoPecas - t.custosInsumos
+                - t.despesasPessoal - t.despesasFixas;
     return Math.round(Math.max(0, resto) * 100) / 100;
   });
 
@@ -130,7 +252,11 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
     return p.serie.map(s => {
       const fat = num(s.valor);
       const ord = s.n;
-      return this.financeiroService.consolidarMes(s.mes, fat, ord);
+      /* O custo vem somado do banco, mês a mês. Somar do lado de cá seria
+         somar as 100 ordens que a tela carrega e chamar isso de "o mês" —
+         com 9 mil ordens na base, um número errado com cara de certo. */
+      return this.financeiroService.consolidarMes(
+        s.mes, fat, ord, num(s.custo as any), Number(s.custo_conhecido) || 0);
     });
   });
 
@@ -161,6 +287,8 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
     const lista = this.mesesFiltrados();
     let faturamento = 0;
     let custosInsumos = 0;
+    let custoPecas = 0;
+    let ordensComCusto = 0;
     let despesasFixas = 0;
     let despesasPessoal = 0;
     let despesasOperacionais = 0;
@@ -171,6 +299,8 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
     for (const m of lista) {
       faturamento += m.faturamentoTotal;
       custosInsumos += m.custoInsumos;
+      custoPecas += m.custoPecas;
+      ordensComCusto += m.ordensComCusto;
       despesasFixas += m.despesasFixas;
       despesasPessoal += m.despesasPessoal;
       despesasOperacionais += m.despesasOperacionais;
@@ -188,6 +318,15 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
     return {
       faturamento,
       custosInsumos: Math.round(custosInsumos * 100) / 100,
+      custoPecas: Math.round(custoPecas * 100) / 100,
+      ordensComCusto,
+      /* Nenhuma ordem do período tem custo gravado: ou a lista de preços está
+         vazia, ou as ordens são anteriores a esta versão. Nos dois casos a
+         sobra continua otimista, e a tela precisa dizer isso. */
+      semCusto: ordensComCusto === 0,
+      /* Risco de contar o mesmo dinheiro duas vezes: a compra do tambor
+         lançada em Despesas → Insumos E o consumo por ordem. */
+      riscoDuplicidade: custosInsumos > 0 && custoPecas > 0,
       despesasFixas: Math.round(despesasFixas * 100) / 100,
       despesasPessoal: Math.round(despesasPessoal * 100) / 100,
       despesasOperacionais: Math.round(despesasOperacionais * 100) / 100,
@@ -329,6 +468,12 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
     this.abaAtiva.set(aba);
     if (aba === 'visao_geral') {
       setTimeout(() => this.renderizarGraficos(), 40);
+    }
+    /* A lista de custos só é buscada quando alguém abre a aba, e não no
+       carregamento da tela: quem entra no Financeiro para ver o mês não
+       precisa esperar por ela. */
+    if (aba === 'custos' && !this.precos().length && !this.carregandoPrecos()) {
+      this.carregarPrecos();
     }
   }
 

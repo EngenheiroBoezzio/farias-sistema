@@ -1509,3 +1509,124 @@ td.mono{font-family:var(--code);font-size:var(--t-xs)}
 @media(max-width:1000px){
   .post-campo{min-height:200px}
 }
+
+/* ===========================================================
+   Linhas de item da ordem: óleo e os quatro filtros
+   =========================================================== */
+
+/* Uma linha por item, com a marcação na frente. Grade fixa e não flex: as
+   quatro colunas têm que ficar alinhadas entre as cinco linhas, senão os
+   valores em R$ dançam e a conferência antes de gravar deixa de ser visual. */
+/* Três colunas, não quatro. O custo cabia na quarta só enquanto o painel era
+   largo; dentro da grade de dois painéis ele era cortado no canto direito.
+   Embaixo do nome ele sobra espaço e ainda lê melhor: "Filtro de óleo /
+   custo R$ 14,20" é uma informação só. */
+.item-lin{display:grid;grid-template-columns:minmax(132px,1.15fr) minmax(86px,1fr) 116px;
+  gap:10px;align-items:center;padding:9px 17px;border-bottom:1px solid var(--bd)}
+.item-nome{display:flex;flex-direction:column;gap:1px;min-width:0}
+.item-lin:last-of-type{border-bottom:0}
+/* Desmarcado fica apagado, mas continua legível: é oferta que o atendente
+   ainda pode fazer, não item desligado. */
+.item-lin:not(.on) .item-cod,
+.item-lin:not(.on) .item-val{opacity:.45}
+.item-lin.on{background:var(--b-50)}
+:root[data-theme="dark"] .item-lin.on{background:var(--surface-2)}
+
+.item-marca{font-size:var(--t-sm)}
+.item-marca span{font-weight:500}
+.item-fixo{font-weight:600;color:var(--tx)}
+
+.item-cod{height:34px;padding:0 10px;border:1px solid var(--bd-strong);
+  border-radius:var(--r-sm);font-family:var(--code);font-size:var(--t-xs);
+  background:var(--surface);color:var(--tx);min-width:0;text-transform:uppercase}
+.item-cod:disabled{background:var(--surface-2);cursor:not-allowed}
+/* A linha do óleo não tem código de peça: ali a coluna mostra os litros. */
+.item-vazio{border:0;background:transparent;font-family:var(--code);
+  font-size:var(--t-xs);color:var(--tx-2);text-transform:none;padding-left:2px}
+
+.item-val{display:flex;align-items:center;gap:5px}
+.item-val i{font-style:normal;font-size:var(--t-xs);color:var(--tx-2);font-weight:600}
+.item-val input{height:34px;width:100%;min-width:0;padding:0 8px;text-align:right;
+  font-variant-numeric:tabular-nums;border:1px solid var(--bd-strong);
+  border-radius:var(--r-sm);background:var(--surface);color:var(--tx)}
+.item-val input:disabled{background:var(--surface-2);cursor:not-allowed}
+
+.item-custo{font-size:11.5px;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  padding-left:25px;min-height:14px}
+/* "sem custo" é informação, não defeito: o item existe, só não foi cadastrado
+   ainda. Âmbar e não vermelho — vermelho aqui faria o balcão parar. */
+.sem-custo{color:var(--warn);cursor:help}
+
+.panel-b.sem-respiro{padding:0}
+.panel-b.sem-respiro .recuo-lin{padding:11px 17px;margin:0}
+.item-oleo{margin-top:14px;border:1px solid var(--bd);border-radius:var(--r-md)}
+
+/* A conta aberta dentro da barra de fechamento. */
+.fecha-conta{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;
+  padding-left:20px;margin-left:4px;border-left:1px solid var(--bd)}
+.fc-item{display:flex;flex-direction:column;gap:1px}
+.fc-item b{font-size:var(--t-lg);font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--tx)}
+.fc-item small{font-size:11px;color:var(--tx-2)}
+.fc-item b.positivo{color:var(--pos)}
+.fc-item b.negativo{color:var(--crit)}
+.fc-margem b{font-size:var(--t-xl)}
+
+.aviso-custo{margin:10px 0 0;color:var(--warn)}
+.aviso-custo b{color:var(--warn)}
+.aviso-custo a{color:inherit;text-decoration:underline}
+
+@media(max-width:900px){
+  .item-lin{grid-template-columns:1fr 1fr;gap:8px}
+  .fecha-conta{padding-left:0;border-left:0;width:100%}
+}
+
+/* ===========================================================
+   Aba de custos do Financeiro
+   =========================================================== */
+
+/* O formulário de cadastro fica numa linha só, em cima da tabela: cadastrar
+   preço é trabalho repetitivo — o dono senta e lança vinte itens seguidos —,
+   e um formulário em modal obrigaria a abrir e fechar vinte vezes. */
+.preco-form{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;
+  padding-bottom:4px}
+.preco-form .f{flex:1;min-width:150px;margin:0}
+.preco-form .f.estreito{flex:0 0 132px;min-width:132px}
+.preco-form .f small{font-weight:400;color:var(--tx-3);font-size:11px;margin-left:4px}
+.preco-form select{height:var(--alvo);padding:0 10px;border:1px solid var(--bd-strong);
+  border-radius:var(--r-sm);background:var(--surface);color:var(--tx);
+  font-family:inherit;font-size:var(--t-sm)}
+.preco-form button{height:var(--alvo)}
+
+/* Item desativado continua na lista, em cinza: ele explica o custo de ordens
+   antigas, e sumir com ele apagaria a única memória de preço que existe. */
+tr.inativo td{opacity:.5}
+.pct-inline{color:var(--tx-3);font-size:11px;margin-left:5px;font-weight:400}
+td.num b.positivo{color:var(--pos)}
+td.num b.negativo{color:var(--crit)}
+th .sub{font-weight:400;color:var(--tx-3);font-size:11px;text-transform:none;
+  letter-spacing:0}
+
+@media(max-width:900px){
+  .preco-form .f,.preco-form .f.estreito{flex:1 1 100%;min-width:0}
+}
+
+/* ===========================================================
+   Comprovante em imagem
+   =========================================================== */
+
+/* Mais larga que o modal padrão: o comprovante tem 860 px de largura e
+   precisa caber inteiro, senão quem confere antes de mandar vê metade. */
+.comp-box{max-width:min(940px,94vw)}
+/* O fundo xadrez claro deixa claro que o branco é do papel, e não da tela —
+   o comprovante sai sempre claro, mesmo com a oficina no tema escuro. */
+.comp-papel{margin:14px 0 4px;padding:14px;border:1px solid var(--bd);
+  border-radius:var(--r-md);background:var(--surface-2);
+  max-height:52vh;overflow:auto;display:flex;justify-content:center}
+.comp-papel canvas{max-width:100%;height:auto;box-shadow:var(--e-pop);
+  border-radius:var(--r-sm)}
+.modal-acoes .espaco{flex:1}
+.sem-tel{margin:0;align-self:center}
+.ok-comprovante{background:var(--pos-bg);border-color:var(--pos-bd);color:var(--pos)}
+.ok-comprovante b{color:var(--pos)}
+.ok-comprovante span{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
