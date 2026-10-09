@@ -211,7 +211,29 @@ app.use('/api/avisos', require('./rotas/avisos'));
 app.use('/api/painel', require('./rotas/painel'));
 app.use('/api/notificacoes', require('./rotas/notificacoes'));
 app.use('/api/config', require('./rotas/config'));
+app.use('/api/usuarios', require('./rotas/usuarios'));
 app.use('/api/precos', require('./rotas/precos').rotas);
+app.use('/api/catalogo', require('./rotas/catalogo'));
+app.use('/api/ia', require('./rotas/ia'));
+app.use('/api/novidades', require('./rotas/novidades'));
+
+/* ---------- painel de publicação de novidades ----------
+   Uma página estática à parte, só para o Pedro anunciar as atualizações.
+   É HTML+JS puro: NÃO decide nada sozinha. Tudo que ela faz passa pela API
+   com o login normal, e publicar exige admin (POST /api/novidades). Quem
+   achar a URL sem ser admin vê a tela e não consegue publicar. O JS vai em
+   arquivo próprio (não inline) de propósito: assim respeita a CSP
+   script-src 'self' que protege o resto. */
+const PAINEL = path.join(__dirname, '..', 'painel');
+if (fs.existsSync(path.join(PAINEL, 'index.html'))) {
+  app.use('/publicar', express.static(PAINEL, {
+    setHeaders(res, arquivo) {
+      if (path.basename(arquivo) === 'index.html')
+        res.setHeader('Cache-Control', 'no-cache');
+    }
+  }));
+  console.log('painel de novidades em /publicar');
+}
 
 /* ---------- o front, quando ele mora aqui dentro ----------
    Se a pasta publico/ existir, esta mesma porta entrega a tela. É o modo de

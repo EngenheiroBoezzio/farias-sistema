@@ -3,9 +3,9 @@ import { RouterLink } from '@angular/router';
 import { Chart } from 'chart.js/auto';
 import { DadosService } from '../../nucleo/dados.service';
 import { ConfigService, TipoGrafico } from '../../nucleo/config.service';
-import { Painel } from '../../nucleo/tipos';
+import { Painel, Aniversariante } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
-import { dinheiro, inteiro, num, data, mesCurto, placa } from '../../nucleo/formato';
+import { dinheiro, inteiro, num, data, mesCurto, placa, telefone } from '../../nucleo/formato';
 import { SinoComponent } from '../../partes/sino/sino.component';
 import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
 
@@ -26,9 +26,10 @@ export class PainelComponent implements OnInit, OnDestroy {
   carregando = signal(true);
   erro = signal<ErroApi | null>(null);
   p = signal<Painel | null>(null);
+  aniversariantes = signal<Aniversariante[]>([]);
 
   dinheiro = dinheiro; inteiro = inteiro; data = data;
-  mesCurto = mesCurto; placa = placa; num = num;
+  mesCurto = mesCurto; placa = placa; num = num; telefone = telefone;
 
   /* A data por extenso no subtítulo. Parece detalhe, mas é o que faz a tela
      parecer de hoje: "Quinta, 24 de setembro" diz que o número é de agora,
@@ -77,6 +78,10 @@ export class PainelComponent implements OnInit, OnDestroy {
   buscar(): void {
     this.carregando.set(true);
     this.erro.set(null);
+    this.dados.aniversariantes().subscribe({
+      next: r => this.aniversariantes.set(r?.aniversariantes || []),
+      error: () => {}
+    });
     this.dados.painel().subscribe({
       next: p => {
         this.p.set(p);
@@ -85,6 +90,13 @@ export class PainelComponent implements OnInit, OnDestroy {
       },
       error: (e: ErroApi) => { this.erro.set(e); this.carregando.set(false); }
     });
+  }
+
+  montarLinkAniversario(a: Aniversariante): string | null {
+    if (!a.telefone) return null;
+    const primeiro = (a.nome || '').trim().split(' ')[0];
+    const texto = `Oi ${primeiro}! Aqui é da Farias Troca de Óleo. Passando para desejar um feliz aniversário, muita saúde e sucesso!`;
+    return `https://wa.me/${a.telefone}?text=${encodeURIComponent(texto)}`;
   }
 
   private renderizarGrafico(painel: Painel): void {

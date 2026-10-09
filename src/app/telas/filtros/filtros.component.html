@@ -6,6 +6,13 @@
          lado. Os de mais visitas vêm primeiro — são os que voltam.</p>
     </div>
     <div class="head-act">
+      <button type="button" class="btn btn-ia" (click)="iniciarVarreduraIa()" [disabled]="varrendoIa()">
+        @if (varrendoIa()) {
+          <span class="girando" aria-hidden="true"></span> Varrendo com IA…
+        } @else {
+          <i class="bi bi-stars"></i> Varredura Inteligente com IA
+        }
+      </button>
       <span class="pill p-mute">{{ total() }} na fila</span>
       <app-sino />
     </div>
@@ -90,10 +97,21 @@
                 </p>
               } @else {
                 <p class="vazio">
-                  <b>Sem par no catálogo</b>
-                  Este modelo não casou com nenhuma aplicação. Preencha à mão na ficha.
+                  <b>Sem par no catálogo Wega</b>
+                  Este modelo não casou automaticamente com o catálogo. Você pode descobrir com IA ou preencher à mão.
                 </p>
-                <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir a ficha</a>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-ia"
+                          (click)="descobrirFiltroIndividualIa(v)"
+                          [disabled]="consultandoIaIndividual() === v.id">
+                    @if (consultandoIaIndividual() === v.id) {
+                      <span class="girando" aria-hidden="true"></span> Consultando IA…
+                    } @else {
+                      <i class="bi bi-stars"></i> Descobrir filtros com IA
+                    }
+                  </button>
+                  <a [routerLink]="['/veiculo', v.id]" class="btn btn-s">Abrir a ficha</a>
+                </div>
               }
             </div>
           </div>
@@ -109,6 +127,93 @@
       <button type="button" class="btn btn-s" (click)="anterior()" [disabled]="pagina() === 1">Anterior</button>
       <span>página <b>{{ pagina() }}</b></span>
       <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="lista().length < 25">Próxima</button>
+    </div>
+  }
+
+  @if (modalVarredura()) {
+    <div class="modal-overlay" (click)="modalVarredura.set(false)">
+      <div class="modal-box modal-lg" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="tit-varredura" style="max-width: 900px; width: 95vw;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+          <div>
+            <h2 id="tit-varredura" style="display: flex; align-items: center; gap: 8px;">
+              <i class="bi bi-stars" style="color: var(--b-600);"></i> Varredura Inteligente com IA (Google Gemini)
+            </h2>
+            <p style="margin: 4px 0 0; color: var(--tx-2); font-size: 14px;">
+              Cruzamento automático de veículos da fila com o catálogo Wega e verificação técnica por IA.
+            </p>
+          </div>
+          <button type="button" class="btn-fechar" (click)="modalVarredura.set(false)" aria-label="Fechar modal">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        @if (sucessoVarredura(); as suc) {
+          <p class="fonte verde" style="margin-bottom: 14px;"><b>{{ suc }}</b></p>
+        }
+        @if (erroVarredura(); as err) {
+          <p class="hint erro" style="margin-bottom: 14px;"><b>{{ err }}</b></p>
+        }
+
+        @if (sugestoesVarredura().length === 0) {
+          <p class="vazio">Nenhuma sugestão encontrada nesta varredura.</p>
+        } @else {
+          <div class="tbl-wrap" style="max-height: 48vh; overflow-y: auto; margin-bottom: 16px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Placa / Carro</th>
+                  <th>Óleo</th>
+                  <th>Ar</th>
+                  <th>Cabine</th>
+                  <th>Combustível</th>
+                  <th>Origem</th>
+                  <th class="acao-col">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of sugestoesVarredura(); track item.id; let idx = $index) {
+                  <tr>
+                    <td>
+                      <b class="placa-txt">{{ fPlaca(item.placa) }}</b>
+                      <span class="sub" style="display: block;">{{ item.modelo }} · {{ item.cliente }}</span>
+                    </td>
+                    <td><code class="font-mono">{{ item.filtros.filtro_oleo || '—' }}</code></td>
+                    <td><code class="font-mono">{{ item.filtros.filtro_ar || '—' }}</code></td>
+                    <td><code class="font-mono">{{ item.filtros.filtro_cabine || '—' }}</code></td>
+                    <td><code class="font-mono">{{ item.filtros.filtro_combustivel || '—' }}</code></td>
+                    <td>
+                      <span class="pill" [class.p-pos]="item.fonte === 'catalogo_wega'" [class.p-info]="item.fonte === 'gemini_ia'">
+                        {{ item.origem }} ({{ item.confianca }}%)
+                      </span>
+                    </td>
+                    <td class="acao-col">
+                      <button type="button" class="btn btn-g btn-sm perigo" (click)="removerDaVarredura(idx)" title="Não gravar este carro">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="modal-acoes" style="justify-content: space-between;">
+            <span style="font-size: 13px; color: var(--tx-2);">
+              <b>{{ sugestoesVarredura().length }}</b> veículo(s) pronto(s) para confirmação.
+            </span>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-s" (click)="modalVarredura.set(false)">Cancelar</button>
+              <button type="button" class="btn btn-p btn-lg" (click)="aplicarVarreduraEmLote()" [disabled]="gravandoVarredura()">
+                @if (gravandoVarredura()) {
+                  <span class="girando" aria-hidden="true"></span> Gravando…
+                } @else {
+                  <i class="bi bi-check-all"></i> Gravar todos os {{ sugestoesVarredura().length }} filtros
+                }
+              </button>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   }
 

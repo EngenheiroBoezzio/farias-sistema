@@ -19,6 +19,7 @@ export interface Despesa {
   recorrente: boolean; // se repete todo mês
   obs?: string;
   criadaEm: string;
+  mesesPagos?: string[]; // competências (YYYY-MM) pagas para despesas recorrentes
 }
 
 export interface ConsolidadoMes {
@@ -104,11 +105,13 @@ export class FinanceiroService {
 
   /** Adiciona uma nova despesa */
   adicionarDespesa(d: Omit<Despesa, 'id' | 'criadaEm'>): Despesa {
+    const mesVencimento = (d.dataVencimento || new Date().toISOString().slice(0, 10)).slice(0, 7);
     const nova: Despesa = {
       ...d,
       id: 'desp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       valor: Math.round(Number(d.valor) * 100) / 100,
-      criadaEm: new Date().toISOString()
+      criadaEm: new Date().toISOString(),
+      mesesPagos: d.recorrente && d.status === 'pago' ? [mesVencimento] : (d.mesesPagos || [])
     };
     const lista = this.obterDespesas();
     lista.unshift(nova);
@@ -125,6 +128,26 @@ export class FinanceiroService {
           ...atualizacao,
           valor: atualizacao.valor !== undefined ? Math.round(Number(atualizacao.valor) * 100) / 100 : d.valor
         };
+      }
+      return d;
+    });
+    this.salvarDespesas(lista);
+  }
+
+  /** Alterna o status de pagamento de uma despesa recorrente para um mês específico */
+  alternarPagamentoRecorrente(id: string, anoMes: string): void {
+    const lista = this.obterDespesas().map(d => {
+      if (d.id === id && d.recorrente) {
+        const pagos = new Set(d.mesesPagos || (d.status === 'pago' ? [d.dataVencimento.slice(0, 7)] : []));
+        if (pagos.has(anoMes)) {
+          pagos.delete(anoMes);
+        } else {
+          pagos.add(anoMes);
+        }
+        const mesesPagos = Array.from(pagos);
+        const mesAtual = new Date().toISOString().slice(0, 7);
+        const status: StatusDespesa = mesesPagos.includes(mesAtual) ? 'pago' : 'pendente';
+        return { ...d, mesesPagos, status };
       }
       return d;
     });
@@ -163,7 +186,11 @@ export class FinanceiroService {
         despesasOperacionais += v;
       }
 
-      if (d.status === 'pendente') {
+      const estaPaga = d.recorrente
+        ? (d.mesesPagos ? d.mesesPagos.includes(anoMes) : d.status === 'pago')
+        : d.status === 'pago';
+
+      if (!estaPaga) {
         contasPendentes += v;
       }
     }

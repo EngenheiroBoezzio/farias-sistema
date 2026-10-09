@@ -24,3 +24,19 @@
 .sino-pop li span { font-size: 12px; color: var(--tx-2); }
 .sino-pop li time { font-size: 11px; color: var(--tx-3); font-variant-numeric: tabular-nums; }
 .nada { margin: 0; padding: 22px 16px; text-align: center; font-size: 12.5px; color: var(--tx-3); }
+
+/* ===== Novidades no sino =====
+   A seção de novidades: a "coisa boa" (o que melhorou), separada do sistema.
+   O segundo header ("Sistema") não tem borda de cima, senão ficam duas linhas
+   coladas entre as duas listas. */
+.sino-pop header + ul.novs + header { border-top: 0; }
+.sino-pop li.nov { gap: 3px; }
+.sino-pop li.nov.nova { background: var(--b-50); }
+.nov-topo { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.nov-topo b { font-size: 13px; }
+.nov-corpo { font-size: 12px; color: var(--tx-2); white-space: pre-line; }
+.marca-pediu { font-size: 10.5px; font-weight: 600; color: var(--b-700);
+  background: var(--b-100); border: 1px solid var(--b-300);
+  padding: 1px 7px; border-radius: var(--r-full); }
+.ponto-novo { width: 7px; height: 7px; border-radius: var(--r-full);
+  background: var(--b-500); margin-left: auto; flex-shrink: 0; }

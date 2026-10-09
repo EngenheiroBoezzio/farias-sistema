@@ -282,7 +282,8 @@ main{flex:1;min-width:0;padding:24px;padding-bottom:48px}
 .head p{margin:0;color:var(--tx-2);font-size:13px;max-width:64ch}
 .head-act{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-.btn{font-family:inherit;text-decoration:none;font-size:13.5px;font-weight:500;height:36px;padding:0 14px;
+.btn{font-family:inherit;text-decoration:none;font-size:var(--t-sm);font-weight:500;
+  height:var(--alvo);min-height:var(--alvo);padding:0 16px;
   border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;
   justify-content:center;gap:7px;border:1px solid transparent;
   transition:background .13s,border-color .13s}
@@ -292,11 +293,11 @@ main{flex:1;min-width:0;padding:24px;padding-bottom:48px}
 .btn-s:hover{background:var(--surface-2)}
 .btn-g{background:none;color:var(--tx-2);padding:0 9px}
 .btn-g:hover{background:var(--surface-2);color:var(--tx)}
-.btn:focus-visible{outline:2px solid var(--b-500);outline-offset:2px}
-.btn-lg{height:44px;padding:0 20px;font-size:14px}
-.btn-w{width:100%}
-.btn-zap{background:var(--pos);color:#fff;height:30px;padding:0 10px;font-size:12.5px}
+.btn-zap{background:var(--pos);color:#fff;border-color:var(--pos-bd)}
 .btn-zap:hover{filter:brightness(1.07)}
+.btn:focus-visible{outline:2px solid var(--b-500);outline-offset:2px}
+.btn-lg{height:calc(var(--alvo) + 8px);min-height:calc(var(--alvo) + 8px);padding:0 22px;font-size:var(--t-md)}
+.btn-w{width:100%}
 
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
   background:var(--surface);border:1px solid var(--bd);border-radius:var(--r-lg);
@@ -364,7 +365,7 @@ th.num{text-align:right}
 
 .f{display:grid;gap:16px}
 .f-row{display:grid;gap:14px;grid-template-columns:1fr}
-@media(min-width:620px){.f-row.c2{grid-template-columns:1fr 1fr}.f-row.c3{grid-template-columns:1.4fr 1fr 1fr}}
+@media(min-width:620px){.f-row.c2{grid-template-columns:1fr 1fr}.f-row.c3{grid-template-columns:1.4fr 1fr 1fr}.f-row.c4{grid-template-columns:1.1fr 1fr 1.3fr 0.8fr}}
 label{display:block;font-size:12.5px;font-weight:500;color:var(--tx-2);margin-bottom:5px}
 /* Campo de texto.
    Este seletor era uma lista de tipos — input[type=text], [type=number],
@@ -1110,7 +1111,7 @@ button.placa-mercosul:hover {
 /* Botão menor, para dentro de tabela e de cabeçalho de painel. Estava sendo
    usado em quatro telas e NUNCA existiu no CSS: os botões "pequenos" saíam do
    mesmo tamanho dos outros. */
-.btn-sm{height:32px;padding:0 11px;font-size:var(--t-xs)}
+.btn-sm{height:calc(var(--alvo) - 6px);min-height:calc(var(--alvo) - 6px);padding:0 12px;font-size:var(--t-xs)}
 
 /* O corpo do cartão de busca. Também era usado sem existir. */
 .search-card-b{padding:16px 18px}
@@ -1310,12 +1311,18 @@ td.mono{font-family:var(--code);font-size:var(--t-xs)}
 .nota-atencao b{color:var(--n-900)}
 :root[data-theme="dark"] .nota-atencao b{color:var(--warn)}
 
-/* Pílula que também é botão: trocar "a pagar" para "pago" é um clique. */
+/* Pílula que também é botão: trocar "a pagar" para "pago" é um clique com alvo ergonômico. */
 .pill-btn{font-family:inherit;font-size:var(--t-xs);font-weight:600;
-  padding:3px 11px;border-radius:var(--r-full);border:1px solid;cursor:pointer;
-  background:var(--surface-2);color:var(--tx-2);border-color:var(--bd-strong)}
+  min-height:calc(var(--alvo) - 8px);padding:0 14px;border-radius:var(--r-full);border:1px solid;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  background:var(--surface-2);color:var(--tx-2);border-color:var(--bd-strong);
+  transition:background .13s,border-color .13s,color .13s}
 .pill-btn.p-pos{color:var(--pos);background:var(--pos-bg);border-color:var(--pos-bd)}
 .pill-btn.p-warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-bd)}
+.pill-btn.p-crit{color:var(--crit);background:var(--crit-bg);border-color:var(--crit-bd)}
+.pill-btn.p-mute{color:var(--tx-2);background:var(--surface-2);border-color:var(--bd-strong)}
+.desfecho-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.desfecho-botoes{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap}
 .btn-g.perigo{color:var(--crit)}
 .btn-g.perigo:hover{background:var(--crit-bg)}
 
@@ -1630,3 +1637,341 @@ th .sub{font-weight:400;color:var(--tx-3);font-size:11px;text-transform:none;
 .ok-comprovante{background:var(--pos-bg);border-color:var(--pos-bd);color:var(--pos)}
 .ok-comprovante b{color:var(--pos)}
 .ok-comprovante span{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+
+/* ===========================================================
+   Faturamento & Notificações de Mensalidade (Mercado Pago)
+   =========================================================== */
+.btn-mp{background:#009EE3;color:#fff!important;border:0;border-radius:var(--r-sm);
+  display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-size:var(--t-sm);
+  font-weight:600;padding:0 16px;height:var(--alvo);cursor:pointer;
+  transition:background .15s ease,transform .1s ease;text-decoration:none}
+.btn-mp:hover{background:#0087c2}
+.btn-mp:active{transform:scale(.98)}
+.btn-mp.btn-sm{height:32px;padding:0 12px;font-size:var(--t-xs)}
+
+.alerta-faturamento-barra{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:12px 18px;margin:0 0 16px;border-radius:var(--r-md);
+  background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--tx);
+  animation:fade-in .3s ease}
+.afb-info{display:flex;align-items:center;gap:12px}
+.afb-info i{font-size:20px;color:var(--warn);flex-shrink:0}
+.afb-info strong{display:block;font-size:var(--t-sm);font-weight:700;color:var(--warn)}
+.afb-info span{display:block;font-size:var(--t-xs);color:var(--tx-2)}
+.afb-acoes{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-fechar{background:transparent;border:0;cursor:pointer;color:var(--tx-3);
+  padding:4px 6px;border-radius:var(--r-xs);display:flex;align-items:center}
+.btn-fechar:hover{color:var(--tx);background:rgba(0,0,0,.08)}
+
+.chip-dias{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.chip-dia{padding:6px 14px;border:1px solid var(--bd-strong);border-radius:var(--r-full);
+  background:var(--surface);color:var(--tx);font-family:inherit;font-size:var(--t-sm);
+  font-weight:500;cursor:pointer;transition:all .15s ease}
+.chip-dia:hover{background:var(--surface-2);border-color:var(--tx-3)}
+.chip-dia.on{background:var(--b-700);color:#fff;border-color:var(--b-700);font-weight:600}
+
+.cfg-sub-status{font-size:var(--t-xs);color:var(--tx-2);margin-left:8px}
+
+.modal-aviso-assinatura{max-width:480px;text-align:left}
+.aviso-assinatura-icone{width:52px;height:52px;border-radius:var(--r-full);
+  background:var(--b-100);color:var(--b-700);display:grid;place-items:center;
+  font-size:24px;margin-bottom:14px}
+
+/* ===========================================================
+   Google Gemini Inteligência Artificial (Botões e Cards)
+   =========================================================== */
+.btn-ia{background:linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);color:#fff!important;
+  border:0;border-radius:var(--r-sm);display:inline-flex;align-items:center;gap:8px;
+  font-family:inherit;font-size:var(--t-sm);font-weight:600;padding:0 14px;
+  height:var(--alvo);cursor:pointer;transition:transform .12s ease,box-shadow .15s ease;
+  box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.btn-ia:hover{background:linear-gradient(135deg, #6d28d9 0%, #7e22ce 100%);
+  box-shadow:0 4px 12px rgba(124,58,237,.35);transform:translateY(-1px)}
+.btn-ia:active{transform:scale(.98)}
+.btn-ia.btn-sm{height:32px;padding:0 12px;font-size:var(--t-xs)}
+.btn-ia:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.ia-resultado-card{background:var(--surface);border:1px solid rgba(124,58,237,.35);
+  border-radius:var(--r-md);padding:14px 16px;box-shadow:0 4px 16px -4px rgba(124,58,237,.12);
+  animation:fade-in .25s ease}
+.ia-topo{display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--bd);padding-bottom:8px;margin-bottom:8px}
+.ia-badge{background:rgba(124,58,237,.12);color:#7c3aed;padding:3px 10px;
+  border-radius:var(--r-full);font-size:11px;font-weight:700;letter-spacing:.03em;
+  display:inline-flex;align-items:center;gap:5px}
+:root[data-theme="dark"] .ia-badge{color:#a78bfa;background:rgba(167,139,250,.18)}
+.ia-litros{font-size:15px;color:var(--pos)}
+.ia-litros b{font-weight:700}
+
+/* ===========================================================
+   Chips Rápidos de Óleo e Litros (Ordem de Serviço)
+   =========================================================== */
+.chips-oleo-sugestao {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  border: 1px solid var(--bd);
+}
+.chips-label {
+  display: block;
+  font-size: var(--t-xs);
+  color: var(--tx-2);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.chips-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--bd-strong);
+  border-radius: var(--r-full);
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: var(--t-sm);
+  color: var(--tx);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.chip-item:hover {
+  background: var(--surface-2);
+  border-color: var(--b-700);
+}
+.chip-item.ativo {
+  background: var(--b-700);
+  color: #fff;
+  border-color: var(--b-700);
+}
+.chip-item.ativo .chip-fonte,
+.chip-item.ativo .chip-litros {
+  color: var(--b-100);
+}
+.chip-oleo {
+  font-weight: 700;
+  font-family: var(--code);
+}
+.chip-litros {
+  font-weight: 600;
+  color: var(--pos);
+}
+.chip-fonte {
+  font-size: 11px;
+  color: var(--tx-3);
+  margin-left: 2px;
+}
+.input-com-botao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.input-com-botao input {
+  flex: 1;
+}
+.btn-ia-litros {
+  flex-shrink: 0;
+  height: var(--alvo);
+  padding: 0 10px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+}
+
+/* ===========================================================
+   Modal Notificação de Envio WhatsApp pós-ordem
+   =========================================================== */
+.modal-whatsapp {
+  max-width: 520px;
+  padding: 24px;
+}
+.zap-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.zap-icone-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-full);
+  background: var(--pos-bg);
+  color: var(--pos);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.zap-subtitulo {
+  font-size: var(--t-sm);
+  color: var(--tx-2);
+  margin: 0;
+  line-height: 1.4;
+}
+.zap-resumo-card {
+  background: var(--surface-2);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.zap-resumo-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--bd);
+}
+.zap-veiculo-txt {
+  font-size: var(--t-md);
+  color: var(--tx);
+}
+.zap-total-badge {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  color: var(--tx);
+  font-family: var(--code);
+}
+.zap-itens-lista {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.zap-itens-lista li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--t-sm);
+  color: var(--tx-2);
+  gap: 8px;
+}
+.zap-item-nome {
+  color: var(--tx);
+  font-weight: 500;
+}
+.zap-item-detalhe {
+  font-family: var(--code);
+  font-size: var(--t-xs);
+  color: var(--tx-3);
+  margin-left: 6px;
+}
+.zap-item-val {
+  font-family: var(--code);
+  color: var(--tx);
+}
+.zap-prox-troca {
+  padding-top: 8px;
+  border-top: 1px solid var(--bd);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--t-sm);
+}
+.zap-prox-troca span {
+  color: var(--tx-2);
+}
+.zap-prox-troca b {
+  color: var(--pos);
+  font-weight: 700;
+  font-size: var(--t-md);
+}
+.zap-tel-bloco {
+  background: var(--surface);
+  border: 1px solid var(--bd-strong);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.zap-tel-cadastrado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.zap-rotulo {
+  display: block;
+  font-size: var(--t-xs);
+  color: var(--tx-2);
+  margin-bottom: 2px;
+}
+.zap-tel-linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.zap-tel-destaque {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  font-family: var(--code);
+  color: var(--tx);
+}
+.zap-tel-campo label.f {
+  margin: 0 0 8px;
+}
+.zap-resumo-corpo {
+  display: flex;
+  flex-direction: column;
+}
+.zap-tel-info {
+  display: flex;
+  flex-direction: column;
+}
+.zap-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+
+
+/* ===========================================================
+   LISTA DE CLIENTES — um cartão por pessoa, uma linha por carro
+
+   Era uma tabela de cinco colunas onde nenhuma respondia "quando esse
+   cliente esteve aqui?". A coluna "Carros" trazia um número que não abria e
+   escondia que duas linhas de história viravam um "2".
+   =========================================================== */
+.cli-lista{display:flex;flex-direction:column;gap:12px}
+
+.cli-cartao{background:var(--surface);border:1px solid var(--bd);
+  border-radius:var(--r-md);overflow:hidden}
+
+.cli-topo{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:13px 16px;border-bottom:1px solid var(--bd)}
+.cli-quem{min-width:0;display:flex;flex-direction:column;gap:2px}
+.cli-nome{font-size:var(--t-lg);font-weight:600;letter-spacing:-.01em}
+.cli-contato{font-size:var(--t-xs);color:var(--tx-2);display:flex;
+  align-items:center;gap:8px;flex-wrap:wrap}
+.cli-acoes{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* A linha do carro é o link para a ficha — antes não havia caminho nenhum
+   do cliente para o histórico dele. */
+.cli-carro{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:11px 16px;text-decoration:none;color:inherit;
+  border-top:1px solid var(--surface-2)}
+.cli-carro:first-of-type{border-top:0}
+.cli-carro:hover{background:var(--surface-2)}
+.cli-carro:focus-visible{outline:2px solid var(--b-500);outline-offset:-2px}
+
+.cli-modelo{font-size:var(--t-sm);min-width:130px;display:flex;gap:6px;align-items:baseline}
+.cli-quando{display:flex;flex-direction:column;min-width:150px}
+.cli-quando-forte{font-size:var(--t-md);font-weight:600}
+/* O ponto genérico da pílula sai quando há ícone: o ícone É o marcador, e
+   os dois juntos viram "• ⏱ sumiu", com dois símbolos dizendo a mesma coisa. */
+.cli-sit{display:inline-flex;align-items:center;gap:6px}
+.cli-sit::before{display:none}
+.cli-ir{margin-left:auto;font-size:var(--t-xs);font-weight:600;color:var(--b-700);
+  white-space:nowrap}
+.cli-sem-carro{margin:0;padding:13px 16px;font-size:var(--t-xs);color:var(--tx-3)}
+
+.panel-rodape{margin-top:12px}
+
+@media(max-width:620px){
+  .cli-ir{margin-left:0;width:100%}
+  .cli-quando,.cli-modelo{min-width:0}
+}

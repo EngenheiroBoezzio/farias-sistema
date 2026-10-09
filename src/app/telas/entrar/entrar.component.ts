@@ -27,7 +27,7 @@ export class EntrarComponent implements OnInit {
 
   usuario = '';
   senha = '';
-  lembrar = true;
+  lembrar = false;
   mostrarSenha = signal(false);
   enviando = signal(false);
   splash = signal(false);

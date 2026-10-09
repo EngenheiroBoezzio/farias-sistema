@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Publicar novidade — Farias</title>
+<!-- O JS vai em arquivo próprio (app.js), nunca inline: é o que respeita a
+     CSP script-src 'self' que protege o sistema. O estilo pode ser inline
+     porque a CSP libera style-src 'unsafe-inline'. -->
+<style>
+  :root{
+    --b-700:#8E0A10; --b-600:#B00C13; --b-500:#D91018; --b-100:#FCE3E4;
+    --n-0:#fff; --n-25:#FBFAF8; --n-50:#F6F3EF; --n-100:#E7E2DC; --n-200:#D3CCC4;
+    --n-500:#5C534D; --n-900:#1A1512;
+    --pos:#0F6B45; --pos-bg:#E3F1EA; --pos-bd:#A8D5BF;
+    --warn-bg:#FAF0DA; --warn-bd:#E3C784;
+    --r:8px; --ui:"Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--n-25);color:var(--n-900);font-family:var(--ui);
+    font-size:15px;line-height:1.5}
+  .capa{max-width:760px;margin:0 auto;padding:24px 18px 60px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .logo{width:40px;height:40px;border-radius:999px;background:var(--b-700);color:#fff;
+    display:grid;place-items:center;font-weight:700;flex-shrink:0}
+  h1{font-size:21px;margin:0;letter-spacing:-.01em}
+  header p{margin:2px 0 0;font-size:13px;color:var(--n-500)}
+  .cartao{background:var(--n-0);border:1px solid var(--n-100);border-radius:var(--r);
+    padding:20px;margin-bottom:18px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 5px}
+  label:first-child{margin-top:0}
+  input[type=text],textarea{width:100%;font-family:inherit;font-size:15px;
+    padding:10px 12px;border:1px solid var(--n-200);border-radius:6px;background:var(--n-0);
+    color:var(--n-900)}
+  input:focus,textarea:focus{outline:2px solid var(--b-500);outline-offset:1px;border-color:transparent}
+  textarea{min-height:120px;resize:vertical}
+  .dica{font-size:12px;color:var(--n-500);margin:4px 0 0}
+  .linha{display:flex;gap:18px;flex-wrap:wrap}
+  .linha>div{flex:1;min-width:160px}
+  .check{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:14px;font-weight:500;cursor:pointer}
+  .check input{width:18px;height:18px;accent-color:var(--b-600);flex-shrink:0}
+  .btn{font-family:inherit;font-size:14px;font-weight:600;padding:11px 18px;border-radius:6px;
+    border:1px solid transparent;cursor:pointer;background:var(--b-700);color:#fff}
+  .btn:hover{background:var(--b-600)}
+  .btn:disabled{opacity:.55;cursor:default}
+  .btn-s{background:var(--n-0);color:var(--n-900);border-color:var(--n-200)}
+  .btn-s:hover{background:var(--n-50)}
+  .btn-g{background:none;color:#8E0A10;padding:6px 8px;font-size:13px;border:0}
+  .acoes{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .aviso{padding:10px 14px;border-radius:6px;font-size:14px;margin-top:14px}
+  .aviso.ok{background:var(--pos-bg);border:1px solid var(--pos-bd);color:var(--pos)}
+  .aviso.erro{background:var(--b-100);border:1px solid #F2C4C6;color:#8E0A10}
+  .oculto{display:none}
+  .nov{border-top:1px solid var(--n-100);padding:14px 0}
+  .nov:first-of-type{border-top:0}
+  .nov-topo{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .nov-tit{font-weight:600}
+  .tag{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:999px}
+  .tag-v{background:var(--n-50);color:var(--n-500);border:1px solid var(--n-100);font-family:monospace}
+  .tag-p{background:var(--b-100);color:var(--b-700);border:1px solid #F2C4C6}
+  .nov-corpo{font-size:13.5px;color:var(--n-500);margin:5px 0 0;white-space:pre-line}
+  .nov-pe{display:flex;align-items:center;gap:12px;margin-top:7px}
+  .nov-data{font-size:12px;color:#8A817B}
+  .vazio{color:#8A817B;font-size:14px;padding:6px 0}
+</style>
+</head>
+<body>
+<div class="capa">
+  <header>
+    <div class="logo">F</div>
+    <div>
+      <h1>Publicar novidade</h1>
+      <p>O que você escrever aqui aparece no sino da equipe.</p>
+    </div>
+  </header>
+
+  <!-- LOGIN: aparece até entrar. O botão de publicar só existe com admin. -->
+  <div class="cartao" id="cartao-login">
+    <label for="usuario">Usuário</label>
+    <input type="text" id="usuario" autocomplete="username" autocapitalize="off">
+    <label for="senha">Senha</label>
+    <input type="text" id="senha" autocomplete="current-password" style="-webkit-text-security:disc;text-security:disc">
+    <div class="acoes">
+      <button class="btn" id="btn-entrar">Entrar</button>
+    </div>
+    <div class="aviso erro oculto" id="erro-login"></div>
+  </div>
+
+  <!-- PUBLICAR: aparece depois do login. -->
+  <div class="cartao oculto" id="cartao-publicar">
+    <label for="titulo">Título</label>
+    <input type="text" id="titulo" maxlength="140" placeholder="ex.: Busca de cliente melhorada">
+
+    <div class="linha">
+      <div>
+        <label for="versao">Versão (opcional)</label>
+        <input type="text" id="versao" maxlength="20" placeholder="ex.: 1.0.16">
+      </div>
+    </div>
+
+    <label for="corpo">O que mudou</label>
+    <textarea id="corpo" maxlength="4000" placeholder="Escreva em linguagem simples, uma coisa por linha.&#10;Ex.: Agora a busca encontra pela placa do carro."></textarea>
+    <p class="dica">Uma linha por item. Quem lê é a Raíssa, não um programador.</p>
+
+    <label class="check"><input type="checkbox" id="a_pedido"> O cliente pediu isso</label>
+    <label class="check"><input type="checkbox" id="destaque"> Fixar no topo (destaque)</label>
+
+    <div class="acoes">
+      <button class="btn" id="btn-publicar">Publicar no sino</button>
+      <button class="btn-s btn" id="btn-sair" type="button">Sair</button>
+      <span id="quem" class="nov-data"></span>
+    </div>
+    <div class="aviso oculto" id="aviso-publicar"></div>
+  </div>
+
+  <!-- JÁ PUBLICADAS -->
+  <div class="cartao oculto" id="cartao-lista">
+    <h1 style="font-size:16px;margin:0 0 6px">Já publicadas</h1>
+    <div id="lista"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

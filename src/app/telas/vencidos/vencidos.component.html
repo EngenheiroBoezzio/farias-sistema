@@ -93,8 +93,35 @@
             </div>
 
             <div class="acao">
-              @if (avisados().has(i.veiculo_id)) {
-                <span class="pill p-pos">chamado agora</span>
+              @if (contatos()[i.veiculo_id]; as c) {
+                @if (c.desfecho === 'respondeu') {
+                  <span class="pill p-pos" (click)="limparDesfecho(i.veiculo_id)" style="cursor: pointer" title="Clique para alterar desfecho">
+                    Respondeu ✕
+                  </span>
+                } @else if (c.desfecho === 'sem_resposta') {
+                  <span class="pill p-mute" (click)="limparDesfecho(i.veiculo_id)" style="cursor: pointer" title="Clique para alterar desfecho">
+                    Sem resposta ✕
+                  </span>
+                } @else if (c.desfecho === 'pediu_sair') {
+                  <span class="pill p-crit" (click)="limparDesfecho(i.veiculo_id)" style="cursor: pointer" title="Clique para alterar desfecho">
+                    Não contatar ✕
+                  </span>
+                } @else {
+                  <div class="desfecho-box">
+                    <span class="pill p-pos" style="font-size: 11px;">Chamado</span>
+                    <div class="desfecho-botoes">
+                      <button type="button" class="pill-btn p-pos" (click)="marcarDesfecho(i.veiculo_id, 'respondeu')" title="Cliente respondeu no WhatsApp">
+                        Respondeu
+                      </button>
+                      <button type="button" class="pill-btn p-mute" (click)="marcarDesfecho(i.veiculo_id, 'sem_resposta')" title="Sem resposta">
+                        Sem resposta
+                      </button>
+                      <button type="button" class="pill-btn p-crit" (click)="marcarDesfecho(i.veiculo_id, 'pediu_sair')" title="Cliente pediu para não contatar">
+                        Não contatar
+                      </button>
+                    </div>
+                  </div>
+                }
               } @else if (i.whatsapp) {
                 <button type="button" class="btn btn-zap btn-lg" (click)="chamar(i)"
                         [title]="'Abrir o WhatsApp de ' + i.cliente">

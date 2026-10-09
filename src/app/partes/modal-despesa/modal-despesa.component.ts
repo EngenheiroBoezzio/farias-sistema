@@ -29,15 +29,15 @@ export class ModalDespesaComponent implements OnInit {
   };
 
   atalhosRapidos = [
-    { label: 'Aluguel Galpão', cat: 'fixa' as CategoriaDespesa, valor: 2800, rec: true },
-    { label: 'Energia Elétrica', cat: 'fixa' as CategoriaDespesa, valor: 650, rec: true },
-    { label: 'Água / Saneamento', cat: 'fixa' as CategoriaDespesa, valor: 180, rec: true },
-    { label: 'Internet Fibra', cat: 'fixa' as CategoriaDespesa, valor: 149.90, rec: true },
-    { label: 'Contabilidade', cat: 'fixa' as CategoriaDespesa, valor: 550, rec: true },
-    { label: 'Tambor de Óleo (200L)', cat: 'insumos' as CategoriaDespesa, valor: 5800, rec: false },
-    { label: 'Filtros Wega / Tecfil', cat: 'insumos' as CategoriaDespesa, valor: 2400, rec: false },
-    { label: 'Salário / Folha', cat: 'pessoal' as CategoriaDespesa, valor: 2500, rec: true },
-    { label: 'Taxa Máquina Cartão', cat: 'operacional' as CategoriaDespesa, valor: 350, rec: true }
+    { label: 'Aluguel Galpão', cat: 'fixa' as CategoriaDespesa, valor: null as number | null, rec: true },
+    { label: 'Energia Elétrica', cat: 'fixa' as CategoriaDespesa, valor: null as number | null, rec: true },
+    { label: 'Água / Saneamento', cat: 'fixa' as CategoriaDespesa, valor: null as number | null, rec: true },
+    { label: 'Internet Fibra', cat: 'fixa' as CategoriaDespesa, valor: null as number | null, rec: true },
+    { label: 'Contabilidade', cat: 'fixa' as CategoriaDespesa, valor: null as number | null, rec: true },
+    { label: 'Tambor de Óleo (200L)', cat: 'insumos' as CategoriaDespesa, valor: null as number | null, rec: false },
+    { label: 'Filtros Wega / Tecfil', cat: 'insumos' as CategoriaDespesa, valor: null as number | null, rec: false },
+    { label: 'Salário / Folha', cat: 'pessoal' as CategoriaDespesa, valor: null as number | null, rec: true },
+    { label: 'Taxa Máquina Cartão', cat: 'operacional' as CategoriaDespesa, valor: null as number | null, rec: false }
   ];
 
   ngOnInit(): void {

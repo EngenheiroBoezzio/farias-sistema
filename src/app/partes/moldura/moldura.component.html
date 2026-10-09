@@ -57,6 +57,15 @@
           </svg>
           <span class="lab">Clientes</span><span class="conta">{{ bdClientes() }}</span>
         </a>
+
+        <a routerLink="/catalogo" routerLinkActive="ativo" #rlCat="routerLinkActive"
+           [attr.aria-current]="rlCat.isActive ? 'page' : null">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M3 2.5h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/>
+            <path d="M5 6h6M5 9h4"/>
+          </svg>
+          <span class="lab">Óleos e Filtros</span>
+        </a>
       </div>
 
       <div class="rail-group">
@@ -155,8 +164,53 @@
   </nav>
 
   <main class="fade-in">
+    @if (avisoPagamentoPendente(); as aviso) {
+      <aside class="alerta-faturamento-barra" role="alert">
+        <div class="afb-info">
+          <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+          <div>
+            <strong>Mensalidade de hospedagem pendente (vencimento dia {{ aviso.dia }})</strong>
+            <span>Efetue o pagamento via Mercado Pago para manter a hospedagem do sistema em dia.</span>
+          </div>
+        </div>
+        <div class="afb-acoes">
+          <button type="button" class="btn btn-mp btn-sm" (click)="abrirLinkPagamento(aviso.link)">
+            <i class="bi bi-credit-card-2-front"></i> Pagar no Mercado Pago
+          </button>
+          <a routerLink="/configuracao" [queryParams]="{ secao: 'faturamento' }" class="btn btn-s btn-sm">
+            Faturamento
+          </a>
+          <button type="button" class="btn-fechar" (click)="dispensarAlertaPendente()" title="Dispensar aviso nesta sessão" aria-label="Dispensar aviso">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </aside>
+    }
     <router-outlet />
   </main>
+
+  @if (modalNovaAssinatura()) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-assinatura">
+      <div class="modal-box modal-aviso-assinatura">
+        <div class="aviso-assinatura-icone">
+          <i class="bi bi-calendar-check" aria-hidden="true"></i>
+        </div>
+        <h2 id="tit-assinatura">Nova função de assinatura configurada</h2>
+        <p>
+          Veja e identifique a data de pagamento ideal para você.
+          Você pode escolher o dia do mês para o vencimento da hospedagem do aplicativo e pagar com facilidade pelo Mercado Pago.
+        </p>
+        <div class="modal-acoes">
+          <button type="button" class="btn btn-s" (click)="fecharAvisoAssinatura(false)">
+            Mais tarde
+          </button>
+          <button type="button" class="btn btn-p" (click)="fecharAvisoAssinatura(true)">
+            Configurar data de pagamento
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 
   @if (auth.precisaDefinirSenha()) {
     <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-senha">

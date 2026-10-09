@@ -3,5 +3,6 @@
   "nomeLoja": "Farias Troca de Óleo",
   "canalWhatsapp": "",
   "travado": true,
+  "linkPagamento": "https://mpago.la/2uGmrXj",
   "_gerado": "Escrito por scripts/aplicar-config.js a partir de configuracao.json. Não edite este arquivo à mão: ele é sobrescrito a cada build."
 }

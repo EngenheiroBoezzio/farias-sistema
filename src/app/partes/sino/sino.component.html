@@ -2,19 +2,42 @@
   <button type="button" class="sino" (click)="alternar()"
           [class.tem-erro]="erros() > 0"
           [attr.aria-expanded]="aberto()"
-          [attr.aria-label]="naoLidas() > 0
-            ? naoLidas() + ' notificações não lidas'
+          [attr.aria-label]="total() > 0
+            ? total() + ' coisas novas'
             : 'Notificações'">
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
       <path d="M8 2a4 4 0 0 0-4 4v2.5L2.8 11h10.4L12 8.5V6a4 4 0 0 0-4-4z"/>
       <path d="M6.5 13a1.5 1.5 0 0 0 3 0"/>
     </svg>
-    @if (naoLidas() > 0) { <span class="pip">{{ naoLidas() }}</span> }
+    @if (total() > 0) { <span class="pip">{{ total() }}</span> }
   </button>
 
   @if (aberto()) {
-    <div class="sino-pop" role="dialog" aria-label="Notificações">
-      <header>Notificações</header>
+    <div class="sino-pop" role="dialog" aria-label="Notificações e novidades">
+
+      <!-- NOVIDADES primeiro: é a coisa boa, o "olha o que melhorou". -->
+      @if (novidades().length > 0) {
+        <header>Novidades</header>
+        <ul class="novs">
+          @for (n of novidades(); track n.id) {
+            <li class="nov" [class.nova]="n.nova">
+              <div class="nov-topo">
+                <b>{{ n.titulo }}</b>
+                @if (n.a_pedido) { <span class="marca-pediu">você pediu</span> }
+                @if (n.nova) { <span class="ponto-novo" aria-label="nova"></span> }
+              </div>
+              <span class="nov-corpo">{{ n.corpo }}</span>
+              <time>
+                {{ dataHora(n.publicada_em) }}
+                @if (n.versao) { · v{{ n.versao }} }
+              </time>
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Notificações de sistema (backup) depois. -->
+      <header>Sistema</header>
       @if (lista().length === 0) {
         <p class="nada">Nada por aqui. O backup está silencioso, que é o normal.</p>
       } @else {

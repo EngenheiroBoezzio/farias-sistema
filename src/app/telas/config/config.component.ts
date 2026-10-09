@@ -15,7 +15,7 @@ import { SinoComponent } from '../../partes/sino/sino.component';
 import { UsuariosService, UsuarioSistema } from '../../nucleo/usuarios.service';
 import { VERSAO } from '../../nucleo/versao';
 
-export type SecaoConfig = 'perfil' | 'aparencia' | 'loja' | 'conexao' | 'atualizacoes' | 'usuarios';
+export type SecaoConfig = 'perfil' | 'aparencia' | 'loja' | 'faturamento' | 'conexao' | 'atualizacoes' | 'usuarios';
 
 @Component({
   selector: 'app-config',
@@ -66,6 +66,10 @@ export class ConfigComponent implements OnInit {
   usuarioParaAlterarSenha = signal<UsuarioSistema | null>(null);
   novaSenhaOperador = '';
   salvandoSenhaOperador = signal(false);
+  usuarioParaEditar = signal<UsuarioSistema | null>(null);
+  edicaoUsuario = { nome: '', usuario: '', papel: 'atendente' as 'admin' | 'atendente' };
+  salvandoEdicaoUsuario = signal(false);
+  erroEdicaoUsuario = signal<string | null>(null);
 
   // Formulário Minha Senha
   minhaSenha = { atual: '', nova: '', confirmacao: '' };
@@ -78,8 +82,17 @@ export class ConfigComponent implements OnInit {
   salvandoNovoUsuario = signal(false);
   erroNovoUsuario = signal<string | null>(null);
 
+  // Faturamento & Mensalidade (Mercado Pago)
+  diaVencimento = signal<number>(10);
+  linkMercadoPago = signal<string>('');
+  ultimoMesPago = signal<string>('');
+  salvandoFaturamento = signal(false);
+  salvoFaturamento = signal<string | null>(null);
+  erroFaturamento = signal<string | null>(null);
+  readonly diasVencimentoOpcoes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
+
   private readonly SECOES: SecaoConfig[] =
-    ['perfil', 'aparencia', 'loja', 'conexao', 'atualizacoes', 'usuarios'];
+    ['perfil', 'aparencia', 'loja', 'faturamento', 'conexao', 'atualizacoes', 'usuarios'];
 
   async ngOnInit(): Promise<void> {
     /* Quem chega da Comunidade vem atrás do link do canal. Cair em "Perfil" e
@@ -107,6 +120,10 @@ export class ConfigComponent implements OnInit {
        melhor um número certo do que um travessão. */
     if (this.versao() === '—') this.versao.set(VERSAO);
 
+    this.diaVencimento.set(this.cfg.diaVencimento);
+    this.linkMercadoPago.set(this.cfg.linkPagamento);
+    this.ultimoMesPago.set(this.cfg.ultimoMesPago);
+
     if (this.auth.ehAdmin()) {
       this.carregarUsuarios();
     }
@@ -127,8 +144,8 @@ export class ConfigComponent implements OnInit {
     this.erroMinhaSenha.set(null);
     this.sucessoMinhaSenha.set(null);
 
-    if (!this.minhaSenha.nova || this.minhaSenha.nova.length < 4) {
-      this.erroMinhaSenha.set('A nova senha deve ter pelo menos 4 caracteres.');
+    if (!this.minhaSenha.nova || this.minhaSenha.nova.length < 8) {
+      this.erroMinhaSenha.set('A nova senha deve ter pelo menos 8 caracteres.');
       return;
     }
     if (this.minhaSenha.nova !== this.minhaSenha.confirmacao) {
@@ -159,8 +176,8 @@ export class ConfigComponent implements OnInit {
   salvarSenhaOperador(): void {
     const u = this.usuarioParaAlterarSenha();
     if (!u) return;
-    if (!this.novaSenhaOperador || this.novaSenhaOperador.length < 4) {
-      alert('A senha deve ter no mínimo 4 caracteres.');
+    if (!this.novaSenhaOperador || this.novaSenhaOperador.length < 8) {
+      alert('A senha deve ter no mínimo 8 caracteres.');
       return;
     }
 
@@ -173,6 +190,35 @@ export class ConfigComponent implements OnInit {
         setTimeout(() => this.salvoPerfil.set(null), 4000);
       },
       error: () => this.salvandoSenhaOperador.set(false)
+    });
+  }
+
+  abrirModalEditarUsuario(u: UsuarioSistema): void {
+    this.usuarioParaEditar.set(u);
+    this.edicaoUsuario = { nome: u.nome, usuario: u.usuario, papel: u.papel };
+    this.erroEdicaoUsuario.set(null);
+  }
+
+  salvarEdicaoUsuario(): void {
+    const u = this.usuarioParaEditar();
+    if (!u) return;
+    if (!this.edicaoUsuario.nome.trim() || !this.edicaoUsuario.usuario.trim()) {
+      this.erroEdicaoUsuario.set('Nome e usuário não podem ficar vazios.');
+      return;
+    }
+    this.salvandoEdicaoUsuario.set(true);
+    this.usuariosService.editarUsuario(u.id, this.edicaoUsuario).subscribe({
+      next: res => {
+        this.salvandoEdicaoUsuario.set(false);
+        this.usuarioParaEditar.set(null);
+        this.carregarUsuarios();
+        this.salvoPerfil.set(`Usuário ${res.usuario.nome} atualizado com sucesso!`);
+        setTimeout(() => this.salvoPerfil.set(null), 4000);
+      },
+      error: (e: any) => {
+        this.salvandoEdicaoUsuario.set(false);
+        this.erroEdicaoUsuario.set(e.mensagem || 'Não foi possível atualizar o usuário.');
+      }
     });
   }
 
@@ -375,5 +421,98 @@ export class ConfigComponent implements OnInit {
       next: r => this.catalogo.set(`Catálogo relido: ${r.linhas} aplicações em ${r.ms} ms.`),
       error: () => this.catalogo.set('Não consegui recarregar. Confira se o servidor está no ar.')
     });
+  }
+
+  mesAtual(): string {
+    const agora = new Date();
+    return `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  nomeMesAtual(): string {
+    return new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  }
+
+  mesPago(): boolean {
+    return this.ultimoMesPago() === this.mesAtual();
+  }
+
+  statusMensalidade(): { tipo: 'pago' | 'pendente' | 'vence-hoje' | 'a-vencer'; titulo: string; descricao: string } {
+    if (this.mesPago()) {
+      return {
+        tipo: 'pago',
+        titulo: 'Mensalidade em dia',
+        descricao: `O pagamento referente a este mês (${this.nomeMesAtual()}) já foi registrado.`
+      };
+    }
+    const hoje = new Date().getDate();
+    const dia = this.diaVencimento();
+    if (hoje === dia) {
+      return {
+        tipo: 'vence-hoje',
+        titulo: 'Mensalidade vence hoje!',
+        descricao: `A mensalidade da hospedagem vence hoje, dia ${dia}. Efetue o pagamento para manter o sistema ativo.`
+      };
+    } else if (hoje > dia) {
+      return {
+        tipo: 'pendente',
+        titulo: 'Pagamento pendente',
+        descricao: `A mensalidade venceu no dia ${dia} deste mês e aguarda quitação.`
+      };
+    } else {
+      return {
+        tipo: 'a-vencer',
+        titulo: 'Próximo vencimento programado',
+        descricao: `Vencimento programado para o dia ${dia} deste mês (${this.nomeMesAtual()}).`
+      };
+    }
+  }
+
+  selecionarDiaVencimento(d: number): void {
+    this.diaVencimento.set(d);
+  }
+
+  async salvarFaturamento(): Promise<void> {
+    this.salvandoFaturamento.set(true);
+    this.salvoFaturamento.set(null);
+    this.erroFaturamento.set(null);
+    try {
+      const r = await firstValueFrom(this.dados.salvarConfigLoja({
+        diaVencimento: String(this.diaVencimento())
+      }));
+      this.cfg.aplicarDoServidor(r?.config);
+      this.salvoFaturamento.set('Dia de vencimento salvo com sucesso!');
+      setTimeout(() => this.salvoFaturamento.set(null), 4000);
+    } catch (e: any) {
+      this.erroFaturamento.set(e?.mensagem || 'Não foi possível salvar a data no servidor.');
+      setTimeout(() => this.erroFaturamento.set(null), 5000);
+    } finally {
+      this.salvandoFaturamento.set(false);
+    }
+  }
+
+  async confirmarPagamentoMes(): Promise<void> {
+    const mes = this.mesAtual();
+    this.salvandoFaturamento.set(true);
+    this.salvoFaturamento.set(null);
+    this.erroFaturamento.set(null);
+    try {
+      const r = await firstValueFrom(this.dados.salvarConfigLoja({
+        ultimoMesPago: mes
+      }));
+      this.ultimoMesPago.set(mes);
+      this.cfg.aplicarDoServidor(r?.config);
+      this.salvoFaturamento.set(`Pagamento referente a ${this.nomeMesAtual()} confirmado com sucesso!`);
+      setTimeout(() => this.salvoFaturamento.set(null), 5000);
+    } catch (e: any) {
+      this.erroFaturamento.set(e?.mensagem || 'Não foi possível confirmar o pagamento no servidor.');
+      setTimeout(() => this.erroFaturamento.set(null), 5000);
+    } finally {
+      this.salvandoFaturamento.set(false);
+    }
+  }
+
+  abrirMercadoPago(): void {
+    const url = this.linkMercadoPago() || 'https://www.mercadopago.com.br';
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

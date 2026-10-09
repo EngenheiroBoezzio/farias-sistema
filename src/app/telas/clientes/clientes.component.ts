@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DadosService } from '../../nucleo/dados.service';
-import { Cliente, Painel } from '../../nucleo/tipos';
+import { CarroDoCliente, Cliente, Painel } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
-import { telefone, data, inteiro } from '../../nucleo/formato';
+import { telefone, data, inteiro, km, placa as fPlaca, haQuanto } from '../../nucleo/formato';
 import { SinoComponent } from '../../partes/sino/sino.component';
 
 /* Quantos cabem numa página. Estava escrito 50 em dois lugares e o rodapé
@@ -30,6 +30,7 @@ export class ClientesComponent implements OnInit {
   pagina = signal(1);
 
   telefone = telefone; data = data; inteiro = inteiro;
+  km = km; fPlaca = fPlaca; haQuanto = haQuanto;
 
   /* O resumo vem do mesmo endereço que alimenta o painel. Nenhum destes
      números é calculado aqui: "com telefone" e "vencido" já existem prontos,
@@ -73,6 +74,38 @@ export class ClientesComponent implements OnInit {
 
   qtdVeiculos(c: Cliente): number {
     return typeof c.veiculos === 'number' ? c.veiculos : (c.veiculos?.length ?? 0);
+  }
+
+  /* Os carros do cliente, já prontos para a tela.
+     O servidor manda ordenado pela troca mais recente; aqui só garantimos o
+     array para o template não precisar testar nulo em cada laço. */
+  carros(c: Cliente): CarroDoCliente[] { return c.carros ?? []; }
+
+  /* COMO A SITUAÇÃO APARECE.
+
+     Cada uma tem símbolo PRÓPRIO, e não só cor. Dois dos três estados são
+     vermelho e verde, e o pai da Raíssa é quem usa esta tela — distinguir por
+     matiz seria apostar na única coisa que pode faltar.
+
+     "sumiu" no lugar de "frio": ninguém no balcão fala frio. */
+  readonly SITUACAO: Record<string, { rotulo: string; tom: string; icone: string }> = {
+    em_dia:  { rotulo: 'em dia',        tom: 'p-pos',  icone: 'certo' },
+    vencido: { rotulo: 'passou da hora', tom: 'p-crit', icone: 'alerta' },
+    parado:  { rotulo: 'parado',        tom: 'p-warn', icone: 'relogio' },
+    frio:    { rotulo: 'sumiu',         tom: 'p-mute', icone: 'relogio' }
+  };
+
+  sit(v: CarroDoCliente) {
+    return this.SITUACAO[v.situacao || ''] ||
+      { rotulo: 'sem atendimento', tom: 'p-mute', icone: 'relogio' };
+  }
+
+  /* "há 8 meses" para a última visita daquele CARRO.
+     O número de dias vem calculado do banco: a mesma conta feita aqui erra na
+     virada do dia e quando o computador está com o fuso trocado. */
+  quando(v: CarroDoCliente): string {
+    if (v.ultima_troca == null) return 'nunca passou aqui';
+    return this.haQuanto(v.dias);
   }
 
   proxima(): void { this.pagina.update(p => p + 1); this.buscar(); }

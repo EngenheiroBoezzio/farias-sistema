@@ -1,0 +1,35 @@
+# ===========================================================
+# Backup da Farias — instalar com:  crontab -e  (e colar isto)
+# Ajuste o caminho /opt/farias-api para onde o projeto ficar no servidor.
+# ===========================================================
+
+# --- de hora em hora durante o expediente ---
+# Custo medido: 0,25 MB e 0,6 s por rodada. O pior caso de perda vira "a última hora".
+0 8-11,14-18 * * 1-6  cd /opt/farias-api && /usr/bin/node scripts/backup.js horario >> logs/backup.log 2>&1
+
+# --- o diário oficial, na janela do almoço ---
+# 12h30: a oficina está parada, ninguém está gravando, e este fica retido 30 dias.
+30 12 * * 1-6         cd /opt/farias-api && /usr/bin/node scripts/backup.js diario  >> logs/backup.log 2>&1
+
+# --- mensal, guardado por um ano ---
+45 12 1 * *           cd /opt/farias-api && /usr/bin/node scripts/backup.js mensal  >> logs/backup.log 2>&1
+
+# --- vigia: avisa se o backup PAROU de rodar ---
+# Backup que falha é visível; backup que simplesmente deixou de existir é o perigoso.
+15 19 * * *           cd /opt/farias-api && /usr/bin/node scripts/vigia-backup.js  >> logs/backup.log 2>&1
+
+
+# ===========================================================
+# Retenção (cuidada pelo próprio script):
+#   horário  -> últimos 24   (~6 MB)
+#   diário   -> últimos 30   (~7,5 MB)
+#   mensal   -> últimos 12   (~3 MB)
+#   total    -> cerca de 17 MB no disco
+#
+# IMPORTANTE: isto guarda cópias NA MESMA MÁQUINA. Se o HD queimar, some tudo
+# junto. Mande o backup diário para fora também — um rsync para outro servidor,
+# ou o Google Drive do Farias:
+#
+# 0 13 * * 1-6  cd /opt/farias-api && rclone copy backups/ farias-drive:backups/ \
+#                 --include "*diario*" --max-age 25h >> logs/backup.log 2>&1
+# ===========================================================

@@ -177,6 +177,7 @@
             {{ d.veiculo.marca ? d.veiculo.marca + ' ' : '' }}{{ d.veiculo.modelo || 'Modelo não informado' }}
             @if (d.veiculo.ano) { · {{ d.veiculo.ano }} }
             @if (d.veiculo.cilindrada) { · {{ d.veiculo.cilindrada }} }
+            @if (d.oleo.litros) { <span class="pill p-pos" style="margin-left: 8px;">Cárter: {{ d.oleo.litros }} L</span> }
             @if (d.veiculo.versao) { <span class="hint">{{ d.veiculo.versao }}</span> }
           </h2>
           <span class="hint">Origem: {{ d.origem_veiculo }}</span>
@@ -228,7 +229,14 @@
               <span class="valor">{{ rec.texto }}</span>
               @if (rec.marca_usual) { <span class="compl">normalmente {{ rec.marca_usual }}</span> }
             </p>
-            @if (d.oleo.litros) { <p class="hint">Cabe {{ d.oleo.litros }} L</p> }
+            @if (d.oleo.litros) {
+              <div style="margin: 6px 0 10px; display: inline-flex; align-items: center; gap: 8px;">
+                <span class="pill p-pos" style="font-weight: 600; font-size: 13px; padding: 3px 10px;">
+                  Cárter: {{ d.oleo.litros }} L
+                </span>
+                <span class="hint" style="margin: 0;">capacidade do motor / cárter</span>
+              </div>
+            }
             <p class="fonte">
               <b>{{ rec.fonte === 'catálogo' ? d.oleo.origem : rec.fonte }}</b>
               @if (rec.porque) { <span>{{ rec.porque }}</span> }

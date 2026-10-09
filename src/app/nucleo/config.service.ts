@@ -25,6 +25,9 @@ export interface Config {
   apiUrl: string;
   nomeLoja: string;
   canalWhatsapp: string;
+  linkPagamento?: string;
+  diaVencimento?: string;
+  ultimoMesPago?: string;
   tamanhoFonte?: TamanhoFonte;
   tema?: TemaApp;
   frequenciaAtualizacao?: FrequenciaAtualizacao;
@@ -42,6 +45,9 @@ const PADRAO: Config = {
   apiUrl: 'http://localhost:3001',
   nomeLoja: 'Farias Troca de Óleo',
   canalWhatsapp: '',
+  linkPagamento: 'https://link.mercadopago.com.br/fariasapp',
+  diaVencimento: '10',
+  ultimoMesPago: '',
   tamanhoFonte: 'normal',
   tema: 'adaptativo',
   frequenciaAtualizacao: 'semanal',
@@ -79,6 +85,16 @@ export class ConfigService {
   }
   get nomeLoja(): string { return this._config().nomeLoja; }
   get canalWhatsapp(): string { return this._config().canalWhatsapp; }
+  get linkPagamento(): string {
+    return this._config().linkPagamento || 'https://link.mercadopago.com.br/fariasapp';
+  }
+  get diaVencimento(): number {
+    const d = parseInt(this._config().diaVencimento || '10', 10);
+    return isNaN(d) || d < 1 || d > 31 ? 10 : d;
+  }
+  get ultimoMesPago(): string {
+    return this._config().ultimoMesPago || '';
+  }
   get tamanhoFonte(): TamanhoFonte { return this._config().tamanhoFonte || 'normal'; }
   get tema(): TemaApp { return this._config().tema || 'adaptativo'; }
   get frequenciaAtualizacao(): FrequenciaAtualizacao { return this._config().frequenciaAtualizacao || 'semanal'; }
@@ -265,16 +281,26 @@ export class ConfigService {
 
      Este serviço não injeta o DadosService — seria ciclo, porque o ApiService
      depende daqui. Quem chama passa o objeto pronto. */
-  aplicarDoServidor(vindo: { nomeLoja?: string; canalWhatsapp?: string } | null | undefined): void {
+  aplicarDoServidor(vindo: { nomeLoja?: string; canalWhatsapp?: string; diaVencimento?: string; linkPagamento?: string; ultimoMesPago?: string } | null | undefined): void {
     if (!vindo) return;
     const atual = this._config();
     const nomeLoja = typeof vindo.nomeLoja === 'string' && vindo.nomeLoja.trim()
       ? vindo.nomeLoja.trim() : atual.nomeLoja;
     const canalWhatsapp = typeof vindo.canalWhatsapp === 'string'
       ? vindo.canalWhatsapp.trim() : atual.canalWhatsapp;
-    if (nomeLoja === atual.nomeLoja && canalWhatsapp === atual.canalWhatsapp) return;
+    const diaVencimento = typeof vindo.diaVencimento === 'string' && vindo.diaVencimento.trim()
+      ? vindo.diaVencimento.trim() : atual.diaVencimento || '10';
+    const linkPagamento = typeof vindo.linkPagamento === 'string' && vindo.linkPagamento.trim()
+      ? vindo.linkPagamento.trim() : atual.linkPagamento || '';
+    const ultimoMesPago = typeof vindo.ultimoMesPago === 'string' && vindo.ultimoMesPago.trim()
+      ? vindo.ultimoMesPago.trim() : atual.ultimoMesPago || '';
 
-    const novo = this.limpar({ ...atual, nomeLoja, canalWhatsapp });
+    if (nomeLoja === atual.nomeLoja && canalWhatsapp === atual.canalWhatsapp &&
+        diaVencimento === (atual.diaVencimento || '10') &&
+        linkPagamento === (atual.linkPagamento || '') &&
+        ultimoMesPago === (atual.ultimoMesPago || '')) return;
+
+    const novo = this.limpar({ ...atual, nomeLoja, canalWhatsapp, diaVencimento, linkPagamento, ultimoMesPago });
     this._config.set(novo);
     try { localStorage.setItem(CHAVE, JSON.stringify(novo)); } catch { /* segue */ }
   }
@@ -304,6 +330,9 @@ export class ConfigService {
   private limpar(c: Config): Config {
     const nomeLoja = String(c.nomeLoja || PADRAO.nomeLoja).trim();
     const canalWhatsapp = String(c.canalWhatsapp || '').trim();
+    const linkPagamento = String(c.linkPagamento || PADRAO.linkPagamento || '').trim();
+    const diaVencimento = String(c.diaVencimento || '10').trim();
+    const ultimoMesPago = String(c.ultimoMesPago || '').trim();
     const travado = c.travado === true;
     const tamanhoFonte: TamanhoFonte =
       c.tamanhoFonte === 'media' || c.tamanhoFonte === 'grande' ? c.tamanhoFonte : 'normal';
@@ -320,7 +349,7 @@ export class ConfigService {
     const bruto = String(c.apiUrl ?? '').trim();
     /* Nada preenchido cai no padrão de desenvolvimento, como sempre foi. */
     if (!bruto) return {
-      apiUrl: PADRAO.apiUrl, nomeLoja, canalWhatsapp, travado,
+      apiUrl: PADRAO.apiUrl, nomeLoja, canalWhatsapp, linkPagamento, diaVencimento, ultimoMesPago, travado,
       tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, menuFixado, ultimaVerificacaoAtualizacao
     };
 
@@ -329,13 +358,13 @@ export class ConfigService {
        discordem por causa de um hífen. */
     if (/^(mesma[- ]origem|same[- ]origin|\.|\/)$/i.test(bruto))
       return {
-        apiUrl: MESMA_ORIGEM, nomeLoja, canalWhatsapp, travado,
+        apiUrl: MESMA_ORIGEM, nomeLoja, canalWhatsapp, linkPagamento, diaVencimento, ultimoMesPago, travado,
         tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, menuFixado, ultimaVerificacaoAtualizacao
       };
 
     const url = /^https?:\/\//i.test(bruto) ? bruto : 'http://' + bruto;
     return {
-      apiUrl: url.replace(/\/+$/, '') || PADRAO.apiUrl, nomeLoja, canalWhatsapp, travado,
+      apiUrl: url.replace(/\/+$/, '') || PADRAO.apiUrl, nomeLoja, canalWhatsapp, linkPagamento, diaVencimento, ultimoMesPago, travado,
       tamanhoFonte, tema, frequenciaAtualizacao, tipoGrafico, menuFixado, ultimaVerificacaoAtualizacao
     };
   }

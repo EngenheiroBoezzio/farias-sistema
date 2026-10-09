@@ -29,6 +29,16 @@ export class FiltrosComponent implements OnInit {
   selo = signal<{ titulo: string; linha: string } | null>(null);
   duvida = signal<{ v: PendenteFiltro; motivo: string } | null>(null);
 
+  // Inteligência Artificial (Google Gemini)
+  iaDisponivel = signal(false);
+  varrendoIa = signal(false);
+  modalVarredura = signal(false);
+  sugestoesVarredura = signal<any[]>([]);
+  gravandoVarredura = signal(false);
+  sucessoVarredura = signal<string | null>(null);
+  erroVarredura = signal<string | null>(null);
+  consultandoIaIndividual = signal<number | null>(null);
+
   /* Qual carro está aberto no painel da direita. A tela virou triagem: fila à
      esquerda, um carro por vez à direita. Antes cada carro era um painel
      inteiro e aprovar o quinto exigia rolar por quatro. */
@@ -38,7 +48,13 @@ export class FiltrosComponent implements OnInit {
 
   fPlaca = fPlaca; rotuloSituacao = rotuloSituacao;
 
-  ngOnInit(): void { this.buscar(); }
+  ngOnInit(): void {
+    this.buscar();
+    this.dados.iaStatus().subscribe({
+      next: r => this.iaDisponivel.set(r.configurado),
+      error: () => this.iaDisponivel.set(false)
+    });
+  }
 
   buscar(): void {
     this.carregando.set(true); this.erro.set(null);
@@ -91,4 +107,75 @@ export class FiltrosComponent implements OnInit {
 
   proxima(): void { this.pagina.update(p => p + 1); this.buscar(); }
   anterior(): void { this.pagina.update(p => Math.max(1, p - 1)); this.buscar(); }
+
+  iniciarVarreduraIa(): void {
+    this.varrendoIa.set(true);
+    this.erroVarredura.set(null);
+    this.sucessoVarredura.set(null);
+
+    this.dados.iaVarreduraFila(25).subscribe({
+      next: r => {
+        this.sugestoesVarredura.set(r.sugestoes || []);
+        this.varrendoIa.set(false);
+        this.modalVarredura.set(true);
+      },
+      error: (e: ErroApi) => {
+        this.varrendoIa.set(false);
+        this.erroVarredura.set(e.mensagem || 'Falha ao executar a varredura com IA.');
+      }
+    });
+  }
+
+  removerDaVarredura(index: number): void {
+    this.sugestoesVarredura.update(arr => arr.filter((_, i) => i !== index));
+  }
+
+  aplicarVarreduraEmLote(): void {
+    const itens = this.sugestoesVarredura();
+    if (!itens.length) return;
+
+    this.gravandoVarredura.set(true);
+    this.erroVarredura.set(null);
+
+    const payload = itens.map(i => ({
+      id: i.id,
+      filtro_oleo: i.filtros.filtro_oleo,
+      filtro_ar: i.filtros.filtro_ar,
+      filtro_cabine: i.filtros.filtro_cabine,
+      filtro_combustivel: i.filtros.filtro_combustivel
+    }));
+
+    this.dados.iaAplicarFiltrosLote(payload).subscribe({
+      next: r => {
+        this.gravandoVarredura.set(false);
+        this.sucessoVarredura.set(`${r.aplicados} veículos atualizados com sucesso no banco de dados!`);
+        this.buscar();
+        setTimeout(() => {
+          this.modalVarredura.set(false);
+          this.sucessoVarredura.set(null);
+        }, 2500);
+      },
+      error: (e: ErroApi) => {
+        this.gravandoVarredura.set(false);
+        this.erroVarredura.set(e.mensagem || 'Falha ao gravar filtros em lote.');
+      }
+    });
+  }
+
+  descobrirFiltroIndividualIa(v: PendenteFiltro): void {
+    this.consultandoIaIndividual.set(v.id);
+    this.dados.iaConsultarCapacidadeOleo({
+      modelo: v.modelo || '',
+      marca: v.marca,
+      motor: v.cilindrada,
+      ano: v.ano
+    }).subscribe({
+      next: () => {
+        this.consultandoIaIndividual.set(null);
+        // Recarrega a linha com nova busca
+        this.buscar();
+      },
+      error: () => this.consultandoIaIndividual.set(null)
+    });
+  }
 }

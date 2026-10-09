@@ -55,6 +55,10 @@ export const rotas: Routes = [
         loadComponent: () => import('./telas/filtros/filtros.component').then(m => m.FiltrosComponent)
       },
       {
+        path: 'catalogo', title: 'Óleos e Filtros — Farias',
+        loadComponent: () => import('./telas/catalogo/catalogo.component').then(m => m.CatalogoComponent)
+      },
+      {
         path: 'vencidos', title: 'Vencidos — Farias',
         loadComponent: () => import('./telas/vencidos/vencidos.component').then(m => m.VencidosComponent)
       },

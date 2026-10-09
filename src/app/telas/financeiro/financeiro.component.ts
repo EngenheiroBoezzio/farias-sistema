@@ -305,8 +305,22 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
       despesasPessoal += m.despesasPessoal;
       despesasOperacionais += m.despesasOperacionais;
       despesasTotais += m.despesasTotais;
-      contasPendentes += m.contasPendentes;
       ordens += m.ordens;
+    }
+
+    // Calcula o saldo pendente efetivo sem multiplicar despesas recorrentes pelo número de meses
+    const mesAtual = new Date().toISOString().slice(0, 7);
+    for (const d of this.todasDespesas()) {
+      if (!d.recorrente) {
+        if (d.status === 'pendente') {
+          contasPendentes += Number(d.valor) || 0;
+        }
+      } else {
+        const estaPaga = d.mesesPagos ? d.mesesPagos.includes(mesAtual) : d.status === 'pago';
+        if (!estaPaga) {
+          contasPendentes += Number(d.valor) || 0;
+        }
+      }
     }
 
     faturamento = Math.round(faturamento * 100) / 100;
@@ -424,35 +438,39 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
         if (res && res.servicos) {
           this.todasOrdens.set(res.servicos);
         } else if (this.painel()?.ultimas) {
-          // Fallback para as últimas do painel caso rota paginada não retorne
-          const ultimas = this.painel()!.ultimas.map((u, i) => ({
-            id: i,
-            data: u.data,
-            km: null,
-            oleo: u.oleo,
-            litros: null,
-            total: u.total,
-            placa: u.placa,
-            modelo: u.modelo,
-            cliente: u.cliente
-          }));
+          // Usa as últimas do painel para visualização apenas se tiverem ID real
+          const ultimas = this.painel()!.ultimas
+            .filter(u => u.id != null && u.id > 0)
+            .map(u => ({
+              id: u.id!,
+              data: u.data,
+              km: null,
+              oleo: u.oleo,
+              litros: null,
+              total: u.total,
+              placa: u.placa,
+              modelo: u.modelo,
+              cliente: u.cliente
+            }));
           this.todasOrdens.set(ultimas);
         }
       },
       error: () => {
-        // Se a rota paginada falhar, usa as últimas do painel
+        // Se a rota paginada falhar, usa as últimas do painel apenas com ID real
         if (this.painel()?.ultimas) {
-          const ultimas = this.painel()!.ultimas.map((u, i) => ({
-            id: i,
-            data: u.data,
-            km: null,
-            oleo: u.oleo,
-            litros: null,
-            total: u.total,
-            placa: u.placa,
-            modelo: u.modelo,
-            cliente: u.cliente
-          }));
+          const ultimas = this.painel()!.ultimas
+            .filter(u => u.id != null && u.id > 0)
+            .map(u => ({
+              id: u.id!,
+              data: u.data,
+              km: null,
+              oleo: u.oleo,
+              litros: null,
+              total: u.total,
+              placa: u.placa,
+              modelo: u.modelo,
+              cliente: u.cliente
+            }));
           this.todasOrdens.set(ultimas);
         }
       }
@@ -509,10 +527,23 @@ export class FinanceiroComponent implements OnInit, OnDestroy {
   }
 
   alternarStatusDespesa(d: Despesa): void {
-    const novoStatus = d.status === 'pago' ? 'pendente' : 'pago';
-    this.financeiroService.editarDespesa(d.id, { status: novoStatus });
-    this.carregarDespesasLocais();
-    this.selo.set(`Despesa marcada como ${novoStatus === 'pago' ? 'Paga' : 'Pendente'}`);
+    const mesAtual = new Date().toISOString().slice(0, 7);
+    if (d.recorrente) {
+      this.financeiroService.alternarPagamentoRecorrente(d.id, mesAtual);
+      this.carregarDespesasLocais();
+      const atualizada = this.todasDespesas().find(x => x.id === d.id);
+      const pagaAgora = atualizada?.mesesPagos ? atualizada.mesesPagos.includes(mesAtual) : atualizada?.status === 'pago';
+      this.selo.set(`Despesa recorrente marcada como ${pagaAgora ? 'Paga' : 'Pendente'} para ${mesAtual}`);
+    } else {
+      const novoStatus = d.status === 'pago' ? 'pendente' : 'pago';
+      this.financeiroService.editarDespesa(d.id, {
+        status: novoStatus,
+        dataPagamento: novoStatus === 'pago' ? new Date().toISOString().slice(0, 10) : null
+      });
+      this.carregarDespesasLocais();
+      this.selo.set(`Despesa marcada como ${novoStatus === 'pago' ? 'Paga' : 'Pendente'}`);
+    }
+    setTimeout(() => this.renderizarGraficos(), 50);
   }
 
   excluirDespesa(d: Despesa): void {

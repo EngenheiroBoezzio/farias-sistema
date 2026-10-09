@@ -44,6 +44,7 @@ export interface Painel {
   serie: { mes: string; n: number; valor: Dec; custo?: Dec; custo_conhecido?: number }[];
   oleos: { nome: string; n: number }[];
   ultimas: {
+    id?: number;
     data: string; total: Dec; oleo: string | null;
     placa: string; modelo: string | null; cliente: string;
   }[];
@@ -76,6 +77,30 @@ export interface Cliente {
   obs: string | null;
   /** na LISTA vem a quantidade; na FICHA vem o array */
   veiculos?: number | Veiculo[];
+  /** A troca mais recente entre TODOS os carros da pessoa. null = nunca veio. */
+  ultima_visita?: string | null;
+  /** Os carros, com o que o balcão pergunta. Só vem na LISTA. */
+  carros?: CarroDoCliente[];
+}
+
+/* Um carro na lista de clientes.
+   Existe separado de `Veiculo` porque traz menos campo e um a mais: `dias`,
+   que o banco calcula. A conta de "quantos dias desde a última troca" feita
+   no navegador erra na virada do dia e em fuso diferente — e é justamente o
+   número que decide se o carro entra na fila de ligação. */
+export interface CarroDoCliente {
+  id: number;
+  cliente_id: number;
+  placa: string;
+  marca: string | null;
+  modelo: string | null;
+  ano: number | null;
+  ultima_troca: string | null;
+  ultimo_km: number | null;
+  ultimo_oleo: string | null;
+  situacao: Situacao | null;
+  visitas: number;
+  dias: number | null;
 }
 export interface RespostaClientes extends Paginado { clientes: Cliente[]; }
 
@@ -346,10 +371,26 @@ export interface Notificacao {
   criada_em: string;
   lida_em: string | null;
 }
+export interface Novidade {
+  id: number;
+  versao: string | null;
+  titulo: string;
+  corpo: string;
+  a_pedido: boolean;
+  destaque: boolean;
+  publicada_em: string;
+  /** é nova PARA MIM — vem do carimbo por usuário no servidor */
+  nova: boolean;
+}
+
 export interface RespostaNotificacoes {
   nao_lidas: number;
   erros: number;
   notificacoes: Notificacao[];
+  /** as novidades da equipe, já marcadas com "nova para mim" */
+  novidades?: Novidade[];
+  /** quantas novidades esta pessoa ainda não viu */
+  novidades_nao_lidas?: number;
 }
 
 /* ---------- lista de preços da oficina ---------- */
@@ -372,3 +413,45 @@ export interface PrecoItem {
 }
 
 export interface RespostaPrecos { itens: PrecoItem[]; total: number; }
+
+/* ---------- catálogo de óleos e filtros ---------- */
+export interface ItemCatalogoOleo {
+  id: number;
+  fonte: string;
+  marca: string | null;
+  modelo: string;
+  motor: string | null;
+  cilindrada: string | null;
+  ano_ini: number | null;
+  ano_fim: number | null;
+  litros: number | null;
+  viscosidades: string;
+}
+
+export interface RespostaCatalogoOleos extends Paginado {
+  itens: ItemCatalogoOleo[];
+}
+
+export interface ItemCatalogoFiltro {
+  id: number;
+  fonte: string;
+  marca: string;
+  modelo: string;
+  versao: string | null;
+  combustivel_txt: string | null;
+  ano_ini: number | null;
+  ano_fim: number | null;
+  f_oleo: string | null;
+  f_ar: string | null;
+  f_combustivel: string | null;
+  f_cabine: string | null;
+}
+
+export interface RespostaCatalogoFiltros extends Paginado {
+  itens: ItemCatalogoFiltro[];
+}
+
+export interface RespostaCatalogoResumo {
+  totalOleos: number;
+  totalFiltros: number;
+}

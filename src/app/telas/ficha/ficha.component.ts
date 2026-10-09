@@ -2,7 +2,7 @@
    É aqui que a Raíssa preenche o código da peça uma vez por carro. */
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DadosService } from '../../nucleo/dados.service';
 import { Servico, Veiculo } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
@@ -23,6 +23,7 @@ import { EtiquetaService, INTERVALOS_COMUNS } from '../../nucleo/etiqueta.servic
 export class FichaComponent implements OnInit {
   private dados = inject(DadosService);
   private rota = inject(ActivatedRoute);
+  private router = inject(Router);
   private etiquetaService = inject(EtiquetaService);
 
   id = 0;
@@ -31,6 +32,7 @@ export class FichaComponent implements OnInit {
   v = signal<Veiculo | null>(null);
   historico = signal<Servico[]>([]);
   gravando = signal(false);
+  excluindo = signal(false);
   selo = signal<string | null>(null);
   servicoParaEditar = signal<Servico | null>(null);
 
@@ -83,24 +85,38 @@ export class FichaComponent implements OnInit {
 
   gravarFiltros(): void {
     if (this.gravando()) return;
-    const corpo: any = {};
-    for (const k of Object.keys(this.f) as (keyof typeof this.f)[]) {
-      const val = this.f[k].trim();
-      if (val) corpo[k] = val.toUpperCase();
-    }
-    if (!Object.keys(corpo).length) {
-      this.erro.set({ status: 400, mensagem: 'Informe ao menos um filtro.' });
-      return;
-    }
+    const corpo = {
+      filtro_oleo: this.f.filtro_oleo.trim().toUpperCase() || null,
+      filtro_ar: this.f.filtro_ar.trim().toUpperCase() || null,
+      filtro_cabine: this.f.filtro_cabine.trim().toUpperCase() || null,
+      filtro_combustivel: this.f.filtro_combustivel.trim().toUpperCase() || null
+    };
     this.gravando.set(true);
     this.erro.set(null);
     this.dados.gravarFiltros(this.id, corpo).subscribe({
       next: r => {
         this.gravando.set(false);
         this.v.update(v => v ? { ...v, ...r.veiculo } : v);
-        this.selo.set('Filtros gravados');
+        this.selo.set('Filtros atualizados');
       },
       error: (e: ErroApi) => { this.gravando.set(false); this.erro.set(e); }
+    });
+  }
+
+  excluirVeiculo(): void {
+    const v = this.v();
+    if (!v) return;
+    if (!confirm(`Excluir o veículo placa ${v.placa} (${v.modelo || ''})?\nTodas as ordens de serviço vinculadas a ele serão removidas.`)) return;
+    this.excluindo.set(true);
+    this.dados.excluirVeiculo(this.id, true).subscribe({
+      next: () => {
+        this.excluindo.set(false);
+        this.router.navigate(['/clientes', v.cliente_id]);
+      },
+      error: (e: ErroApi) => {
+        this.excluindo.set(false);
+        this.erro.set(e);
+      }
     });
   }
 

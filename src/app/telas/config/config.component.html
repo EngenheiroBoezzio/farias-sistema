@@ -26,6 +26,9 @@
       <button type="button" [class.on]="secao() === 'loja'" (click)="secao.set('loja')">
         <i class="bi bi-shop" aria-hidden="true"></i> A loja
       </button>
+      <button type="button" [class.on]="secao() === 'faturamento'" (click)="secao.set('faturamento')">
+        <i class="bi bi-credit-card" aria-hidden="true"></i> Faturamento
+      </button>
       <button type="button" [class.on]="secao() === 'conexao'" (click)="secao.set('conexao')">
         <i class="bi bi-hdd-network" aria-hidden="true"></i> Conexão
       </button>
@@ -283,6 +286,118 @@
         </p>
       }
 
+      <!-- ===================== FATURAMENTO ===================== -->
+      @if (secao() === 'faturamento') {
+        <h2 class="cfg-titulo">Faturamento e Mensalidade</h2>
+        <p class="cfg-ajuda">Gerencie a mensalidade de hospedagem do aplicativo e programe o melhor dia de vencimento.</p>
+
+        <div class="panel">
+          <div class="lin">
+            <div class="lin-t">
+              <b>Situação da mensalidade</b>
+              <span>Referente a {{ nomeMesAtual() }}.</span>
+            </div>
+            <div class="lin-c">
+              @let st = statusMensalidade();
+              @if (st.tipo === 'pago') {
+                <span class="pill p-pos"><i class="bi bi-check-circle-fill"></i> {{ st.titulo }}</span>
+              } @else if (st.tipo === 'vence-hoje') {
+                <span class="pill p-warn"><i class="bi bi-exclamation-triangle-fill"></i> {{ st.titulo }}</span>
+              } @else if (st.tipo === 'pendente') {
+                <span class="pill p-crit"><i class="bi bi-exclamation-octagon-fill"></i> {{ st.titulo }}</span>
+              } @else {
+                <span class="pill p-info"><i class="bi bi-calendar-event"></i> {{ st.titulo }}</span>
+              }
+              <span class="cfg-sub-status">{{ st.descricao }}</span>
+            </div>
+          </div>
+
+          <div class="lin">
+            <div class="lin-t">
+              <b>Pagamento via Mercado Pago</b>
+              <span>Acesse o link direto e seguro do Mercado Pago para efetuar o pagamento.</span>
+            </div>
+            <div class="lin-c coluna">
+              <span class="junto">
+                <button type="button" class="btn btn-mp" (click)="abrirMercadoPago()">
+                  <i class="bi bi-credit-card-2-front" aria-hidden="true"></i> Pagar com Mercado Pago
+                </button>
+                @if (linkMercadoPago()) {
+                  <a [href]="linkMercadoPago()" target="_blank" rel="noopener noreferrer" class="btn btn-s">
+                    Abrir no navegador <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                }
+              </span>
+              <p class="hint">
+                Pague via Pix (aprovação imediata), cartão de crédito ou boleto bancário.
+              </p>
+            </div>
+          </div>
+
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Confirmação de pagamento</b>
+              <span>Informe quando o pagamento deste mês tiver sido realizado.</span>
+            </div>
+            <div class="lin-c">
+              @if (mesPago()) {
+                <span class="pill p-pos"><i class="bi bi-check-lg"></i> Quitação de {{ nomeMesAtual() }} confirmada</span>
+              } @else {
+                <button type="button" class="btn btn-s" (click)="confirmarPagamentoMes()" [disabled]="salvandoFaturamento()">
+                  <i class="bi bi-check2"></i> Já realizei o pagamento deste mês
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h3>Agendamento de vencimento</h3>
+          </div>
+          <div class="lin sem-borda">
+            <div class="lin-t">
+              <b>Dia do mês para vencimento</b>
+              <span>Escolha o melhor dia do mês para pagar. O sistema notificará você nesta data ao iniciar o programa.</span>
+            </div>
+            <div class="lin-c coluna">
+              <div class="chip-dias" role="radiogroup" aria-label="Dias de vencimento frequentes">
+                @for (d of [5, 10, 15, 20, 25]; track d) {
+                  <button type="button" class="chip-dia" [class.on]="diaVencimento() === d" (click)="selecionarDiaVencimento(d)">
+                    Dia {{ d }}
+                  </button>
+                }
+              </div>
+              <span class="junto">
+                <label for="sel-dia" class="visualmente-oculto">Escolha outro dia</label>
+                <select id="sel-dia" [ngModel]="diaVencimento()" (ngModelChange)="selecionarDiaVencimento(+($event))">
+                  @for (dia of diasVencimentoOpcoes; track dia) {
+                    <option [value]="dia">Todo dia {{ dia }} do mês</option>
+                  }
+                </select>
+                <button type="button" class="btn btn-p" (click)="salvarFaturamento()" [disabled]="salvandoFaturamento()">
+                  {{ salvandoFaturamento() ? 'Gravando…' : 'Salvar dia de vencimento' }}
+                </button>
+              </span>
+              <p class="hint">
+                Configurado para: <b>Todo dia {{ diaVencimento() }} do mês</b>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        @if (salvoFaturamento(); as s) {
+          <p class="fonte"><b>{{ s }}</b></p>
+        }
+        @if (erroFaturamento(); as e) {
+          <p class="hint erro"><b>{{ e }}</b></p>
+        }
+
+        <p class="nota-atencao solta">
+          O link de pagamento do Mercado Pago é configurado pelo administrador e protegido no servidor contra alterações não autorizadas.
+        </p>
+      }
+
       <!-- ===================== CONEXÃO ===================== -->
       @if (secao() === 'conexao') {
         <h2 class="cfg-titulo">Conexão</h2>
@@ -395,6 +510,8 @@
                         </td>
                         <td class="acao-col">
                           <button type="button" class="btn btn-s btn-sm"
+                                  (click)="abrirModalEditarUsuario(u)">Editar</button>
+                          <button type="button" class="btn btn-s btn-sm"
                                   (click)="abrirModalSenhaOperador(u)">Trocar senha</button>
                           @if (auth.usuario()?.id !== u.id) {
                             <button type="button" class="btn btn-g btn-sm perigo"
@@ -463,6 +580,35 @@
           <button type="button" class="btn btn-p" (click)="salvarNovoUsuario()"
                   [disabled]="salvandoNovoUsuario()">
             {{ salvandoNovoUsuario() ? 'Gravando…' : 'Criar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (usuarioParaEditar(); as uedit) {
+    <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="ed">
+      <div class="modal-box">
+        <h2 id="ed">Editar usuário</h2>
+        <p>Atualize o nome de exibição, login ou nível de acesso.</p>
+        <div class="f">
+          <label class="f"><span>Nome</span>
+            <input type="text" [(ngModel)]="edicaoUsuario.nome" autofocus></label>
+          <label class="f"><span>Entra como</span>
+            <input type="text" [(ngModel)]="edicaoUsuario.usuario" autocapitalize="off"
+                   spellcheck="false" placeholder="sem espaço e sem acento"></label>
+          <label class="f"><span>Acesso</span>
+            <select [(ngModel)]="edicaoUsuario.papel">
+              <option value="atendente">Atendente — o balcão inteiro, sem as contas</option>
+              <option value="admin">Administrador — inclusive o Financeiro</option>
+            </select></label>
+        </div>
+        @if (erroEdicaoUsuario(); as e) { <p class="hint erro">{{ e }}</p> }
+        <div class="modal-acoes">
+          <button type="button" class="btn btn-s" (click)="usuarioParaEditar.set(null)">Cancelar</button>
+          <button type="button" class="btn btn-p" (click)="salvarEdicaoUsuario()"
+                  [disabled]="salvandoEdicaoUsuario()">
+            {{ salvandoEdicaoUsuario() ? 'Gravando…' : 'Salvar' }}
           </button>
         </div>
       </div>

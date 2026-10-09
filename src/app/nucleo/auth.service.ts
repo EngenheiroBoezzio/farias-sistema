@@ -39,9 +39,11 @@ export class AuthService {
 
   constructor() {
     try {
-      // Lê do localStorage (persistente) ou sessionStorage
-      const t = localStorage.getItem(CHAVE_TOKEN) || sessionStorage.getItem(CHAVE_TOKEN);
-      const u = localStorage.getItem(CHAVE_USER) || sessionStorage.getItem(CHAVE_USER);
+      // Sessão: por padrão vive em sessionStorage (morre ao fechar o navegador/app).
+      // Lê do localStorage apenas se o usuário tiver explicitamente marcado "lembrar".
+      const lembrou = localStorage.getItem(CHAVE_LEMBRAR) === 'true';
+      const t = sessionStorage.getItem(CHAVE_TOKEN) || (lembrou ? localStorage.getItem(CHAVE_TOKEN) : null);
+      const u = sessionStorage.getItem(CHAVE_USER) || (lembrou ? localStorage.getItem(CHAVE_USER) : null);
       if (t && u) {
         const parsed = JSON.parse(u) as Usuario;
         // Restaura nome customizado caso salvo localmente
@@ -69,7 +71,7 @@ export class AuthService {
     }
   }
 
-  async entrar(usuario: string, senha: string, lembrar = true): Promise<void> {
+  async entrar(usuario: string, senha: string, lembrar = false): Promise<void> {
     const r = await firstValueFrom(
       this.api.post<{ token: string; usuario: Usuario & { primeiro_acesso?: boolean } }>('/api/auth/login', { usuario, senha }));
     

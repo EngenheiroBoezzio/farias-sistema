@@ -4,6 +4,8 @@
   "nomeLoja": "Farias Troca de Óleo",
   "canalWhatsapp": "",
   "travado": true,
+  "linkPagamento": "https://mpago.la/2uGmrXj",
+  "_linkPagamento": "Link de pagamento do Mercado Pago para a mensalidade da hospedagem do aplicativo.",
   "_apiUrl": "https://farias.devghzteste.fun",
   "_nomeLoja": "Nome que aparece na tela de entrada e no topo.",
   "_canalWhatsapp": "Link do canal do WhatsApp da loja, ou vazio.",

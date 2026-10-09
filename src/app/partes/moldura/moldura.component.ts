@@ -6,7 +6,7 @@
  * Aberta, nada disso é necessário — e cabe a busca de placa, que é o que mais
  * se faz no balcão. Em monitor abaixo de 1280px o CSS recolhe para os ícones.
  */
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../nucleo/auth.service';
@@ -49,6 +49,31 @@ export class MolduraComponent implements OnInit, OnDestroy {
   salvandoSenha = signal(false);
   erroSenha = signal<string | null>(null);
 
+  // Avisos de Faturamento e Assinatura
+  modalNovaAssinatura = signal(false);
+  alertaPendenteDispensado = signal(false);
+
+  avisoPagamentoPendente = computed(() => {
+    if (this.alertaPendenteDispensado()) return null;
+    const cfg = this.cfg.config();
+    const hoje = new Date();
+    const diaVencimento = this.cfg.diaVencimento;
+    const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+    const mesPago = (cfg.ultimoMesPago || '').trim() === mesAtual;
+
+    if (mesPago) return null;
+
+    if (hoje.getDate() >= diaVencimento) {
+      const nomeMes = hoje.toLocaleDateString('pt-BR', { month: 'long' });
+      return {
+        dia: diaVencimento,
+        mes: nomeMes,
+        link: this.cfg.linkPagamento
+      };
+    }
+    return null;
+  });
+
   onErroFoto(): void { this.fotoErro.set(true); }
 
   ngOnInit(): void {
@@ -80,6 +105,13 @@ export class MolduraComponent implements OnInit, OnDestroy {
 
     this.conferirServidor();
     this.relogio = setInterval(() => this.conferirServidor(), INTERVALO_ESTADO);
+
+    if (typeof localStorage !== 'undefined') {
+      const jaViu = localStorage.getItem('farias.aviso_assinatura_v1');
+      if (!jaViu) {
+        this.modalNovaAssinatura.set(true);
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -161,4 +193,23 @@ export class MolduraComponent implements OnInit, OnDestroy {
   }
 
   sair(): void { this.auth.sair(); }
+
+  fecharAvisoAssinatura(irParaConfig: boolean): void {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('farias.aviso_assinatura_v1', '1');
+    }
+    this.modalNovaAssinatura.set(false);
+    if (irParaConfig) {
+      this.router.navigate(['/configuracao'], { queryParams: { secao: 'faturamento' } });
+    }
+  }
+
+  dispensarAlertaPendente(): void {
+    this.alertaPendenteDispensado.set(true);
+  }
+
+  abrirLinkPagamento(url?: string): void {
+    const link = url || this.cfg.linkPagamento || 'https://www.mercadopago.com.br';
+    window.open(link, '_blank', 'noopener,noreferrer');
+  }
 }

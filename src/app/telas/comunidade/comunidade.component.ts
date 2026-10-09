@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ComunidadeService, Ideia, Publicacao } from '../../nucleo/comunidade.service';
 import { ConfigService } from '../../nucleo/config.service';
+import { DadosService } from '../../nucleo/dados.service';
 import { ErroApi } from '../../nucleo/api.service';
 import { dataHora } from '../../nucleo/formato';
 import { SeloComponent } from '../../partes/selo/selo.component';
@@ -27,10 +28,19 @@ type AbaComunidade = 'escrever' | 'historico';
 export class ComunidadeComponent implements OnInit {
   private com = inject(ComunidadeService);
   private cfg = inject(ConfigService);
+  private dados = inject(DadosService);
 
   carregando = signal(true);
   erro = signal<ErroApi | null>(null);
   aba = signal<AbaComunidade>('escrever');
+
+  // IA Gemini
+  iaDisponivel = signal(false);
+  gerandoIa = signal(false);
+  modalGerarIa = signal(false);
+  temaIa = signal('');
+  tipoIa = signal('promocao');
+  erroIa = signal<string | null>(null);
 
   ideias = signal<Ideia[]>([]);
   escolhida = signal<Ideia | null>(null);
@@ -61,6 +71,10 @@ export class ComunidadeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.buscar();
+    this.dados.iaStatus().subscribe({
+      next: r => this.iaDisponivel.set(r.configurado),
+      error: () => this.iaDisponivel.set(false)
+    });
   }
 
   async buscar(): Promise<void> {
@@ -75,6 +89,40 @@ export class ComunidadeComponent implements OnInit {
     } finally {
       this.carregando.set(false);
     }
+  }
+
+  abrirModalGerarIa(): void {
+    this.modalGerarIa.set(true);
+    this.temaIa.set('');
+    this.erroIa.set(null);
+  }
+
+  gerarComIa(): void {
+    this.gerandoIa.set(true);
+    this.erroIa.set(null);
+    this.dados.iaGerarMensagemComunidade({
+      tema: this.temaIa().trim() || 'Promoção de troca de óleo e filtros com revisão preventiva',
+      tipo: this.tipoIa()
+    }).subscribe({
+      next: res => {
+        this.gerandoIa.set(false);
+        this.modalGerarIa.set(false);
+        const novaIdeia: Ideia = {
+          id: 'ia-' + Date.now(),
+          titulo: res.ideia.titulo || 'Gerado com Google Gemini IA',
+          porque: 'Criado com inteligência artificial para o WhatsApp.',
+          fonte: 'modelo',
+          base: 'Google Gemini IA',
+          texto: res.ideia.texto
+        };
+        this.ideias.update(arr => [novaIdeia, ...arr]);
+        this.usar(novaIdeia);
+      },
+      error: (e: ErroApi) => {
+        this.gerandoIa.set(false);
+        this.erroIa.set(e.mensagem || 'Falha ao gerar texto com IA. Verifique a chave no servidor.');
+      }
+    });
   }
 
   usar(i: Ideia): void {

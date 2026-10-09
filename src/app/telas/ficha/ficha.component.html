@@ -31,6 +31,10 @@
         <a routerLink="/ordem" [queryParams]="{ placa: d.placa, litros: ultimoServico()?.litros, oleo: ultimoServico()?.oleo }" class="btn btn-p">
           Lançar ordem
         </a>
+        <button type="button" class="btn btn-g btn-sm perigo" (click)="excluirVeiculo()"
+                [disabled]="excluindo()" title="Excluir este veículo e seu histórico">
+          Excluir veículo
+        </button>
         <app-sino />
       </div>
     </div>

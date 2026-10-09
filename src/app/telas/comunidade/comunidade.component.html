@@ -6,6 +6,9 @@
          própria casa — nada aqui é inventado.</p>
     </div>
     <div class="head-act">
+      <button type="button" class="btn btn-ia" (click)="abrirModalGerarIa()">
+        <i class="bi bi-stars"></i> Criar com IA (Gemini)
+      </button>
       @if (desdeUltima(); as d) {
         <span class="pill p-mute">última publicação {{ d }}</span>
       }
@@ -154,6 +157,49 @@
       <button type="button" [class.on]="aba() === 'historico'" (click)="aba.set('historico')">
         Histórico <span class="conta">{{ historico().length }}</span>
       </button>
+    </div>
+  }
+
+  @if (modalGerarIa()) {
+    <div class="modal-overlay" (click)="modalGerarIa.set(false)">
+      <div class="modal-box" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="tit-gerar-ia">
+        <h2 id="tit-gerar-ia" style="display: flex; align-items: center; gap: 8px;">
+          <i class="bi bi-stars" style="color: var(--b-600);"></i> Criar mensagem com Google Gemini
+        </h2>
+        <p>A inteligência artificial criará uma mensagem persuasiva pronta com formatação e emojis para postar no canal da oficina.</p>
+
+        <div class="f">
+          <label class="f">
+            <span>Tipo de mensagem</span>
+            <select [ngModel]="tipoIa()" (ngModelChange)="tipoIa.set($event)">
+              <option value="promocao">Promoção de troca de óleo / filtros</option>
+              <option value="aviso_vencidos">Lembrete para clientes com troca vencida</option>
+              <option value="dica_tecnica">Dica técnica de manutenção (viscosidade / filtros)</option>
+              <option value="ferias_revisao">Revisão preventiva de viagem / feriado</option>
+            </select>
+          </label>
+          <label class="f">
+            <span>Tema ou instrução especial (opcional)</span>
+            <input type="text" [ngModel]="temaIa()" (ngModelChange)="temaIa.set($event)"
+                   placeholder="Ex: Óleo 5W-30 sintético com filtro grátis neste sábado" autofocus />
+          </label>
+        </div>
+
+        @if (erroIa(); as err) {
+          <p class="hint erro">{{ err }}</p>
+        }
+
+        <div class="modal-acoes">
+          <button type="button" class="btn btn-s" (click)="modalGerarIa.set(false)">Cancelar</button>
+          <button type="button" class="btn btn-p" (click)="gerarComIa()" [disabled]="gerandoIa()">
+            @if (gerandoIa()) {
+              <span class="girando" aria-hidden="true"></span> Escrevendo com IA…
+            } @else {
+              <i class="bi bi-stars"></i> Gerar mensagem
+            }
+          </button>
+        </div>
+      </div>
     </div>
   }
 

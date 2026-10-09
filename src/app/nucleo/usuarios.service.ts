@@ -78,6 +78,38 @@ export class UsuariosService {
     );
   }
 
+  /** Master altera dados cadastrais de um usuário (nome, usuário/login, papel) */
+  editarUsuario(usuarioId: number, dados: {
+    nome?: string;
+    usuario?: string;
+    papel?: 'admin' | 'atendente';
+  }): Observable<{ ok: boolean; usuario: UsuarioSistema }> {
+    return this.api.patch<{ ok: boolean; usuario: UsuarioSistema }>(`/api/usuarios/${usuarioId}`, dados).pipe(
+      tap(r => {
+        if (r.usuario) {
+          const lista = this.obterListaLocal().map(u => u.id === usuarioId ? { ...u, ...r.usuario } : u);
+          this.salvarCache(lista);
+        }
+      }),
+      catchError(() => {
+        const lista = this.obterListaLocal().map(u => {
+          if (u.id === usuarioId) {
+            return {
+              ...u,
+              nome: dados.nome !== undefined ? dados.nome.trim() : u.nome,
+              usuario: dados.usuario !== undefined ? dados.usuario.trim().toLowerCase() : u.usuario,
+              papel: dados.papel !== undefined ? dados.papel : u.papel
+            };
+          }
+          return u;
+        });
+        this.salvarCache(lista);
+        const atualizado = lista.find(u => u.id === usuarioId)!;
+        return of({ ok: true, usuario: atualizado });
+      })
+    );
+  }
+
   /** Master cadastra um novo usuário (atendente ou admin) */
   criarUsuario(dados: {
     nome: string;

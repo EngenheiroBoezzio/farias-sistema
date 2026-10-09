@@ -60,7 +60,7 @@ r.get('/', rota(async (_req, res) => {
       q(`SELECT oleo AS nome, COUNT(*) AS n FROM servicos
          WHERE oleo IS NOT NULL AND oleo <> ''
          GROUP BY oleo ORDER BY n DESC LIMIT 6`),
-      q(`SELECT s.data, s.total, s.oleo, v.placa, v.modelo, c.nome AS cliente
+      q(`SELECT s.id, s.data, s.total, s.oleo, v.placa, v.modelo, c.nome AS cliente
          FROM servicos s
          JOIN veiculos v ON v.id = s.veiculo_id
          JOIN clientes c ON c.id = s.cliente_id

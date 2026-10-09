@@ -23,13 +23,21 @@
       <button type="button" class="btn btn-s" (click)="fechou.emit()">Fechar</button>
       <span class="espaco"></span>
       <button type="button" class="btn btn-s" (click)="baixar()" [disabled]="gerando()">Baixar PNG</button>
-      @if (dados().telefone) {
-        <button type="button" class="btn btn-s" (click)="abrirWhatsapp()">
-          Abrir conversa <span class="num-tel">{{ fTel(dados().telefone) }}</span>
+      
+      @if (telefoneManual()) {
+        <button type="button" class="btn btn-zap" (click)="abrirWhatsapp()">
+          Abrir WhatsApp <span class="num-tel">{{ telefoneManual() }}</span>
         </button>
       } @else {
-        <span class="hint sem-tel">Este cliente não tem telefone cadastrado</span>
+        <div style="display:inline-flex;align-items:center;gap:6px;">
+          <input type="tel" [value]="telefoneManual()" (input)="onTelefoneInput($event)"
+                 placeholder="(DDD) WhatsApp" style="width:160px;height:var(--alvo);font-size:var(--t-sm)">
+          <button type="button" class="btn btn-zap" (click)="abrirWhatsapp()" [disabled]="!telefoneManual()">
+            Abrir WhatsApp
+          </button>
+        </div>
       }
+
       <button type="button" class="btn btn-p btn-lg" (click)="copiarImagem()" [disabled]="gerando()">
         {{ copiado() ? 'Copiado!' : 'Copiar a imagem' }}
       </button>

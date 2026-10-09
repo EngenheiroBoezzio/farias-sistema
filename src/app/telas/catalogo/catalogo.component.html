@@ -1,0 +1,379 @@
+<section>
+  <div class="head">
+    <div>
+      <h1>Óleos e Filtros</h1>
+      <p>Catálogo técnico completo · capacidade do cárter em litros, viscosidades recomendadas e códigos de filtros Wega.</p>
+    </div>
+    <div class="head-act">
+      <app-sino />
+    </div>
+  </div>
+
+  <div class="kpi">
+    <div class="kpi-destaque">
+      <span class="rot">Capacidade e Óleos</span>
+      <span class="val">{{ totalOleos() }}</span>
+      <span class="sub">modelos e motorizações catalogados</span>
+    </div>
+    <div class="kpi-linha">
+      <div class="kpi-item">
+        <span class="rot">Filtros Wega</span>
+        <span class="val">{{ totalFiltros() }}</span>
+        <span class="sub">aplicações originais</span>
+      </div>
+      <div class="kpi-item">
+        <span class="rot">Marcas</span>
+        <span class="val">{{ marcas().length }}</span>
+        <span class="sub">montadoras cobertas</span>
+      </div>
+      <div class="kpi-item destacado">
+        <span class="rot">Cárter exato</span>
+        <span class="val verde">100%</span>
+        <span class="sub">medida sem chute no balcão</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de navegação por abas do catálogo -->
+  <div class="cmd" style="margin-top: 16px;">
+    <div class="cmd-grupo">
+      <div class="cmd-botoes">
+        <div class="seg" role="group" aria-label="Abas do catálogo">
+          <button type="button" [class.on]="abaAtiva() === 'veiculo'" [attr.aria-pressed]="abaAtiva() === 'veiculo'"
+                  (click)="selecionarAba('veiculo')">
+            🔍 Consulta por Modelo
+          </button>
+          <button type="button" [class.on]="abaAtiva() === 'oleos'" [attr.aria-pressed]="abaAtiva() === 'oleos'"
+                  (click)="selecionarAba('oleos')">
+            🛢️ Óleos e Cárter ({{ totalOleos() }})
+          </button>
+          <button type="button" [class.on]="abaAtiva() === 'filtros'" [attr.aria-pressed]="abaAtiva() === 'filtros'"
+                  (click)="selecionarAba('filtros')">
+            🔧 Filtros Wega ({{ totalFiltros() }})
+          </button>
+        </div>
+      </div>
+      <span class="cmd-nome">Visualização</span>
+    </div>
+  </div>
+
+  <!-- ==================== ABA 1: CONSULTA RÁPIDA POR MODELO ==================== -->
+  @if (abaAtiva() === 'veiculo') {
+    <div class="panel" style="margin-bottom: 20px;">
+      <div class="panel-h">
+        <h2>Consultar especificações técnicas por modelo</h2>
+        <span class="meta">saiba o cárter e filtros antes de atender</span>
+      </div>
+      <div class="panel-b">
+        <form (ngSubmit)="consultarVeiculo()" style="display: flex; gap: 10px; max-width: 640px; margin-bottom: 14px;">
+          <input type="search" class="cmd-busca" [(ngModel)]="termoVeiculo" name="termoVeiculo"
+                 placeholder="Digite o modelo (ex: Onix 1.0, Civic, Ka, Corolla, Compass)"
+                 style="flex: 1;" autocomplete="off" />
+          <button type="submit" class="btn btn-p" [disabled]="buscandoVeiculo() || !termoVeiculo().trim()">
+            @if (buscandoVeiculo()) { <span class="girando" aria-hidden="true"></span> }
+            Consultar
+          </button>
+        </form>
+
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <span class="sub" style="font-size: 12px; margin: 0;">Mais comuns:</span>
+          @for (m of modelosPopulares; track m) {
+            <button type="button" class="pill-btn p-mute" (click)="consultarVeiculo(m)">
+              {{ m }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (resultadoVeiculo(); as r) {
+      <div class="panel" style="border-left: 4px solid var(--pos); margin-bottom: 20px;">
+        <div class="panel-h">
+          <div>
+            <h2 style="font-size: 18px;">
+              {{ r.veiculo?.marca ? r.veiculo.marca + ' ' : '' }}{{ r.veiculo?.modelo }}
+              @if (r.veiculo?.cilindrada) { · {{ r.veiculo.cilindrada }} }
+              @if (r.veiculo?.ano) { · {{ r.veiculo.ano }} }
+            </h2>
+            <span class="sub">{{ r.origem_veiculo }}</span>
+          </div>
+          <div class="head-act">
+            <button type="button" class="btn btn-p"
+                    (click)="iniciarOrdemCom(r.veiculo?.modelo, r.oleo?.litros, r.oleo?.recomendado?.texto)">
+              Iniciar ordem com este carro
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-b">
+          <div class="grid two">
+            <!-- Bloco de Óleo e Cárter -->
+            <div style="background: var(--surface-2); border: 1px solid var(--bd); border-radius: var(--r-md); padding: 16px;">
+              <b style="display: block; font-size: 14px; margin-bottom: 10px; color: var(--tx);">Especificação do Óleo do Motor</b>
+              
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                @if (r.oleo?.litros) {
+                  <span class="pill p-pos" style="font-size: 14px; font-weight: 700; padding: 6px 14px;">
+                    Cárter: {{ r.oleo.litros }} Litros
+                  </span>
+                } @else {
+                  <span class="pill p-warn">Capacidade do cárter não tabelada</span>
+                }
+
+                @if (r.oleo?.recomendado; as rec) {
+                  <span class="pill p-pos" style="font-size: 14px; font-weight: 700; padding: 6px 14px;">
+                    Viscosidade: {{ rec.texto }}
+                  </span>
+                }
+
+                <button type="button" class="btn btn-ia btn-sm"
+                        (click)="consultarCapacidadeIa(r.veiculo)"
+                        [disabled]="consultandoIaOleo()">
+                  @if (consultandoIaOleo()) {
+                    <span class="girando" aria-hidden="true"></span> Consultando IA…
+                  } @else {
+                    <i class="bi bi-stars"></i> Identificar litragem com IA
+                  }
+                </button>
+              </div>
+
+              @if (resultadoIaOleo(); as ia) {
+                <div class="ia-resultado-card" style="margin-bottom: 12px;">
+                  <div class="ia-topo">
+                    <span class="ia-badge"><i class="bi bi-stars"></i> Google Gemini IA</span>
+                    <span class="ia-litros"><b>{{ ia.litros }} Litros</b> (com filtro)</span>
+                  </div>
+                  <div class="ia-detalhes">
+                    <p style="margin: 4px 0;"><b>Viscosidade original:</b> {{ ia.viscosidade_principal }} · {{ ia.tipo_oleo || 'Sintético' }}</p>
+                    @if (ia.norma_especificacao) {
+                      <p style="margin: 4px 0; font-size: 12px; color: var(--tx-2);"><b>Especificação:</b> {{ ia.norma_especificacao }}</p>
+                    }
+                    @if (ia.observacoes) {
+                      <p style="margin: 6px 0 0; font-size: 12px; color: var(--info);">
+                        <i class="bi bi-info-circle"></i> {{ ia.observacoes }}
+                      </p>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (erroIaOleo(); as err) {
+                <p class="hint erro" style="margin-bottom: 10px;">{{ err }}</p>
+              }
+
+              @if (r.oleo?.recomendado; as rec) {
+                <p style="margin: 0 0 6px; font-size: 13px; color: var(--tx-2);">
+                  <b>Fonte:</b> {{ rec.fonte }}
+                  @if (rec.porque) { <span> — {{ rec.porque }}</span> }
+                </p>
+              }
+
+              @if (r.oleo?.viscosidades?.length) {
+                <p style="margin: 6px 0 0; font-size: 12px; color: var(--tx-3);">
+                  Viscosidades aprovadas: {{ r.oleo.viscosidades.join(', ') }}
+                </p>
+              }
+            </div>
+
+            <!-- Bloco de Filtros -->
+            <div style="background: var(--surface-2); border: 1px solid var(--bd); border-radius: var(--r-md); padding: 16px;">
+              <b style="display: block; font-size: 14px; margin-bottom: 10px; color: var(--tx);">Filtros Recomendados (Wega / Originais)</b>
+              
+              @if (r.filtros?.itens?.length) {
+                <div style="display: grid; gap: 8px;">
+                  @for (f of r.filtros.itens; track f.tipo) {
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--surface); border: 1px solid var(--bd); border-radius: var(--r-xs);">
+                      <span style="font-size: 13px; font-weight: 500;">{{ f.rotulo }}</span>
+                      <span class="pill p-mute font-mono" style="font-weight: 600;">{{ f.codigo }}</span>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="sub">Nenhum código de filtro catalogado automaticamente para esta busca. Preencha na ordem se necessário.</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- ==================== ABA 2: LISTA DE ÓLEOS E CÁRTER ==================== -->
+  @if (abaAtiva() === 'oleos') {
+    <div class="panel">
+      <div class="panel-h">
+        <h2>Catálogo de Capacidade do Cárter e Viscosidades</h2>
+        <span class="meta">{{ totalOleosFiltrados() }} registros encontrados</span>
+      </div>
+
+      <div class="panel-b" style="padding-bottom: 0;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+          <input type="search" class="cmd-busca" [(ngModel)]="buscaOleo" (ngModelChange)="filtrarOleo()"
+                 placeholder="Buscar modelo, motor ou viscosidade (ex: 1.0, 5W-30, Firefly)..."
+                 style="flex: 2; min-width: 200px;" />
+          
+          <select class="cmd-select" [(ngModel)]="marcaOleo" (ngModelChange)="filtrarOleo()"
+                  style="flex: 1; min-width: 150px;">
+            <option value="">Todas as montadoras</option>
+            @for (m of marcas(); track m) {
+              <option [value]="m">{{ m }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-b sem-respiro">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Montadora</th>
+                <th>Modelo</th>
+                <th>Motorização</th>
+                <th>Cil.</th>
+                <th>Anos</th>
+                <th style="text-align: right;">Capacidade Cárter</th>
+                <th>Viscosidades</th>
+                <th style="text-align: right;">Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (o of oleos(); track o.id) {
+                <tr>
+                  <td><b>{{ o.marca || '—' }}</b></td>
+                  <td>{{ o.modelo }}</td>
+                  <td><span class="sub" style="margin: 0;">{{ o.motor || '—' }}</span></td>
+                  <td>{{ o.cilindrada || '—' }}</td>
+                  <td>{{ o.ano_ini || '—' }}{{ o.ano_fim ? ' a ' + o.ano_fim : ' em diante' }}</td>
+                  <td class="num">
+                    @if (o.litros) {
+                      <span class="pill p-pos" style="font-weight: 700;">{{ o.litros }} L</span>
+                    } @else {
+                      <span class="tx-3">—</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="pill p-mute">{{ o.viscosidades }}</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <button type="button" class="btn btn-s btn-sm"
+                            (click)="iniciarOrdemCom(o.modelo, o.litros, o.viscosidades.split(',')[0])"
+                            title="Usar dados na nova ordem">
+                      Usar
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="8" style="text-align: center; padding: 24px; color: var(--tx-2);">
+                    Nenhum óleo encontrado com os filtros atuais.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tbl-foot">
+          <span>Página <b>{{ paginaOleo() }}</b> de {{ Math.ceil(totalOleosFiltrados() / 25) || 1 }}</span>
+          <span class="espaco"></span>
+          <button type="button" class="btn btn-s" (click)="anteriorOleo()" [disabled]="paginaOleo() === 1">
+            Anterior
+          </button>
+          <button type="button" class="btn btn-s" (click)="proximaOleo()" [disabled]="oleos().length < 25">
+            Próxima
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== ABA 3: LISTA DE FILTROS WEGA ==================== -->
+  @if (abaAtiva() === 'filtros') {
+    <div class="panel">
+      <div class="panel-h">
+        <h2>Catálogo de Filtros de Óleo, Ar, Combustível e Cabine</h2>
+        <span class="meta">{{ totalFiltrosFiltrados() }} aplicações encontradas</span>
+      </div>
+
+      <div class="panel-b" style="padding-bottom: 0;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+          <input type="search" class="cmd-busca" [(ngModel)]="buscaFiltro" (ngModelChange)="filtrarFiltro()"
+                 placeholder="Buscar por modelo, código Wega (ex: WO-120, FAP-4044, AKX-1438)..."
+                 style="flex: 2; min-width: 200px;" />
+          
+          <select class="cmd-select" [(ngModel)]="marcaFiltro" (ngModelChange)="filtrarFiltro()"
+                  style="flex: 1; min-width: 150px;">
+            <option value="">Todas as montadoras</option>
+            @for (m of marcas(); track m) {
+              <option [value]="m">{{ m }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-b sem-respiro">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Montadora</th>
+                <th>Modelo / Versão</th>
+                <th>Anos</th>
+                <th>Filtro de Óleo</th>
+                <th>Filtro de Ar</th>
+                <th>F. Combustível</th>
+                <th>F. Cabine</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (f of filtros(); track f.id) {
+                <tr>
+                  <td><b>{{ f.marca }}</b></td>
+                  <td>
+                    <span>{{ f.modelo }}</span>
+                    @if (f.versao) { <span class="sub">{{ f.versao }}</span> }
+                  </td>
+                  <td>{{ f.ano_ini || '—' }}{{ f.ano_fim ? ' a ' + f.ano_fim : ' em diante' }}</td>
+                  <td>
+                    @if (f.f_oleo) { <span class="pill p-mute font-mono">{{ f.f_oleo }}</span> }
+                    @else { <span class="tx-3">—</span> }
+                  </td>
+                  <td>
+                    @if (f.f_ar) { <span class="pill p-mute font-mono">{{ f.f_ar }}</span> }
+                    @else { <span class="tx-3">—</span> }
+                  </td>
+                  <td>
+                    @if (f.f_combustivel) { <span class="pill p-mute font-mono">{{ f.f_combustivel }}</span> }
+                    @else { <span class="tx-3">—</span> }
+                  </td>
+                  <td>
+                    @if (f.f_cabine) { <span class="pill p-mute font-mono">{{ f.f_cabine }}</span> }
+                    @else { <span class="tx-3">—</span> }
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 24px; color: var(--tx-2);">
+                    Nenhum filtro encontrado com os filtros atuais.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tbl-foot">
+          <span>Página <b>{{ paginaFiltro() }}</b> de {{ Math.ceil(totalFiltrosFiltrados() / 25) || 1 }}</span>
+          <span class="espaco"></span>
+          <button type="button" class="btn btn-s" (click)="anteriorFiltro()" [disabled]="paginaFiltro() === 1">
+            Anterior
+          </button>
+          <button type="button" class="btn btn-s" (click)="proximaFiltro()" [disabled]="filtros().length < 25">
+            Próxima
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

@@ -59,11 +59,15 @@ export class DadosService {
   editarVeiculo(id: number, corpo: Partial<T.Veiculo>) {
     return this.api.patch<{ veiculo: T.Veiculo }>(`/api/veiculos/${id}`, corpo);
   }
+  excluirVeiculo(id: number, confirmar = false) {
+    return this.api.delete<{ ok: boolean; removido?: { placa: string; servicos: number } }>(
+      `/api/veiculos/${id}`, confirmar ? { confirmar: 1 } : undefined);
+  }
 
   /* ---------- a subseção de filtros ---------- */
   gravarFiltros(id: number, f: {
-    filtro_oleo?: string; filtro_ar?: string;
-    filtro_cabine?: string; filtro_combustivel?: string;
+    filtro_oleo?: string | null; filtro_ar?: string | null;
+    filtro_cabine?: string | null; filtro_combustivel?: string | null;
   }) {
     return this.api.put<{ veiculo: T.Veiculo }>(`/api/veiculos/${id}/filtros`, f);
   }
@@ -157,24 +161,101 @@ export class DadosService {
   }
 
   /* ---------- configurações da loja ---------- */
-  /* Nome da loja e link do canal, guardados no banco para que os dois balcões
-     da oficina não discordem. Só admin grava; qualquer logado lê. */
+  /* Nome da loja, link do canal e faturamento, guardados no banco para que
+     os dois balcões da oficina não discordem. Qualquer logado lê. */
   configLoja() {
-    return this.api.get<{ config: { nomeLoja: string; canalWhatsapp: string } }>('/api/config');
+    return this.api.get<{ config: { nomeLoja: string; canalWhatsapp: string; diaVencimento?: string; linkPagamento?: string; ultimoMesPago?: string } }>('/api/config');
   }
-  salvarConfigLoja(corpo: { nomeLoja?: string; canalWhatsapp?: string }) {
-    return this.api.put<{ config: { nomeLoja: string; canalWhatsapp: string } }>('/api/config', corpo);
+  salvarConfigLoja(corpo: { nomeLoja?: string; canalWhatsapp?: string; diaVencimento?: string; linkPagamento?: string; ultimoMesPago?: string }) {
+    return this.api.put<{ config: { nomeLoja: string; canalWhatsapp: string; diaVencimento?: string; linkPagamento?: string; ultimoMesPago?: string } }>('/api/config', corpo);
   }
 
   /* ---------- notificações ---------- */
   notificacoes() {
     return this.api.get<T.RespostaNotificacoes>('/api/notificacoes');
   }
+  criarNotificacao(n: { titulo: string; detalhe?: string | null; nivel?: 'ok' | 'aviso' | 'erro'; origem?: string }) {
+    return this.api.post<{ ok: boolean; notificacao: any }>('/api/notificacoes', n);
+  }
   marcarLida(id: number) { return this.api.post(`/api/notificacoes/${id}/lida`); }
   marcarTodasLidas() { return this.api.post('/api/notificacoes/lidas'); }
+  /* Carimba que esta pessoa viu as novidades até agora — zera a bolinha só
+     para ela, porque o "visto" é por usuário no servidor. */
+  marcarNovidadesVistas() { return this.api.post('/api/novidades/visto'); }
   backups() { return this.api.get<any>('/api/notificacoes/backups'); }
   recarregarCatalogo() {
     return this.api.post<{ ok: boolean; linhas: number; ms: number }>(
       '/api/notificacoes/recarregar-catalogo');
+  }
+
+  /* ---------- catálogo de óleos e filtros ---------- */
+  catalogoOleos(q?: { busca?: string; marca?: string; pagina?: number; limite?: number }) {
+    return this.api.get<T.RespostaCatalogoOleos>('/api/catalogo/oleos', q);
+  }
+  catalogoFiltros(q?: { busca?: string; marca?: string; pagina?: number; limite?: number }) {
+    return this.api.get<T.RespostaCatalogoFiltros>('/api/catalogo/filtros', q);
+  }
+  catalogoMarcas() {
+    return this.api.get<{ marcas: string[] }>('/api/catalogo/marcas');
+  }
+  catalogoResumo() {
+    return this.api.get<T.RespostaCatalogoResumo>('/api/catalogo/resumo');
+  }
+
+  /* ---------- inteligência artificial (Google Gemini) ---------- */
+  iaStatus() {
+    return this.api.get<{ configurado: boolean; modelo: string }>('/api/ia/status');
+  }
+  iaConsultarCapacidadeOleo(dados: { modelo: string; marca?: string | null; motor?: string | null; ano?: number | null }) {
+    return this.api.post<{
+      ok: boolean;
+      ia: {
+        litros: number;
+        litros_sem_filtro?: number | null;
+        viscosidade_principal: string;
+        viscosidades_alternativas?: string[];
+        norma_especificacao?: string;
+        tipo_oleo?: string;
+        observacoes?: string;
+      };
+    }>('/api/ia/oleo-capacidade', dados);
+  }
+  iaVarreduraFila(limite = 20) {
+    return this.api.post<{
+      ok: boolean;
+      total: number;
+      sugestoes: Array<{
+        id: number;
+        placa: string;
+        modelo: string;
+        marca?: string;
+        ano?: number;
+        cliente?: string;
+        filtros: {
+          filtro_oleo?: string | null;
+          filtro_ar?: string | null;
+          filtro_cabine?: string | null;
+          filtro_combustivel?: string | null;
+        };
+        fonte: string;
+        confianca: number;
+        origem: string;
+      }>;
+    }>('/api/ia/varredura-fila', { limite });
+  }
+  iaAplicarFiltrosLote(itens: Array<{
+    id: number;
+    filtro_oleo?: string | null;
+    filtro_ar?: string | null;
+    filtro_cabine?: string | null;
+    filtro_combustivel?: string | null;
+  }>) {
+    return this.api.post<{ ok: boolean; aplicados: number }>('/api/ia/varredura-fila/aplicar', { itens });
+  }
+  iaGerarMensagemComunidade(dados: { tema?: string; tipo?: string }) {
+    return this.api.post<{
+      ok: boolean;
+      ideia: { titulo: string; texto: string };
+    }>('/api/ia/comunidade/gerar', dados);
   }
 }

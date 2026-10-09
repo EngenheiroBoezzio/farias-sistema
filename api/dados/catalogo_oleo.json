@@ -1,0 +1,5397 @@
+[
+ {
+  "fonte": "atria",
+  "marca": "AUDI",
+  "modelo": "A1",
+  "modelo_txt": "A1",
+  "motor": "1.4 L4 TFSI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2016",
+  "ano_fim": "2018",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "AUDI",
+  "modelo": "A3 SEDAN",
+  "modelo_txt": "A3 SEDAN",
+  "motor": "1.4 L4 TFSI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "AUDI",
+  "modelo": "A3 SEDAN",
+  "modelo_txt": "A3 SEDAN",
+  "motor": "1.8 L4 TFSI TB 16V",
+  "cil": "1.8",
+  "ano_ini": "2014",
+  "ano_fim": "2021",
+  "litros": "4.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "116I E87",
+  "modelo_txt": "116i E87",
+  "motor": "1.5 L3 DFI TB 12V",
+  "cil": "1.5",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "4.25",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "120I SPORT",
+  "modelo_txt": "120i Sport",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "5,25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "125I M SPORT",
+  "modelo_txt": "125i M Sport",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "5.25",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "320I F30",
+  "modelo_txt": "320i F30",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2013",
+  "ano_fim": "2021",
+  "litros": "5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "320I F30",
+  "modelo_txt": "320i F30",
+  "motor": "2.0 L4 DFI Bi-TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2015",
+  "ano_fim": "2019",
+  "litros": "5.25",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "X1 SDRIVE 20I",
+  "modelo_txt": "X1 sDrive 20i",
+  "motor": "2.0 L4 MPFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "5.25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "X2 XDRIVE M35I",
+  "modelo_txt": "X2 xDrive M35i",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "5.25",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "BMW",
+  "modelo": "X6",
+  "modelo_txt": "X6",
+  "motor": "3.0 L6 DFI TB 24V",
+  "cil": "3.0",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "6.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHERY",
+  "modelo": "ARRIZO 5",
+  "modelo_txt": "ARRIZO 5",
+  "motor": "1.5 L4 MPFI TB 16V",
+  "cil": "1.5",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "AGILE",
+  "modelo_txt": "AGILE",
+  "motor": "1.4 L4 MPFI 8V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "COBALT",
+  "modelo_txt": "COBALT",
+  "motor": "1.8 L4 MPFI 8V",
+  "cil": "1.8",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "3.5",
+  "oleo": [
+   "0W-20",
+   "5W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "CORSA CLASSIC",
+  "modelo_txt": "CORSA CLASSIC",
+  "motor": "1.0 L4 MPFI 8V",
+  "cil": "1.0",
+  "ano_ini": "2010",
+  "ano_fim": "2016",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "ONIX",
+  "modelo_txt": "ONIX",
+  "motor": "1.0 L3 MPFI 12V",
+  "cil": "1.0",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "3.75",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "ONIX",
+  "modelo_txt": "ONIX",
+  "motor": "1.0 L3 MPFI TB 12V",
+  "cil": "1.0",
+  "ano_ini": "2020",
+  "ano_fim": "2021",
+  "litros": "3.75",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "ONIX",
+  "modelo_txt": "ONIX",
+  "motor": "1.0 L4 MPFI 8V (6 MARCHAS)",
+  "cil": "1.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "3.5",
+  "oleo": [
+   "0W-20",
+   "5W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "ONIX",
+  "modelo_txt": "ONIX",
+  "motor": "1.4 L4 MPFI 8V (5 MARCHAS)",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "PRISMA",
+  "modelo_txt": "PRISMA",
+  "motor": "1.0 L4 MPFI 8V (6 MARCHAS)",
+  "cil": "1.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "3.5",
+  "oleo": [
+   "0W-20",
+   "5W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "PRISMA",
+  "modelo_txt": "PRISMA",
+  "motor": "1.4 L4 MPFI 8V (5 MARCHAS)",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "S10",
+  "modelo_txt": "S10",
+  "motor": "2.5 L4 DFI 16V",
+  "cil": "2.5",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "5",
+  "oleo": [
+   "0W-20",
+   "5W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "S10",
+  "modelo_txt": "S10",
+  "motor": "2.8 L4 D.Eletronic TB 16V",
+  "cil": "2.8",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "5.6",
+  "oleo": [
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "SONIC",
+  "modelo_txt": "SONIC",
+  "motor": "1.6 L4 MPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2012",
+  "ano_fim": "2014",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "TRAILBLAZER",
+  "modelo_txt": "TRAILBLAZER",
+  "motor": "2.8 L4 D.Eletronic TB 16V",
+  "cil": "2.8",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "5.6",
+  "oleo": [
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CHEVROLET",
+  "modelo": "TRAILBLAZER",
+  "modelo_txt": "TRAILBLAZER",
+  "motor": "3.6 V6 DFI 24V",
+  "cil": "3.6",
+  "ano_ini": "2015",
+  "ano_fim": "2019",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CITROËN",
+  "modelo": "AIRCROSS",
+  "modelo_txt": "AIRCROSS",
+  "motor": "1.5 L4 MPFI 8V",
+  "cil": "1.5",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "3.25",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CITROËN",
+  "modelo": "AIRCROSS",
+  "modelo_txt": "AIRCROSS",
+  "motor": "1.6 L4 MPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "3.25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CITROËN",
+  "modelo": "C4 PICASSO",
+  "modelo_txt": "C4 PICASSO",
+  "motor": "1.6 L4 MPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2014",
+  "ano_fim": "2014",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CITROËN",
+  "modelo": "C4 PICASSO",
+  "modelo_txt": "C4 PICASSO",
+  "motor": "1.6 L4 MPI THP 16V",
+  "cil": "1.6",
+  "ano_ini": "2016",
+  "ano_fim": "2019",
+  "litros": "4.25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CITROËN",
+  "modelo": "C4 PICASSO",
+  "modelo_txt": "C4 PICASSO",
+  "motor": "2.0 L4 MPFI 16V",
+  "cil": "2.0",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "5",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "CITROËN",
+  "modelo": "JUMPER",
+  "modelo_txt": "JUMPER",
+  "motor": "2.0 L4 HDi TD 16V",
+  "cil": "2.0",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "5.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "DODGE",
+  "modelo": "RAM 2500",
+  "modelo_txt": "RAM 2500",
+  "motor": "6.7 L6 CRDi TD 24V",
+  "cil": "6.7",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "11.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "ARGO",
+  "modelo_txt": "ARGO",
+  "motor": "1.0 L3 MPFI 6V",
+  "cil": "1.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "2.54",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "ARGO",
+  "modelo_txt": "ARGO",
+  "motor": "1.8 L4 MPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "4.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "BRAVO",
+  "modelo_txt": "BRAVO",
+  "motor": "1.4 L4 SMPFI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2015",
+  "ano_fim": "2017",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "BRAVO",
+  "modelo_txt": "BRAVO",
+  "motor": "1.8 L4 MPI 16V",
+  "cil": "1.8",
+  "ano_ini": "2015",
+  "ano_fim": "2017",
+  "litros": "4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "CRONOS",
+  "modelo_txt": "CRONOS",
+  "motor": "1.3 L4 MPFI 8V",
+  "cil": "1.3",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "3.36",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "CRONOS",
+  "modelo_txt": "CRONOS",
+  "motor": "1.8 L4 MPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "4.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "DUCATO",
+  "modelo_txt": "DUCATO",
+  "motor": "2.3 L4 CRDi TD 16V",
+  "cil": "2.3",
+  "ano_ini": "2011",
+  "ano_fim": "2017",
+  "litros": "5.9",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "FIAT 500",
+  "modelo_txt": "FIAT 500",
+  "motor": "1.4 L4 MPFI 16V",
+  "cil": "1.4",
+  "ano_ini": "2011",
+  "ano_fim": "2014",
+  "litros": "3.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "FIAT 500",
+  "modelo_txt": "FIAT 500",
+  "motor": "1.4 L4 MPFI 8V",
+  "cil": "1.4",
+  "ano_ini": "2011",
+  "ano_fim": "2017",
+  "litros": "2.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "FIAT 500",
+  "modelo_txt": "FIAT 500",
+  "motor": "1.4 L4 SMPFI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2014",
+  "ano_fim": "2015",
+  "litros": "3.8",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "FIORINO",
+  "modelo_txt": "FIORINO",
+  "motor": "1.4 L4 MPFI 8V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "2.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "FREEMONT",
+  "modelo_txt": "FREEMONT",
+  "motor": "2.4 L4 MPFI 16V",
+  "cil": "2.4",
+  "ano_ini": "2011",
+  "ano_fim": "2017",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "IDEA ADVENTURE",
+  "modelo_txt": "IDEA ADVENTURE",
+  "motor": "1.8 L4 MPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "MOBI",
+  "modelo_txt": "MOBI",
+  "motor": "1.0 L3 MPFI 6V",
+  "cil": "1.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "2.54",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "MOBI",
+  "modelo_txt": "MOBI",
+  "motor": "1.0 L4 MPFI 8V",
+  "cil": "1.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "PUNTO",
+  "modelo_txt": "PUNTO",
+  "motor": "1.4 L4 SMPI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "3.3",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "PUNTO",
+  "modelo_txt": "PUNTO",
+  "motor": "1.6 L4 MPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "TORO",
+  "modelo_txt": "TORO",
+  "motor": "1.8 L4 MPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "TORO",
+  "modelo_txt": "TORO",
+  "motor": "2.0 L4 CRDi TD 16V",
+  "cil": "2.0",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "4.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "TORO",
+  "modelo_txt": "TORO",
+  "motor": "2.4 L4 SMPFI 16V",
+  "cil": "2.4",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "5.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "UNO   NOVO UNO",
+  "modelo_txt": "UNO - NOVO UNO",
+  "motor": "1.0 L3 MPFI 6V",
+  "cil": "1.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "2.54",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FIAT",
+  "modelo": "UNO   NOVO UNO",
+  "modelo_txt": "UNO - NOVO UNO",
+  "motor": "1.0 L4 MPFI 8V",
+  "cil": "1.0",
+  "ano_ini": "2010",
+  "ano_fim": "2016",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FORD",
+  "modelo": "ECOSPORT",
+  "modelo_txt": "ECOSPORT",
+  "motor": "1.5 L3 MPFI 12V",
+  "cil": "1.5",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "4.6",
+  "oleo": [
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FORD",
+  "modelo": "FIESTA",
+  "modelo_txt": "FIESTA",
+  "motor": "1.6 L4 MPFI 8V",
+  "cil": "1.6",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "4.1",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FORD",
+  "modelo": "KA   NEW KA",
+  "modelo_txt": "KA - NEW KA",
+  "motor": "1.0 L3 MPFI 12V",
+  "cil": "1.0",
+  "ano_ini": "2014",
+  "ano_fim": "2021",
+  "litros": "4",
+  "oleo": [
+   "5W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FORD",
+  "modelo": "MUSTANG",
+  "modelo_txt": "MUSTANG",
+  "motor": "5.0 V8 SMPFI 32V",
+  "cil": "5.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "9,5",
+  "oleo": [
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "FORD",
+  "modelo": "RANGER",
+  "modelo_txt": "RANGER",
+  "motor": "2.2 L4 CRDi TD 16V",
+  "cil": "2.2",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "8.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HONDA",
+  "modelo": "ACCORD",
+  "modelo_txt": "ACCORD",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "4.8",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HONDA",
+  "modelo": "ACCORD",
+  "modelo_txt": "ACCORD",
+  "motor": "2.4 L4 PGM-FI 16V",
+  "cil": "2.4",
+  "ano_ini": "2013",
+  "ano_fim": "2018",
+  "litros": "4.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HONDA",
+  "modelo": "CITY",
+  "modelo_txt": "CITY",
+  "motor": "1.5 L4 PGM-FI 16V",
+  "cil": "1.5",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "3.6",
+  "oleo": [
+   "0W-20"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "AZERA",
+  "modelo_txt": "AZERA",
+  "motor": "3.0 V6 GDI 24V",
+  "cil": "3.0",
+  "ano_ini": "2011",
+  "ano_fim": "2021",
+  "litros": "5.2",
+  "oleo": [
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "HB20",
+  "modelo_txt": "HB20",
+  "motor": "1.0 L3 DFI TB 12V",
+  "cil": "1.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "HB20",
+  "modelo_txt": "HB20",
+  "motor": "1.0 L3 MPI 12V",
+  "cil": "1.0",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "3.2",
+  "oleo": [
+   "0W-20",
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "HB20",
+  "modelo_txt": "HB20",
+  "motor": "1.6 L4 MPI 16V",
+  "cil": "1.6",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "3.6",
+  "oleo": [
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "TUCSON",
+  "modelo_txt": "TUCSON",
+  "motor": "1.6 L4 GDI TB 16V",
+  "cil": "1.6",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "TUCSON",
+  "modelo_txt": "TUCSON",
+  "motor": "2.0 L4 MPI 16V",
+  "cil": "2.0",
+  "ano_ini": "2010",
+  "ano_fim": "2019",
+  "litros": "4",
+  "oleo": [
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "HYUNDAI",
+  "modelo": "H 100",
+  "modelo_txt": "H 100",
+  "motor": "2.5 L4 CRDi TD 8V",
+  "cil": "2.5",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "7,4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "JAC",
+  "modelo": "J3",
+  "modelo_txt": "J3",
+  "motor": "1.4 L4 MPFI 16V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "4",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "JEEP",
+  "modelo": "COMPASS",
+  "modelo_txt": "COMPASS",
+  "motor": "2.0 L4 CRDi TD 16V",
+  "cil": "2.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "4.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "JEEP",
+  "modelo": "COMPASS",
+  "modelo_txt": "COMPASS",
+  "motor": "2.0 L4 SMPFI 16V",
+  "cil": "2.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "4.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "JEEP",
+  "modelo": "RENEGADE",
+  "modelo_txt": "RENEGADE",
+  "motor": "2.0 L4 CRDi TD 16V",
+  "cil": "2.0",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "4.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "KIA MOTORS",
+  "modelo": "CADENZA",
+  "modelo_txt": "CADENZA",
+  "motor": "3.5 V6 SMPFI 24V",
+  "cil": "3.5",
+  "ano_ini": "2010",
+  "ano_fim": "2016",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "KIA MOTORS",
+  "modelo": "BONGO",
+  "modelo_txt": "BONGO",
+  "motor": "2.5 L4 DI TB 8V",
+  "cil": "2.5",
+  "ano_ini": "2013",
+  "ano_fim": "2015",
+  "litros": "6,5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "KIA MOTORS",
+  "modelo": "STINGER GT",
+  "modelo_txt": "STINGER GT",
+  "motor": "3.3 V6 GDI Bi-TB 24V",
+  "cil": "3.3",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "6.9",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "DISCOVERY",
+  "modelo_txt": "DISCOVERY",
+  "motor": "3.0 V6 CRDi TB 24V",
+  "cil": "3.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "DISCOVERY",
+  "modelo_txt": "DISCOVERY",
+  "motor": "3.0 V6 DFI TB 24V",
+  "cil": "3.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "8",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "DISCOVERY IV",
+  "modelo_txt": "DISCOVERY IV",
+  "motor": "3.0 V6 CRDi TD 24V",
+  "cil": "3.0",
+  "ano_ini": "2010",
+  "ano_fim": "2016",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "DISCOVERY SPORT",
+  "modelo_txt": "DISCOVERY SPORT",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2015",
+  "ano_fim": "2017",
+  "litros": "5.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER EVOQUE",
+  "modelo_txt": "RANGE ROVER EVOQUE",
+  "motor": "2.0 L4 CRDi TD 16V",
+  "cil": "2.0",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "5.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER EVOQUE",
+  "modelo_txt": "RANGE ROVER EVOQUE",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "5.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER VOGUE",
+  "modelo_txt": "RANGE ROVER VOGUE",
+  "motor": "3.0 V6 CRDi TB 24V",
+  "cil": "3.0",
+  "ano_ini": "2014",
+  "ano_fim": "2021",
+  "litros": "6.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER VOGUE",
+  "modelo_txt": "RANGE ROVER VOGUE",
+  "motor": "5.0 V8 EFI SC 32V",
+  "cil": "5.0",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "8",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LEXUS",
+  "modelo": "CT 200H",
+  "modelo_txt": "CT 200h",
+  "motor": "1.8 L4 SMPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2013",
+  "ano_fim": "2021",
+  "litros": "4.2",
+  "oleo": [
+   "0W-20",
+   "10W-30",
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LEXUS",
+  "modelo": "NX 300",
+  "modelo_txt": "NX 300",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "4.9",
+  "oleo": [
+   "0W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LEXUS",
+  "modelo": "SERIE X   NX 200 T",
+  "modelo_txt": "SÉRIE X - NX 200 T",
+  "motor": "2.0 L4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2015",
+  "ano_fim": "2017",
+  "litros": "4.9",
+  "oleo": [
+   "0W-20",
+   "10W-30",
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LEXUS",
+  "modelo": "SERIE X   NX 300 HIBRIDO",
+  "modelo_txt": "SÉRIE X - NX 300 HÍBRIDO",
+  "motor": "2.5 L4 DI 16V",
+  "cil": "2.5",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "4.4",
+  "oleo": [
+   "0W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LEXUS",
+  "modelo": "SERIE X   RX 350",
+  "modelo_txt": "SÉRIE X - RX 350",
+  "motor": "3.5 V6 SMPFI 24V",
+  "cil": "3.5",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "5.4",
+  "oleo": [
+   "0W-20",
+   "10W-30",
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "LEXUS",
+  "modelo": "UX 250 H",
+  "modelo_txt": "UX 250 H",
+  "motor": "2.0 L4 SMPFI 16V",
+  "cil": "2.0",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "4.3",
+  "oleo": [
+   "0W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MERCEDES-BENZ",
+  "modelo": "A 200",
+  "modelo_txt": "A 200",
+  "motor": "1.3 L4 DFI TB 16V",
+  "cil": "1.3",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MERCEDES-BENZ",
+  "modelo": "GLS 350",
+  "modelo_txt": "GLS 350",
+  "motor": "3.0 V6 CRDi TD 24V",
+  "cil": "3.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "8",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MERCEDES-BENZ",
+  "modelo": "GLS 500",
+  "modelo_txt": "GLS 500",
+  "motor": "4.7 V8 DFI Bi-TB 32V",
+  "cil": "4.7",
+  "ano_ini": "2016",
+  "ano_fim": "2018",
+  "litros": "8.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MERCEDES-BENZ",
+  "modelo": "VITO 111 CDI",
+  "modelo_txt": "VITO 111 CDI",
+  "motor": "1.6 L4 CRDi TB 16V",
+  "cil": "1.6",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "6.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "ASX",
+  "modelo_txt": "ASX",
+  "motor": "2.0 L4 MPI 16V",
+  "cil": "2.0",
+  "ano_ini": "2011",
+  "ano_fim": "2021",
+  "litros": "4.3",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "ECLIPSE",
+  "modelo_txt": "ECLIPSE",
+  "motor": "3.8 V6 MPI 24V",
+  "cil": "3.8",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "4.3",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "ECLIPSE CROSS",
+  "modelo_txt": "ECLIPSE CROSS",
+  "motor": "1.5 L4 DFI TB 16V",
+  "cil": "1.5",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "4.3",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "L 200 TRITON",
+  "modelo_txt": "L 200 TRITON",
+  "motor": "2.4 L4 CRDi TB-IC 16V",
+  "cil": "2.4",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "8.3",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "L 200 TRITON",
+  "modelo_txt": "L 200 TRITON",
+  "motor": "2.4 L4 MPI 16V",
+  "cil": "2.4",
+  "ano_ini": "2013",
+  "ano_fim": "2017",
+  "litros": "4.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "L 200 TRITON",
+  "modelo_txt": "L 200 TRITON",
+  "motor": "3.2 L4 CRDi TD 16V",
+  "cil": "3.2",
+  "ano_ini": "2010",
+  "ano_fim": "2018",
+  "litros": "8",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "L 200 TRITON",
+  "modelo_txt": "L 200 TRITON",
+  "motor": "3.5 V6 MPI 24V",
+  "cil": "3.5",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "4.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "OUTLANDER",
+  "modelo_txt": "OUTLANDER",
+  "motor": "2.2 L4 CRDi TD 16V",
+  "cil": "2.2",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "7.8",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "OUTLANDER",
+  "modelo_txt": "OUTLANDER",
+  "motor": "3.0 V6 MPI 24V",
+  "cil": "3.0",
+  "ano_ini": "2010",
+  "ano_fim": "2018",
+  "litros": "4.3",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO",
+  "modelo_txt": "PAJERO",
+  "motor": "3.2 L4 DI-D TD 16V",
+  "cil": "3.2",
+  "ano_ini": "2015",
+  "ano_fim": "2018",
+  "litros": "8",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO",
+  "modelo_txt": "PAJERO",
+  "motor": "3.5 V6 MPI 24V",
+  "cil": "3.5",
+  "ano_ini": "2015",
+  "ano_fim": "2018",
+  "litros": "4.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO DAKAR",
+  "modelo_txt": "PAJERO DAKAR",
+  "motor": "3.2 L4 CRDi TD 16V",
+  "cil": "3.2",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "8",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO DAKAR",
+  "modelo_txt": "PAJERO DAKAR",
+  "motor": "3.5 V6 MPI 24V",
+  "cil": "3.5",
+  "ano_ini": "2011",
+  "ano_fim": "2016",
+  "litros": "4.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO FULL",
+  "modelo_txt": "PAJERO FULL",
+  "motor": "3.2 L4 CRDi TD 16V",
+  "cil": "3.2",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "8.5",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO FULL",
+  "modelo_txt": "PAJERO FULL",
+  "motor": "3.8 V6 MPI 24V",
+  "cil": "3.8",
+  "ano_ini": "2010",
+  "ano_fim": "2018",
+  "litros": "4.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO SPORT",
+  "modelo_txt": "PAJERO SPORT",
+  "motor": "2.4 L4 CRDi TD 16V",
+  "cil": "2.4",
+  "ano_ini": "2019",
+  "ano_fim": "2021",
+  "litros": "7.3",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "MITSUBISHI",
+  "modelo": "PAJERO TR4",
+  "modelo_txt": "PAJERO TR4",
+  "motor": "2.0 L4 MPI 16V",
+  "cil": "2.0",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "3.8",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "NISSAN",
+  "modelo": "FRONTIER",
+  "modelo_txt": "FRONTIER",
+  "motor": "2.5 L4 CRDi TD 16V",
+  "cil": "2.5",
+  "ano_ini": "2010",
+  "ano_fim": "2018",
+  "litros": "6.9",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "NISSAN",
+  "modelo": "KICKS",
+  "modelo_txt": "KICKS",
+  "motor": "1.6 L4 SMPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "4.8",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "NISSAN",
+  "modelo": "LIVINA",
+  "modelo_txt": "LIVINA",
+  "motor": "1.6 L4 SMPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2013",
+  "ano_fim": "2014",
+  "litros": "4.8",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "NISSAN",
+  "modelo": "MARCH",
+  "modelo_txt": "MARCH",
+  "motor": "1.0 L3 SMPFI 12V",
+  "cil": "1.0",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "3.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "207",
+  "modelo_txt": "207",
+  "motor": "1.4 L4 MPFI 8V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "3.25",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "208",
+  "modelo_txt": "208",
+  "motor": "1.6 L4 MPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2013",
+  "ano_fim": "2021",
+  "litros": "3.25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "308",
+  "modelo_txt": "308",
+  "motor": "1.6 L4 MPFI 16V",
+  "cil": "1.6",
+  "ano_ini": "2012",
+  "ano_fim": "2016",
+  "litros": "3.25",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "408",
+  "modelo_txt": "408",
+  "motor": "1.6 L4 DFI THP 16V",
+  "cil": "1.6",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "4.25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "408",
+  "modelo_txt": "408",
+  "motor": "2.0 L4 MPFI 16V",
+  "cil": "2.0",
+  "ano_ini": "2011",
+  "ano_fim": "2016",
+  "litros": "4.7",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "2008",
+  "modelo_txt": "2008",
+  "motor": "1.6 L4 MPFI THP 16V",
+  "cil": "1.6",
+  "ano_ini": "2015",
+  "ano_fim": "2021",
+  "litros": "4.25",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "HOGGAR",
+  "modelo_txt": "HOGGAR",
+  "motor": "1.4 L4 MPFI 8V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PEUGEOT",
+  "modelo": "BOXER VAN",
+  "modelo_txt": "BOXER VAN",
+  "motor": "2.3 L4 HDi TD 16V",
+  "cil": "2.3",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "6,1",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PORSCHE",
+  "modelo": "718 BOXSTER",
+  "modelo_txt": "718 BOXSTER",
+  "motor": "2.0 B4 DFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2016",
+  "ano_fim": "2021",
+  "litros": "5.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "PORSCHE",
+  "modelo": "911 TURBO",
+  "modelo_txt": "911 TURBO",
+  "motor": "3.8 B6 DFI Bi-TB 24V",
+  "cil": "3.8",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "8",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "RENAULT",
+  "modelo": "CLIO",
+  "modelo_txt": "CLIO",
+  "motor": "1.0 L4 MPFI 16V DOHC",
+  "cil": "1.0",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "4",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "RENAULT",
+  "modelo": "KWID",
+  "modelo_txt": "KWID",
+  "motor": "1.0 L3 MPFI 12V DOHC",
+  "cil": "1.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "RENAULT",
+  "modelo": "LOGAN",
+  "modelo_txt": "LOGAN",
+  "motor": "1.0 L4 MPFI 16V DOHC",
+  "cil": "1.0",
+  "ano_ini": "2010",
+  "ano_fim": "2016",
+  "litros": "4",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "RENAULT",
+  "modelo": "SANDERO",
+  "modelo_txt": "SANDERO",
+  "motor": "1.0 L3 MPFI 12V DOHC",
+  "cil": "1.0",
+  "ano_ini": "2017",
+  "ano_fim": "2021",
+  "litros": "3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "RENAULT",
+  "modelo": "SANDERO",
+  "modelo_txt": "SANDERO",
+  "motor": "1.0 L4 MPFI 16V DOHC",
+  "cil": "1.0",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "4",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "CAMRY",
+  "modelo_txt": "CAMRY",
+  "motor": "3.5 V6 SMPFI 24V",
+  "cil": "3.5",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "6.1",
+  "oleo": [
+   "0W-20",
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "COROLLA",
+  "modelo_txt": "COROLLA",
+  "motor": "1.8 L4 MPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "4.2",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "HILUX",
+  "modelo_txt": "HILUX",
+  "motor": "2.8 L4 DI-D TD 16V",
+  "cil": "2.8",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "7.9",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "HILUX",
+  "modelo_txt": "HILUX",
+  "motor": "3.0 L4 DI-D TD 16V",
+  "cil": "3.0",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "6.9",
+  "oleo": [
+   "10W-30",
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "HILUX SW4",
+  "modelo_txt": "HILUX SW4",
+  "motor": "2.8 L4 CRDi TD 16V",
+  "cil": "2.8",
+  "ano_ini": "2016",
+  "ano_fim": "2017",
+  "litros": "7.9",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "HILUX SW4",
+  "modelo_txt": "HILUX SW4",
+  "motor": "3.0 L4 CRDi TD 16V",
+  "cil": "3.0",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "6.9",
+  "oleo": [
+   "10W-30",
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "PRIUS",
+  "modelo_txt": "PRIUS",
+  "motor": "1.8 L4 MPFI 16V",
+  "cil": "1.8",
+  "ano_ini": "2012",
+  "ano_fim": "2021",
+  "litros": "4.2",
+  "oleo": [
+   "0W-20",
+   "5W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "RAV 4",
+  "modelo_txt": "RAV 4",
+  "motor": "2.0 L4 MPFI 16V",
+  "cil": "2.0",
+  "ano_ini": "2013",
+  "ano_fim": "2021",
+  "litros": "4.2",
+  "oleo": [
+   "0W-20",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "YARIS",
+  "modelo_txt": "YARIS",
+  "motor": "1.3 L4 MPFI 16V",
+  "cil": "1.3",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "3.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "TOYOTA",
+  "modelo": "YARIS",
+  "modelo_txt": "YARIS",
+  "motor": "1.5 L4 MPFI 16V",
+  "cil": "1.5",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "3.6",
+  "oleo": [
+   "10W-30",
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "FOX",
+  "modelo_txt": "FOX",
+  "motor": "1.0 L3 MPI 12V",
+  "cil": "1.0",
+  "ano_ini": "2014",
+  "ano_fim": "2017",
+  "litros": "3.3",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOLF",
+  "modelo_txt": "GOLF",
+  "motor": "1.4 L4 TFSI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2014",
+  "ano_fim": "2016",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOLF",
+  "modelo_txt": "GOLF",
+  "motor": "1.6 L4 MSI 16V",
+  "cil": "1.6",
+  "ano_ini": "2010",
+  "ano_fim": "2016",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOLF GTI",
+  "modelo_txt": "GOLF GTI",
+  "motor": "2.0 L4 TSFI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2013",
+  "ano_fim": "2021",
+  "litros": "5.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOLF GTE",
+  "modelo_txt": "GOLF GTE",
+  "motor": "1.4 L4 TSFI TB 16V",
+  "cil": "1.4",
+  "ano_ini": "2020",
+  "ano_fim": "2021",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "JETTA",
+  "modelo_txt": "JETTA",
+  "motor": "2.0 L4 TFSI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2013",
+  "ano_fim": "2018",
+  "litros": "5.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "KOMBI",
+  "modelo_txt": "KOMBI",
+  "motor": "1.4 L4 MI 8V",
+  "cil": "1.4",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "3.3",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NEW BEETLE   FUSCA",
+  "modelo_txt": "NEW BEETLE - FUSCA",
+  "motor": "2.0 L4 TFSI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2010",
+  "ano_fim": "2017",
+  "litros": "4.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NOVO POLO",
+  "modelo_txt": "NOVO POLO",
+  "motor": "1.0 L3 MPI 12V",
+  "cil": "1.0",
+  "ano_ini": "2018",
+  "ano_fim": "2021",
+  "litros": "3.4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "PASSAT CC",
+  "modelo_txt": "PASSAT CC",
+  "motor": "3.6 V6 FSI 24V",
+  "cil": "3.6",
+  "ano_ini": "2010",
+  "ano_fim": "2014",
+  "litros": "5.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "POLO IV",
+  "modelo_txt": "POLO IV",
+  "motor": "2.0 L4 SMPFI 8V",
+  "cil": "2.0",
+  "ano_ini": "2010",
+  "ano_fim": "2015",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "SAVEIRO",
+  "modelo_txt": "SAVEIRO",
+  "motor": "1.6 L4 MSI 8V",
+  "cil": "1.6",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "4",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "TIGUAN",
+  "modelo_txt": "TIGUAN",
+  "motor": "2.0 L4 TSI TB 16V",
+  "cil": "2.0",
+  "ano_ini": "2010",
+  "ano_fim": "2021",
+  "litros": "4.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "atria",
+  "marca": "VOLKSWAGEN",
+  "modelo": "UP",
+  "modelo_txt": "UP",
+  "motor": "1.0 L3 MPI 12V",
+  "cil": "1.0",
+  "ano_ini": "2014",
+  "ano_fim": "2021",
+  "litros": "3.3",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "AISA",
+  "modelo": "TOWNER",
+  "modelo_txt": "Towner",
+  "motor": "0.8 MPFI (anteriores a 2000)",
+  "cil": "0.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.9",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "AISA",
+  "modelo": "TOPIC",
+  "modelo_txt": "Topic",
+  "motor": "2.7 (anteriores a 2000)",
+  "cil": "2.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.9",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "AISA",
+  "modelo": "COMBI",
+  "modelo_txt": "Combi",
+  "motor": "AM815 (anteriores a 2000)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "13.6",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "AISA",
+  "modelo": "ROCSTA",
+  "modelo_txt": "Rocsta",
+  "motor": "AM825 (anteriores a 2000)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "13.6",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "AISA",
+  "modelo": "ROCSTA",
+  "modelo_txt": "Rocsta",
+  "motor": "JD-R (anteriores a 2000)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.4",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "CHRYSLER 300 C",
+  "modelo_txt": "Chrysler 300 C",
+  "motor": "2.7",
+  "cil": "2.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "CHRYSLER PT",
+  "modelo_txt": "Chrysler PT",
+  "motor": "4.0",
+  "cil": "4.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.2",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "CRUISER",
+  "modelo_txt": "Cruiser",
+  "motor": "2009 2.4 L / 2.4 L Standard Turbo",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "CHRYSLER TOWN",
+  "modelo_txt": "Chrysler Town",
+  "motor": "2010 2.4 L / 2.4 L Standard Turbo",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "AND COUNTRY",
+  "modelo_txt": "and Country",
+  "motor": "3.3 / 3.8",
+  "cil": "3.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE",
+  "modelo_txt": "Dodge",
+  "motor": "4.0",
+  "cil": "4.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "CHALLENGER",
+  "modelo_txt": "Challenger",
+  "motor": "3.5",
+  "cil": "3.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.6",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "CHALLENGER",
+  "modelo_txt": "Challenger",
+  "motor": "5.7",
+  "cil": "5.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE DAKOTA",
+  "modelo_txt": "Dodge Dakota",
+  "motor": "6.1",
+  "cil": "6.1",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE DAKOTA",
+  "modelo_txt": "Dodge Dakota",
+  "motor": "3.7",
+  "cil": "3.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE DURANGO",
+  "modelo_txt": "Dodge Durango",
+  "motor": "3.7",
+  "cil": "3.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE JOURNEY",
+  "modelo_txt": "Dodge Journey",
+  "motor": "5.7",
+  "cil": "5.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE JOURNEY",
+  "modelo_txt": "Dodge Journey",
+  "motor": "2.4",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE JOURNEY",
+  "modelo_txt": "Dodge Journey",
+  "motor": "2.7",
+  "cil": "2.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.2",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE RAM",
+  "modelo_txt": "Dodge Ram",
+  "motor": "Diesel 5.9 e 6.7 HO",
+  "cil": "5.9",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "11.4",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE RAM",
+  "modelo_txt": "Dodge Ram",
+  "motor": "Gasolina 3.7 / 4.7 / 5.7",
+  "cil": "3.7",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "Motor 3.7: 4.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "DODGE RAM",
+  "modelo_txt": "Dodge Ram",
+  "motor": "8.3 SRT 10",
+  "cil": "8.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "Motor 4.7: 5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "JEEP GRAND",
+  "modelo_txt": "Jeep Grand",
+  "motor": "4.0",
+  "cil": "4.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "JEEP WRANGLER",
+  "modelo_txt": "Jeep Wrangler",
+  "motor": "2.4",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CHRYSLERDODGEJEEP",
+  "modelo": "JEEP WRANGLER",
+  "modelo_txt": "Jeep Wrangler",
+  "motor": "4.0",
+  "cil": "4.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "10W-30",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "PALIO",
+  "modelo_txt": "Palio",
+  "motor": "1.8 8V (2009 - 2010)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7 / 4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "SIENA",
+  "modelo_txt": "Siena",
+  "motor": "1.8 8V (2009 - 2010)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "PALIO WEEKEND",
+  "modelo_txt": "Palio Weekend",
+  "motor": "1.8 8V (2009 - 2010)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "PUNTO",
+  "modelo_txt": "Punto",
+  "motor": "1.4 8V Flex (2008 - 2010)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "PUNTO",
+  "modelo_txt": "Punto",
+  "motor": "1.6 16V / 1.8 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "PUNTO",
+  "modelo_txt": "Punto",
+  "motor": "(2010 - 2013)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "STILO",
+  "modelo_txt": "Stilo",
+  "motor": "1.8 8V / 1.8 16V / 2.4 20V",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5 / 4.5",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "UNO",
+  "modelo_txt": "Uno",
+  "motor": "(2004 - 2010)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "UNO",
+  "modelo_txt": "Uno",
+  "motor": "1.0 8V Fire / 1.3 8V Fire",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "NOVO UNO",
+  "modelo_txt": "Novo Uno",
+  "motor": "1.0 8V Fire (2010 - 2013)",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "NOVO UNO",
+  "modelo_txt": "Novo Uno",
+  "motor": "1.4 8V Evo (2010 - 2013)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "TRACKER",
+  "modelo_txt": "Tracker",
+  "motor": "2.0 16V MPFI (2007 / 2009)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.6",
+  "oleo": [
+   "10W-30",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "VECTRA",
+  "modelo_txt": "Vectra",
+  "motor": "2.0 MPFI 8V / 2.2 SFI 16V / 2.4 SFI",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "10W-30",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "VECTRA",
+  "modelo_txt": "Vectra",
+  "motor": "16V (2004 / 2008)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "VECTRA",
+  "modelo_txt": "Vectra",
+  "motor": "2.0 MPFI 8V (2009)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "VECTRA",
+  "modelo_txt": "Vectra",
+  "motor": "2.0 MPFI 8V (2010 / 2011)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "DISCOVERY 2",
+  "modelo_txt": "Discovery 2",
+  "motor": "Gas. 4.0 V8",
+  "cil": "4.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.0",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER",
+  "modelo_txt": "Range Rover",
+  "motor": "Diesel 3.0 HSE 2010 a 2014",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "8.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "EVOQUE",
+  "modelo_txt": "Evoque",
+  "motor": "Gas. 2.0 (Pure / Prestige /",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER",
+  "modelo_txt": "Range Rover",
+  "motor": "Dynamic / Coupe Puré)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.9",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "VOGUE",
+  "modelo_txt": "Vogue",
+  "motor": "Diesel 2.2",
+  "cil": "2.2",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "8.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "RANGE ROVER",
+  "modelo_txt": "Range Rover",
+  "motor": "Gas. 5.0 V8",
+  "cil": "5.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.9",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "LAND ROVER",
+  "modelo": "SPORT",
+  "modelo_txt": "Sport",
+  "motor": "Diesel 4.4 SDV8",
+  "cil": "4.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "8.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "106",
+  "modelo_txt": "106",
+  "motor": "1.0 8V",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "206",
+  "modelo_txt": "206",
+  "motor": "1.0 8V",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "207",
+  "modelo_txt": "207",
+  "motor": "1.6 8V/16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "208",
+  "modelo_txt": "208",
+  "motor": "1.0 16V",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "306",
+  "modelo_txt": "306",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.8",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "307",
+  "modelo_txt": "307",
+  "motor": "1.6 8V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "308",
+  "modelo_txt": "308",
+  "motor": "2.0 8V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "405",
+  "modelo_txt": "405",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.2",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "405",
+  "modelo_txt": "405",
+  "motor": "1.6 8V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.2",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "406 SEDAN",
+  "modelo_txt": "406 Sedan",
+  "motor": "3.0 8V",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.8",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "406 FAMILIALE",
+  "modelo_txt": "406 Familiale",
+  "motor": "3.0 8V",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.8",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "407",
+  "modelo_txt": "407",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "407",
+  "modelo_txt": "407",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "408",
+  "modelo_txt": "408",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "408",
+  "modelo_txt": "408",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "508",
+  "modelo_txt": "508",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "RCZ",
+  "modelo_txt": "Rcz",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "BOXER",
+  "modelo_txt": "Boxer",
+  "motor": "2.3 Diesel",
+  "cil": "2.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "HOGGAR",
+  "modelo_txt": "Hoggar",
+  "motor": "1.4 8V",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "PEUGEOT",
+  "modelo": "PARTNER",
+  "modelo_txt": "Partner",
+  "motor": "1.8 8V",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "CLIO",
+  "modelo_txt": "Clio",
+  "motor": "1.0 L",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "DUSTER",
+  "modelo_txt": "Duster",
+  "motor": "1.0 L",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "FLUENCE",
+  "modelo_txt": "Fluence",
+  "motor": "2.0 L 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.2",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "KANGOO",
+  "modelo_txt": "Kangoo",
+  "motor": "2.0 L T",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "LOGAN",
+  "modelo_txt": "Logan",
+  "motor": "1.6 L 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.9",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "LOGAN",
+  "modelo_txt": "Logan",
+  "motor": "1.0 L 16V",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "LOGAN",
+  "modelo_txt": "Logan",
+  "motor": "1.6 L 8V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "MASTER",
+  "modelo_txt": "Master",
+  "motor": "1.6 L 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.8",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "MASTER",
+  "modelo_txt": "Master",
+  "motor": "2.5 L - G9U",
+  "cil": "2.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "MEGANE",
+  "modelo_txt": "Megane",
+  "motor": "2.0 L 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.4",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "MEGANE",
+  "modelo_txt": "Megane",
+  "motor": "1.0 L 16V",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "SANDERO",
+  "modelo_txt": "Sandero",
+  "motor": "1.6 L 8V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "SANDERO",
+  "modelo_txt": "Sandero",
+  "motor": "1.6 L 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.8",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "SCENIC",
+  "modelo_txt": "Scénic",
+  "motor": "1.6 L 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.9",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "SYMBOL",
+  "modelo_txt": "Symbol",
+  "motor": "1.6 L 8V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "SYMBOL",
+  "modelo_txt": "Symbol",
+  "motor": "1.6 L 8V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "TWINGO",
+  "modelo_txt": "Twingo",
+  "motor": "1.6 L 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.8",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "RENAULT",
+  "modelo": "TWINGO",
+  "modelo_txt": "Twingo",
+  "motor": "1.2",
+  "cil": "1.2",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "EOS",
+  "modelo_txt": "EOS",
+  "motor": "2.0 Tsi",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "FOX",
+  "modelo_txt": "Fox",
+  "motor": "1.0 até 2008",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "FOX",
+  "modelo_txt": "Fox",
+  "motor": "1.0 (2009 a 2012)",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "FOX",
+  "modelo_txt": "Fox",
+  "motor": "1.0 (2013 a 2014)",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOL",
+  "modelo_txt": "Gol",
+  "motor": "1.6 / 1.6 até 2008",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOL",
+  "modelo_txt": "Gol",
+  "motor": "1.6 a partir de 2009 / Prime 1.6 /",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOL",
+  "modelo_txt": "Gol",
+  "motor": "1.6 I-Motion / Prime 1.6 I-Motion",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NOVO GOL",
+  "modelo_txt": "Novo Gol",
+  "motor": "1.0 a partir de 2009",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "GOLF",
+  "modelo_txt": "Golf",
+  "motor": "1.8 (Importado) / 2.0 (Importado)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.8",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "JETTA",
+  "modelo_txt": "Jetta",
+  "motor": "2.5 (até 2011) / Variant 2.5",
+  "cil": "2.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "KOMBI",
+  "modelo_txt": "Kombi",
+  "motor": "2.5 Tip Tronic 2009 - 2012",
+  "cil": "2.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "KOMBI",
+  "modelo_txt": "Kombi",
+  "motor": "1.4 Refrigerada a água",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2006 / 2007:",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NEW BEETLE",
+  "modelo_txt": "New Beetle",
+  "motor": "2.0 a partir 2003 /",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NOVO FUSCA",
+  "modelo_txt": "Novo Fusca",
+  "motor": "2.0 a partir de (2006 - 2008)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "PARATI",
+  "modelo_txt": "Parati",
+  "motor": "1.0 (a partir de 2004) / 1.0 (AT 1000 8V) /",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "PARATI",
+  "modelo_txt": "Parati",
+  "motor": "1.0 16V a partir de 2004 / 1.0 16V Turbo",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "PASSAT",
+  "modelo_txt": "Passat",
+  "motor": "1.8 ADR / 1.8 AEB 1.8 T / 1.8 Turbo",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "POLO",
+  "modelo_txt": "Polo",
+  "motor": "1.0 2006 e 2007 / 1.6 (a partir de 2004)",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "POLO",
+  "modelo_txt": "Polo",
+  "motor": "e 1.6 BAH 2006 e 2007 / 1.6 a partir de",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "SAVEIRO",
+  "modelo_txt": "Saveiro",
+  "motor": "2005 / 2.0 2.0 Todos modelos",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "SAVEIRO",
+  "modelo_txt": "Saveiro",
+  "motor": "1.0 (a partir de 2004)",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NOVA SAVEIRO",
+  "modelo_txt": "Nova Saveiro",
+  "motor": "1.6 (2010 - 2014)",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "SPACE FOX",
+  "modelo_txt": "Space Fox",
+  "motor": "1.6 (2007 - 2014)",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "TIGUAN",
+  "modelo_txt": "Tiguan",
+  "motor": "TSI 2.0",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "TOUAREG",
+  "modelo_txt": "Touareg",
+  "motor": "4.2 V8",
+  "cil": "4.2",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "10.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "VOYAGE",
+  "modelo_txt": "Voyage",
+  "motor": "1.6 AE 1600 / 1.6 AP 1600 até 2009",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "VOYAGE",
+  "modelo_txt": "Voyage",
+  "motor": "1.6 AE 1600 / 1.6 AP 1600 até 2009",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "NOVO VOYAGE",
+  "modelo_txt": "Novo Voyage",
+  "motor": "1.0 a partir de 2009",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TSIWT TIFTIF WENTIF",
+  "modelo": "EX   LXL 1 5  2009 A 2013",
+  "modelo_txt": "EX / LXL 1.5 (2009 a 2013)",
+  "motor": "3.6",
+  "cil": "3.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "SUZUKI",
+  "modelo": "GRAND VITARA",
+  "modelo_txt": "Grand Vitara",
+  "motor": "5W-30 SN",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "SUZUKI",
+  "modelo": "JIMNY",
+  "modelo_txt": "Jimny",
+  "motor": "5W-30 SN",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "SUZUKI",
+  "modelo": "SX4",
+  "modelo_txt": "SX4",
+  "motor": "5W-30 SN",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "SERIE 1",
+  "modelo_txt": "Série 1",
+  "motor": "1.6 - E87",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.2",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "316I   318I",
+  "modelo_txt": "316i / 318i",
+  "motor": "1.6 Turbo - E36 / 2.0 E36",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "318 COMPACT",
+  "modelo_txt": "318 Compact",
+  "motor": "1.8 - E36",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "320I   325I",
+  "modelo_txt": "320i / 325i",
+  "motor": "2.0 16V E36 / 2,5 24V E36 /",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "M3",
+  "modelo_txt": "M3",
+  "motor": "3.0 / 3.2 E36",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "528I",
+  "modelo_txt": "528i",
+  "motor": "6 Cilindros E46",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "530I   540I",
+  "modelo_txt": "530i / 540i",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "530I   540I",
+  "modelo_txt": "530i / 540i",
+  "motor": "3.0 V8 / 4.4 V8",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "740I   840I",
+  "modelo_txt": "740i / 840i",
+  "motor": "4.4 V8 / 4.0 V8v",
+  "cil": "4.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "M5",
+  "modelo_txt": "M5",
+  "motor": "6 Cilindros E34",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "M5",
+  "modelo_txt": "M5",
+  "motor": "4.0 V8",
+  "cil": "4.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "X5",
+  "modelo_txt": "X5",
+  "motor": "6 Cilindros",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "8.0",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "BMW",
+  "modelo": "X5",
+  "modelo_txt": "X5",
+  "motor": "8 Cilindros",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.5",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "AGILE",
+  "modelo_txt": "Agile",
+  "motor": "1.4 8V (2010 - 2012)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "ASTRA",
+  "modelo_txt": "Astra",
+  "motor": "2.0 8V MPFI Flexpower",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "15W-40",
+   "20W-50"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "BLAZER   S10",
+  "modelo_txt": "Blazer / S10",
+  "motor": "2.4 8V Gasolina (2004 - 2007)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.8",
+  "oleo": [
+   "15W-40",
+   "20W-50",
+   "25W-50"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "BLAZER   S10",
+  "modelo_txt": "Blazer / S10",
+  "motor": "2.4 8V Flexpower (2007 - 2011)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "BLAZER   S10",
+  "modelo_txt": "Blazer / S10",
+  "motor": "2.8 Diesel Eletrônico (2007 - 2010)",
+  "cil": "2.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "CAMARO",
+  "modelo_txt": "Camaro",
+  "motor": "6.2 V8",
+  "cil": "6.2",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "CAPTIVA",
+  "modelo_txt": "Captiva",
+  "motor": "2.4 - Ecotec / 3.6 V6 (2008 - 2010)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7 / 5.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "CELTA",
+  "modelo_txt": "Celta",
+  "motor": "1.0 MPFI Flexpower /",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "COBALT",
+  "modelo_txt": "Cobalt",
+  "motor": "(2008 - 2013)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "COBALT",
+  "modelo_txt": "Cobalt",
+  "motor": "1.4 8V Flexpower / 1.8 8V",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "CORSA",
+  "modelo_txt": "Corsa",
+  "motor": "1.0 MPFI Flexpower / 1.8 MPFI",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "CRUZE",
+  "modelo_txt": "Cruze",
+  "motor": "1.8 8V (2011 -2013)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "MALIBU",
+  "modelo_txt": "Malibu",
+  "motor": "2.4 8V Ecotec (2010 - 2013)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "MERIVA",
+  "modelo_txt": "Meriva",
+  "motor": "(2004 - 2008)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "MERIVA",
+  "modelo_txt": "Meriva",
+  "motor": "1.4 8V Econoflex / 1.8 8V",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "MONTANA",
+  "modelo_txt": "Montana",
+  "motor": "1.8 L MPFI Flexpower",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "ONIX",
+  "modelo_txt": "Onix",
+  "motor": "1.0 8V SPE / 4 / 1.4 8V SPE",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "OMEGA",
+  "modelo_txt": "Omega",
+  "motor": "3.8 V6 SFI (2004)",
+  "cil": "3.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.6",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "OMEGA",
+  "modelo_txt": "Omega",
+  "motor": "3.6 V6 (2005 / 2006)",
+  "cil": "3.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.4",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "PRISMA",
+  "modelo_txt": "Prisma",
+  "motor": "3.6 L V6 (2007 / 2011)",
+  "cil": "3.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.7",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "PRISMA",
+  "modelo_txt": "Prisma",
+  "motor": "1.4 MPFI Econoflex (2007 / 2008)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "SONIC",
+  "modelo_txt": "Sonic",
+  "motor": "1.6 8V Ecotec",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "MG",
+  "modelo": "SPIN",
+  "modelo_txt": "Spin",
+  "motor": "1.4 8V Flexpower / 1.8 8V",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "BESTA",
+  "modelo_txt": "Besta",
+  "motor": "Motor Diesel (até 2005)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.8 a 7.4",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "BONGO",
+  "modelo_txt": "Bongo",
+  "motor": "K-2400 2.4 Diesel (1993 a 1997)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0 a 7.4",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CADENZA",
+  "modelo_txt": "Cadenza",
+  "motor": "K-2400 2.4 Diesel (1993 a 1997)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CARENS",
+  "modelo_txt": "Carens",
+  "motor": "LS 1.8 16V 130cv Mec/Aut.",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CARENS",
+  "modelo_txt": "Carens",
+  "motor": "(1999 a 2001)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CARNIVAL",
+  "modelo_txt": "Carnival",
+  "motor": "Motor 2.5 V6 / EX 3.8 V6",
+  "cil": "2.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.8",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CERATO",
+  "modelo_txt": "Cerato",
+  "motor": "Motor 2.0 16V Aut.",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CERES",
+  "modelo_txt": "Ceres",
+  "motor": "Pick-Up 2.2 Diesel (1993 a 1996)",
+  "cil": "2.2",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0 a 7.4",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "CLARUS",
+  "modelo_txt": "Clarus",
+  "motor": "Motor GLX 2.0 16V (1997 a 2000)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.4 a 3.7",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "MAGENTIS",
+  "modelo_txt": "Magentis",
+  "motor": "(1998 a 2000)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "MAGENTIS",
+  "modelo_txt": "Magentis",
+  "motor": "Motor EX 2.0 16V (2006 a 2011)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "MAGENTIS",
+  "modelo_txt": "Magentis",
+  "motor": "Motor LX 2.0 16V (2007 a 2007)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "MOHAVE",
+  "modelo_txt": "Mohave",
+  "motor": "Motor EX 3.0 V6 24V",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "MOHAVE",
+  "modelo_txt": "Mohave",
+  "motor": "Diesel Aut. (2008 a 2014)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "OPIRUS",
+  "modelo_txt": "Opirus",
+  "motor": "Motor GL 3.5 V6 24V Aut.",
+  "cil": "3.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "OPTIMA",
+  "modelo_txt": "Optima",
+  "motor": "Motor 2.4 16V Gas.",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "PICANTO",
+  "modelo_txt": "Picanto",
+  "motor": "Motor EX 1.1/1.0 12V Aut./Mec.",
+  "cil": "1.1",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.6",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "PICANTO",
+  "modelo_txt": "Picanto",
+  "motor": "Motor GTX (1993 a 1998)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.2",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "SEPHIA",
+  "modelo_txt": "Sephia",
+  "motor": "Motor LS (1998 a 2001)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.8",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "SORENTO",
+  "modelo_txt": "Sorento",
+  "motor": "Motor 2.4 16V / 3.5 V6",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.6 a 5.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "SOUL",
+  "modelo_txt": "Soul",
+  "motor": "Motor 1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "KIA",
+  "modelo": "SPORTAGE",
+  "modelo_txt": "Sportage",
+  "motor": "Motor 2.0 16V Aut. (1997 a 2000)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.4 a 4.7",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "ETIOS",
+  "modelo_txt": "Etios",
+  "motor": "1.3 X",
+  "cil": "1.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.7",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "ETIOS",
+  "modelo_txt": "Etios",
+  "motor": "1.5 XS/XLS",
+  "cil": "1.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.7",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "CARMY",
+  "modelo_txt": "Carmy",
+  "motor": "3.5 V6",
+  "cil": "3.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.1",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "COROLLA",
+  "modelo_txt": "Corolla",
+  "motor": "1 ZR",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.2",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "HILUX",
+  "modelo_txt": "Hilux",
+  "motor": "3 ZR",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "HILUX",
+  "modelo_txt": "Hilux",
+  "motor": "2 TR - Gasolina",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.6",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "HILUX",
+  "modelo_txt": "Hilux",
+  "motor": "1 KD - Diesel",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.9",
+  "oleo": [
+   "10W-40",
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "LAND CRUISER",
+  "modelo_txt": "Land Cruiser",
+  "motor": "3.0 4X4",
+  "cil": "3.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.0",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "RAV 4",
+  "modelo_txt": "RAV 4",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "TOYOTA",
+  "modelo": "SW4",
+  "modelo_txt": "SW4",
+  "motor": "2 TR - Gasolina",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.6",
+  "oleo": [
+   "10W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "500",
+  "modelo_txt": "500",
+  "motor": "1.4 16V (2009 - 2010)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.9",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "BRAVO",
+  "modelo_txt": "Bravo",
+  "motor": "1.4 16V (2011 - 2013)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "BRAVO",
+  "modelo_txt": "Bravo",
+  "motor": "1.8 16V Flex (2010 - 2013)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "BRAVO",
+  "modelo_txt": "Bravo",
+  "motor": "1.4 16V Tjet (2010 - 2013)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.2",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "DOBLO",
+  "modelo_txt": "Doblô",
+  "motor": "1.3 16V / 1.8 8V (2005 - 2008)",
+  "cil": "1.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7 / 3.5",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "DOBLO",
+  "modelo_txt": "Doblô",
+  "motor": "1.4 8V (2009 - 2010)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "DUCATO",
+  "modelo_txt": "Ducato",
+  "motor": "2.8 Turbo / Common Rail",
+  "cil": "2.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "6.1",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "DUCATO",
+  "modelo_txt": "Ducato",
+  "motor": "(2004 - 2008)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "FIORINO",
+  "modelo_txt": "Fiorino",
+  "motor": "1.3 8V Fire / 1.5 Álcool",
+  "cil": "1.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7 / 3.5",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "FIORINO",
+  "modelo_txt": "Fiorino",
+  "motor": "(2004 - 2008)",
+  "cil": null,
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "FREEMONT",
+  "modelo_txt": "Freemont",
+  "motor": "2.4 16V (2012-2013)",
+  "cil": "2.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.2",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "IDEA",
+  "modelo_txt": "Idea",
+  "motor": "1.4 8V / 1.8 8V Flex (2006 - 2007)",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.9 / 3.5",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "IDEA",
+  "modelo_txt": "Idea",
+  "motor": "1.4 8V (2008 - 2010) / 1.8 8V",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.9 / 3.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "LINEA",
+  "modelo_txt": "Linea",
+  "motor": "1.4 16V Turbo Gasolina",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.3",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "MAREA",
+  "modelo_txt": "Marea",
+  "motor": "1.8 (SX e ELX) / 2.4 (HLX e Turbo)",
+  "cil": "1.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5 / 5.5",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "FIAT",
+  "modelo": "PALIO",
+  "modelo_txt": "Palio",
+  "motor": "1.0 8V / 1.3 8V / 1.4 8V",
+  "cil": "1.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "2.7",
+  "oleo": [
+   "15W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "OLEDOM",
+  "modelo": "FABRICADOS A PARTIR DE 2000",
+  "modelo_txt": "Fabricados a partir de 2000",
+  "motor": "5.8",
+  "cil": "5.8",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "",
+  "oleo": [
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "C3   C3",
+  "modelo_txt": "C3 / C3",
+  "motor": "1.5 8V",
+  "cil": "1.5",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "PICASSO",
+  "modelo_txt": "Picasso",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "AIR CROSS",
+  "modelo_txt": "Air Cross",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "XSARA",
+  "modelo_txt": "XSara",
+  "motor": "1.4i",
+  "cil": "1.4",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.0",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "XSARA",
+  "modelo_txt": "XSara",
+  "motor": "1.6i",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "3.0",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "C4 PICASSO",
+  "modelo_txt": "C4 Picasso",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "C4 PICASSO",
+  "modelo_txt": "C4 Picasso /",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "C4 LOUNGE",
+  "modelo_txt": "C4 Lounge",
+  "motor": "2.0 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.3",
+  "oleo": [
+   "10W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "C5",
+  "modelo_txt": "C5",
+  "motor": "2.0i 16V",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "5.0",
+  "oleo": [
+   "10W-40",
+   "15W-50",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "DS 3   DS 4",
+  "modelo_txt": "DS 3 / DS 4 /",
+  "motor": "1.6 16V",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "CITROËN",
+  "modelo": "JUMPER",
+  "modelo_txt": "Jumper",
+  "motor": "2.3 Diesel",
+  "cil": "2.3",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "AMAROK",
+  "modelo_txt": "Amarok",
+  "motor": "2.0 (todos modelos com sistema EGR)",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "7.0",
+  "oleo": [
+   "5W-30"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "BORA",
+  "modelo_txt": "Bora",
+  "motor": "2.0 - 2004 a 2005 /",
+  "cil": "2.0",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.5",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ },
+ {
+  "fonte": "petronas",
+  "marca": "VOLKSWAGEN",
+  "modelo": "CROSSFOX",
+  "modelo_txt": "Crossfox",
+  "motor": "1.6 / 1.6 I-Motion",
+  "cil": "1.6",
+  "ano_ini": "",
+  "ano_fim": "",
+  "litros": "4.0",
+  "oleo": [
+   "10W-40",
+   "15W-40",
+   "5W-40"
+  ]
+ }
+]

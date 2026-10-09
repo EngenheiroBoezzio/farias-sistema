@@ -2,7 +2,7 @@
    A API grava os dois numa transação: ou entram juntos, ou nenhum entra. */
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DadosService } from '../../nucleo/dados.service';
 import { ErroApi } from '../../nucleo/api.service';
 import { placa as fPlaca } from '../../nucleo/formato';
@@ -13,7 +13,7 @@ import { EtiquetaService, INTERVALOS_COMUNS } from '../../nucleo/etiqueta.servic
 @Component({
   selector: 'app-cliente-form',
   standalone: true,
-  imports: [FormsModule, SeloComponent, PlacaMercosulComponent],
+  imports: [FormsModule, RouterLink, SeloComponent, PlacaMercosulComponent],
   templateUrl: './cliente-form.component.html'
 })
 export class ClienteFormComponent implements OnInit {

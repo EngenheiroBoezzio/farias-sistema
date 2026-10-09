@@ -132,11 +132,19 @@ function gravarVersao() {
 gravarVersao();
 
 if (MODO_SERVIDOR) {
+  let linkPagamentoServ = '';
+  try {
+    if (fs.existsSync(ORIGEM)) {
+      const orig = JSON.parse(fs.readFileSync(ORIGEM, 'utf8'));
+      linkPagamentoServ = String(orig.linkPagamento || '').trim();
+    }
+  } catch {}
   const saidaS = {
     apiUrl: 'mesma-origem',
     nomeLoja: 'Farias Troca de Óleo',
     canalWhatsapp: '',
     travado: true,
+    linkPagamento: linkPagamentoServ,
     _gerado: 'Build servido pela própria API (scripts/aplicar-config.js --servidor).'
   };
   if (!SO_CONFERIR) {
@@ -235,6 +243,7 @@ const saida = {
   nomeLoja: String(c.nomeLoja).trim(),
   canalWhatsapp: canal,
   travado,
+  linkPagamento: String(c.linkPagamento || '').trim(),
   _gerado: 'Escrito por scripts/aplicar-config.js a partir de configuracao.json. ' +
            'Não edite este arquivo à mão: ele é sobrescrito a cada build.'
 };
@@ -243,6 +252,7 @@ console.log('\n  Configuração que vai para dentro do programa:\n');
 console.log(`    servidor  : ${saida.apiUrl}`);
 console.log(`    loja      : ${saida.nomeLoja}`);
 console.log(`    canal     : ${saida.canalWhatsapp || '(nenhum)'}`);
+console.log(`    pagamento : ${saida.linkPagamento || '(nenhum)'}`);
 console.log(`    travado   : ${travado ? 'SIM — a oficina não altera o servidor'
                                        : 'não — a tela de Configuração fica editável'}`);
 

@@ -63,8 +63,8 @@ r.get('/placa/:placa', rota(async (req, res) => {
 
   const historico = await q(
     `SELECT id, data, km, oleo, litros, total, valor_oleo,
-            valor_filtro_oleo, valor_filtro_ar,
-            cod_filtro_oleo, cod_filtro_ar, cod_filtro_cabine
+            valor_filtro_oleo, valor_filtro_ar, valor_filtro_cabine, valor_filtro_combustivel,
+            cod_filtro_oleo, cod_filtro_ar, cod_filtro_cabine, cod_filtro_combustivel
      FROM servicos WHERE veiculo_id = ? ORDER BY data DESC LIMIT 20`, [v.id]);
 
   res.json({ veiculo: v, historico });
@@ -77,8 +77,10 @@ r.get('/:id', rota(async (req, res) => {
                       JOIN clientes c ON c.id = v.cliente_id WHERE v.id = ?`, [id]);
   if (!v) throw erro404('Veículo não encontrado.');
   const historico = await q(
-    `SELECT id, data, km, oleo, litros, total FROM servicos
-     WHERE veiculo_id = ? ORDER BY data DESC LIMIT 20`, [id]);
+    `SELECT id, data, km, oleo, litros, total, valor_oleo,
+            valor_filtro_oleo, valor_filtro_ar, valor_filtro_cabine, valor_filtro_combustivel,
+            cod_filtro_oleo, cod_filtro_ar, cod_filtro_cabine, cod_filtro_combustivel
+     FROM servicos WHERE veiculo_id = ? ORDER BY data DESC LIMIT 20`, [id]);
   res.json({ veiculo: v, historico });
 }));
 

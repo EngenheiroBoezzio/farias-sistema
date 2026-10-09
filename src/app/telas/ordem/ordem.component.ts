@@ -1,7 +1,7 @@
 /* Nova ordem de serviço.
    Começa pela placa: o carro traz consigo o óleo e os filtros, então o
    atendente digita menos e erra menos. */
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DadosService } from '../../nucleo/dados.service';
@@ -11,7 +11,14 @@ import { dinheiro, km, data, placa as fPlaca, num, trocouFiltroAr } from '../../
 import { SeloComponent } from '../../partes/selo/selo.component';
 import { SinoComponent } from '../../partes/sino/sino.component';
 import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
-import { ComprovanteComponent, DadosComprovante } from '../../partes/comprovante/comprovante.component';
+import { ComprovanteComponent } from '../../partes/comprovante/comprovante.component';
+import {
+  DadosComprovante,
+  copiarImagemComprovante,
+  gerarTextoWhatsappComprovante,
+  limparTelefoneWhatsapp,
+  formatarTelefoneVisual
+} from '../../nucleo/comprovante.util';
 import { ConfigService } from '../../nucleo/config.service';
 
 import { EtiquetaService, INTERVALOS_COMUNS } from '../../nucleo/etiqueta.service';
@@ -36,6 +43,19 @@ export class OrdemComponent implements OnInit {
   comprovante = signal<DadosComprovante | null>(null);
   mostrarComprovante = signal(false);
 
+  /* Modal de notificação e envio do comprovante pelo WhatsApp */
+  modalWhatsappAberto = signal<boolean>(false);
+  telefoneZap = signal<string>('');
+  salvarTelNoCadastro = signal<boolean>(true);
+  editandoTelZap = signal<boolean>(false);
+  enviandoZap = signal<boolean>(false);
+  zapEnviado = signal<boolean>(false);
+  erroZap = signal<string | null>(null);
+  comprovanteRecente = signal<DadosComprovante | null>(null);
+  clienteIdAtual = signal<number | null>(null);
+
+  consultandoIaLitros = signal<boolean>(false);
+
   entrada = '';
   carro = signal<ConsultaPlaca | null>(null);
   buscando = signal(false);
@@ -55,7 +75,53 @@ export class OrdemComponent implements OnInit {
   modoCustomIntervalo = signal<boolean>(false);
   salvarComoPadrao = signal<boolean>(true);
 
+  fTel = formatarTelefoneVisual;
+
+  /** Sugestões de óleos com base no histórico do carro e no catálogo */
+  sugestoesOleo = computed(() => {
+    const c = this.carro();
+    if (!c) return [];
+    const lista: { oleo: string; litros?: number | null; rotulo: string; fonte: string }[] = [];
+    const vistos = new Set<string>();
+
+    const add = (oleo: string | null | undefined, litros: number | string | null | undefined, fonte: string) => {
+      const o = (oleo || '').trim();
+      if (!o) return;
+      const chave = o.toUpperCase().replace(/\s+/g, '');
+      if (vistos.has(chave)) return;
+      vistos.add(chave);
+      const l = litros != null && num(litros as any) > 0 ? num(litros as any) : null;
+      lista.push({
+        oleo: o,
+        litros: l,
+        rotulo: `${o}${l ? ' · ' + l + ' L' : ''}`,
+        fonte
+      });
+    };
+
+    if (c.oleo?.preferida) {
+      add(c.oleo.preferida, c.oleo.litros, 'Preferência');
+    }
+    if (c.oleo?.viscosidades) {
+      for (const v of c.oleo.viscosidades) {
+        add(v, c.oleo.litros, 'Catálogo');
+      }
+    }
+    if (c.oleo?.recomendado?.texto) {
+      add(c.oleo.recomendado.texto, c.oleo.litros, 'Recomendado');
+    }
+    if (c.historico) {
+      for (const h of c.historico) {
+        if (h.oleo) {
+          add(h.oleo, h.litros, 'Histórico');
+        }
+      }
+    }
+    return lista;
+  });
+
   f = {
+    data: new Date().toISOString().slice(0, 10),
     km: null as number | null,
     oleo: '',
     litros: null as number | null,
@@ -315,8 +381,104 @@ export class OrdemComponent implements OnInit {
     }
   }
 
-  /** Óleo ou litros mudaram: o valor sugerido do óleo é outro. */
-  aoMudarOleo(): void { this.aplicarPrecosDeVenda(); }
+  /** Tenta obter a litragem do veículo a partir de regex, catálogo ou histórico */
+  puxarLitrosAutomatico(): void {
+    const c = this.carro();
+    if (!c) return;
+
+    // 1. Se o próprio texto do óleo tem a litragem digitada (ex.: "5W30 4L", "3,5L")
+    if (this.f.oleo) {
+      const m = this.f.oleo.match(/(\d+(?:[.,]\d+)?)\s*(?:l|litros?)\b/i);
+      if (m) {
+        const val = num(m[1].replace(',', '.'));
+        if (val > 0) {
+          this.f.litros = val;
+          this.origemLitros.set(`Identificado no óleo: ${val} L`);
+          return;
+        }
+      }
+    }
+
+    // 2. Capacidade indicada no catálogo do veículo
+    if (c.oleo?.litros != null && num(c.oleo.litros as any) > 0) {
+      this.f.litros = num(c.oleo.litros as any);
+      this.origemLitros.set(`Capacidade no catálogo: ${this.f.litros} L`);
+      return;
+    }
+
+    // 3. Histórico do veículo (troca anterior com litros)
+    if (c.historico?.length) {
+      const mesmo = c.historico.find(h => h.oleo && this.f.oleo &&
+        h.oleo.toLowerCase().includes(this.f.oleo.trim().toLowerCase()) &&
+        h.litros != null && num(h.litros as any) > 0);
+      if (mesmo && mesmo.litros) {
+        this.f.litros = num(mesmo.litros as any);
+        this.origemLitros.set(`Histórico deste carro: ${this.f.litros} L`);
+        return;
+      }
+
+      const qualquer = c.historico.find(h => h.litros != null && num(h.litros as any) > 0);
+      if (qualquer && qualquer.litros) {
+        this.f.litros = num(qualquer.litros as any);
+        this.origemLitros.set(`Última troca do carro: ${this.f.litros} L`);
+        return;
+      }
+    }
+  }
+
+  selecionarOleo(oleo: string, litros?: number | null): void {
+    this.f.oleo = oleo;
+    if (litros != null && litros > 0) {
+      this.f.litros = litros;
+      this.origemLitros.set(`Sugerido: ${litros} L`);
+    } else {
+      this.puxarLitrosAutomatico();
+    }
+    this.origemOleo.set('Selecionado');
+    this.aoMudarOleo();
+  }
+
+  buscarLitrosComIa(): void {
+    const c = this.carro();
+    if (!c || this.consultandoIaLitros()) return;
+    const mod = c.veiculo?.modelo;
+    if (!mod) {
+      this.erro.set({ status: 400, mensagem: 'Veículo sem modelo para consulta na IA.' });
+      return;
+    }
+    this.consultandoIaLitros.set(true);
+    this.dados.iaConsultarCapacidadeOleo({
+      modelo: mod,
+      marca: c.veiculo.marca,
+      ano: c.veiculo.ano,
+      motor: c.veiculo.cilindrada
+    }).subscribe({
+      next: r => {
+        this.consultandoIaLitros.set(false);
+        const ia = r.ia;
+        if (ia && ia.litros && ia.litros > 0) {
+          this.f.litros = ia.litros;
+          this.origemLitros.set(`Gemini IA: ${ia.litros} L`);
+          if (!this.f.oleo && ia.viscosidade_principal) {
+            this.f.oleo = ia.viscosidade_principal;
+            this.origemOleo.set('Sugerido pela IA');
+          }
+          this.aplicarPrecosDeVenda();
+        }
+      },
+      error: () => {
+        this.consultandoIaLitros.set(false);
+      }
+    });
+  }
+
+  /** Óleo ou litros mudaram: se litragem estiver vazia, auto-detecta e recalcula preço. */
+  aoMudarOleo(): void {
+    if (this.f.oleo && (!this.f.litros || this.f.litros <= 0)) {
+      this.puxarLitrosAutomatico();
+    }
+    this.aplicarPrecosDeVenda();
+  }
 
   /* Marcar "trocar agora" já traz o preço daquele filtro. Desmarcar apaga o
      valor: filtro que não entrou no carro não pode continuar somando no
@@ -339,9 +501,6 @@ export class OrdemComponent implements OnInit {
   codDe(chave: string): string { return (this.f as any)['cod_filtro_' + chave] || ''; }
   setCod(chave: string, v: string): void {
     (this.f as any)['cod_filtro_' + chave] = (v || '').toUpperCase();
-    /* Trocar o código é trocar a peça: o preço da lista vira outro. Sem isto,
-       marcar "trocar agora" e só depois digitar o código — que é a ordem
-       natural no balcão — deixava o valor vazio. */
     this.aplicarPrecosDeVenda();
   }
   valorDe(chave: string): number | null { return (this.f as any)['valor_filtro_' + chave]; }
@@ -363,10 +522,6 @@ export class OrdemComponent implements OnInit {
   }
 
   /** Soma do que foi digitado, para conferir contra o total. */
-  /* O que já está discriminado na ordem. NÃO é o total: falta a mão de obra,
-     e é justamente por isso que a tela mostra os dois lados em vez de
-     preencher o total sozinha. Somar por conta própria e cobrar a menos é um
-     erro que só aparece no fim do mês. */
   somaItens(): number {
     return num(this.f.valor_oleo as any)
          + this.FILTROS.reduce((s, def) => s + (this.trocar[def.chave]
@@ -398,32 +553,36 @@ export class OrdemComponent implements OnInit {
     this.enviando.set(true);
     this.dados.registrarServico({
       placa: c.placa,
+      data: this.f.data || undefined,
       km: this.f.km ?? undefined,
       oleo: this.f.oleo || undefined,
       litros: this.f.litros ?? undefined,
       total: this.f.total,
       valor_oleo: this.f.valor_oleo ?? undefined,
-      /* Filtro não marcado não vai NADA: nem código, nem valor.
-
-         `cod_filtro_*` na ordem quer dizer "esta peça entrou neste carro". O
-         catálogo sugere os quatro códigos sempre, e gravar todos faria o
-         histórico dizer que o carro trocou quatro filtros quando trocou um —
-         e a fila de recuperação lê exatamente isso para saber o que sugerir
-         na próxima visita. */
       ...this.camposDosFiltros()
     }).subscribe({
       next: r => {
         this.enviando.set(false);
         // o servidor avisa quando o km andou para trás — quase sempre é digitação
         if (r.aviso) this.aviso.set(r.aviso);
-        this.comprovante.set(this.montarComprovante(c, r.id ?? null, prox));
-        const metaEtiqueta = prox ? ` · Etiqueta: ${km(prox)} (+${km(intAtual)})` : '';
-        this.selo.set({
-          titulo: 'Ordem registrada',
-          linha: `${c.cadastro?.cliente ?? ''} · ${fPlaca(c.placa)}`,
-          valor: dinheiro(this.f.total),
-          meta: `${this.f.oleo || 'óleo não informado'} · ${km(this.f.km)}${metaEtiqueta}`
-        });
+        const comp = this.montarComprovante(c, r.id ?? null, prox);
+        this.comprovante.set(comp);
+        this.comprovanteRecente.set(comp);
+        this.clienteIdAtual.set(c.cadastro?.cliente_id ?? null);
+
+        const telExistente = c.cadastro?.telefone || '';
+        if (telExistente) {
+          this.telefoneZap.set(formatarTelefoneVisual(telExistente));
+          this.editandoTelZap.set(false);
+          this.salvarTelNoCadastro.set(false);
+        } else {
+          this.telefoneZap.set('');
+          this.editandoTelZap.set(true);
+          this.salvarTelNoCadastro.set(true);
+        }
+        this.erroZap.set(null);
+        this.zapEnviado.set(false);
+        this.modalWhatsappAberto.set(true);
       },
       error: (e: ErroApi) => { this.enviando.set(false); this.erro.set(e); }
     });
@@ -482,6 +641,64 @@ export class OrdemComponent implements OnInit {
     return out;
   }
 
+  onTelefoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.telefoneZap.set(formatarTelefoneVisual(input.value));
+  }
+
+  async enviarComprovanteWhatsapp(): Promise<void> {
+    const comp = this.comprovanteRecente() || this.comprovante();
+    if (!comp) return;
+
+    const rawTel = this.telefoneZap();
+    const limpo = limparTelefoneWhatsapp(rawTel);
+    if (!limpo || limpo.length < 10) {
+      this.erroZap.set('Informe um número de WhatsApp válido com DDD (ex.: 55 99999-9999).');
+      return;
+    }
+
+    this.erroZap.set(null);
+    this.enviandoZap.set(true);
+
+    comp.telefone = limpo;
+
+    // Se marcou para salvar no cadastro e temos o cliente_id:
+    const cliId = this.clienteIdAtual();
+    if (this.salvarTelNoCadastro() && cliId) {
+      this.dados.editarCliente(cliId, { telefone: limpo }).subscribe({
+        next: () => {
+          const c = this.carro();
+          if (c?.cadastro) c.cadastro.telefone = limpo;
+        },
+        error: err => console.warn('Não foi possível salvar telefone no cadastro', err)
+      });
+    }
+
+    // Copia a imagem do comprovante para a área de transferência
+    await copiarImagemComprovante(comp);
+
+    // Monta o texto completo com litragem e itens
+    const txt = gerarTextoWhatsappComprovante(comp);
+
+    // Abre o WhatsApp
+    window.open(`https://wa.me/${limpo}?text=${encodeURIComponent(txt)}`, '_blank', 'noopener');
+
+    this.enviandoZap.set(false);
+    this.zapEnviado.set(true);
+  }
+
+  abrirVisualizadorComprovante(): void {
+    this.modalWhatsappAberto.set(false);
+    this.mostrarComprovante.set(true);
+  }
+
+  fecharModalWhatsapp(): void {
+    this.modalWhatsappAberto.set(false);
+    this.zapEnviado.set(false);
+    this.erroZap.set(null);
+    this.aoFechar();
+  }
+
   aoFechar(): void {
     this.selo.set(null);
     if (this.aviso()) return;          // deixa o aviso de km na tela
@@ -490,7 +707,8 @@ export class OrdemComponent implements OnInit {
     this.statusUltimoFiltroAr.set(null);
     this.intervaloEtiqueta.set(7000);
     this.modoCustomIntervalo.set(false);
-    this.f = { km: null, oleo: '', litros: null, total: null,
+    this.f = { data: new Date().toISOString().slice(0, 10),
+               km: null, oleo: '', litros: null, total: null,
                valor_oleo: null,
                valor_filtro_oleo: null, valor_filtro_ar: null,
                valor_filtro_cabine: null, valor_filtro_combustivel: null,
@@ -498,12 +716,6 @@ export class OrdemComponent implements OnInit {
                cod_filtro_cabine: '', cod_filtro_combustivel: '' };
     this.trocar = { oleo: false, ar: false, cabine: false, combustivel: false };
     this.autoPreenchido = {};
-    /* O comprovante NÃO é limpo aqui.
-
-       Este método roda quando o selo de confirmação se fecha sozinho, 2,6
-       segundos depois de gravar — e limpar junto fazia a oferta do
-       comprovante aparecer e sumir antes de alguém ler. Ele fica até a
-       próxima busca de placa, que é quando o atendimento realmente virou
-       outro. */
   }
 }
+

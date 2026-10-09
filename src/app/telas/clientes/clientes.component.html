@@ -75,60 +75,111 @@
       {{ busca ? 'Tente outro termo, ou cadastre este cliente.' : 'A base está vazia.' }}
     </p>
   } @else {
-    <div class="panel">
-      <div class="tbl-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Telefone</th>
-              <th class="num">Carros</th>
-              <th>Avisos</th>
-              <th class="acao-col">Chamar</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (c of lista(); track c.id) {
-              <tr>
-                <td><span class="who">{{ c.nome }}</span></td>
-                <td>
-                  @if (c.telefone) {
-                    <span class="num-tel">{{ telefone(c.telefone) }}</span>
-                    @if (c.tel_inferido) {
-                      <span class="sub aviso">DDD deduzido — confirmar</span>
-                    }
-                  } @else {
-                    <span class="tx-3">não cadastrado</span>
-                  }
-                </td>
-                <td class="num">{{ qtdVeiculos(c) }}</td>
-                <td>
-                  @if (c.aceita_aviso) {
-                    <span class="pill p-pos">aceita</span>
-                  } @else {
-                    <span class="pill p-mute">pediu para sair</span>
-                  }
-                </td>
-                <td class="acao-col">
-                  @if (c.telefone) {
-                    <button type="button" class="btn btn-zap"
-                            (click)="abrirWhatsapp(c.telefone, c.nome)"
-                            [title]="'Abrir o WhatsApp de ' + c.nome">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12.04 2a9.9 9.9 0 0 0-8.59 14.86L2.05 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2m0 1.67a8.24 8.24 0 1 1-4.2 15.32l-.3-.18-3.12.82.83-3.04-.2-.31a8.24 8.24 0 0 1 6.99-12.61"/>
-                      </svg>
-                      WhatsApp
-                    </button>
-                  } @else {
-                    <span class="tx-3">—</span>
-                  }
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    <!-- UM CARTAO POR CLIENTE, UMA LINHA POR CARRO.
 
+         Era uma tabela de cinco colunas em que nenhuma respondia a pergunta
+         que o balcao faz cem vezes por dia: quando essa pessoa esteve aqui?
+         A coluna "Carros" trazia o numero 2 — que nao abre, nao leva a lugar
+         nenhum, e esconde que sao duas historias diferentes. Um cliente com
+         Gol e Civic tem DUAS ultimas visitas. -->
+    <div class="cli-lista">
+      @for (c of lista(); track c.id) {
+        <div class="cli-cartao">
+
+          <div class="cli-topo">
+            <div class="cli-quem">
+              <span class="cli-nome">{{ c.nome }}</span>
+              <span class="cli-contato">
+                @if (c.telefone) {
+                  <span class="mono">{{ telefone(c.telefone) }}</span>
+                  @if (c.tel_inferido) { <span class="sub aviso">DDD deduzido — confirmar</span> }
+                } @else {
+                  <span class="tx-3">telefone não cadastrado</span>
+                }
+              </span>
+            </div>
+
+            <div class="cli-acoes">
+              @if (c.aceita_aviso) {
+                <span class="pill p-pos">aceita aviso</span>
+              } @else {
+                <span class="pill p-mute">pediu para sair</span>
+              }
+              @if (c.telefone) {
+                <button type="button" class="btn btn-zap"
+                        (click)="abrirWhatsapp(c.telefone, c.nome)"
+                        [title]="'Abrir o WhatsApp de ' + c.nome">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.04 2a9.9 9.9 0 0 0-8.59 14.86L2.05 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2m0 1.67a8.24 8.24 0 1 1-4.2 15.32l-.3-.18-3.12.82.83-3.04-.2-.31a8.24 8.24 0 0 1 6.99-12.61"/>
+                  </svg>
+                  WhatsApp
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (carros(c).length === 0) {
+            <p class="cli-sem-carro">
+              Nenhum carro cadastrado para este cliente.
+            </p>
+          } @else {
+            @for (v of carros(c); track v.id) {
+              <!-- A linha inteira e o link. Antes nao havia caminho nenhum do
+                   cliente para o historico dele: achava a pessoa e acabava ali. -->
+              <a class="cli-carro" [routerLink]="['/veiculo', v.id]">
+                <span class="placa-txt">{{ fPlaca(v.placa) }}</span>
+
+                <span class="cli-modelo">
+                  {{ v.marca || '' }} {{ v.modelo || 'carro sem modelo' }}
+                  @if (v.ano) { <span class="tx-3">{{ v.ano }}</span> }
+                </span>
+
+                <!-- "ha 8 meses" grande, data e km embaixo: a pergunta e "faz
+                     muito tempo?", e a resposta nao e 21/02/2026. -->
+                <span class="cli-quando">
+                  <span class="cli-quando-forte">{{ quando(v) }}</span>
+                  @if (v.ultima_troca) {
+                    <span class="sub mono">
+                      {{ data(v.ultima_troca) }}
+                      @if (v.ultimo_km != null) { · {{ km(v.ultimo_km) }} }
+                    </span>
+                  }
+                </span>
+
+                <span class="pill {{ sit(v).tom }} cli-sit">
+                  @switch (sit(v).icone) {
+                    @case ('certo') {
+                      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                           stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3.5 8.5 6.5 11.5 12.5 5"/>
+                      </svg>
+                    }
+                    @case ('alerta') {
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                           stroke-width="2.6" stroke-linecap="round" aria-hidden="true">
+                        <path d="M12 7v6"/><path d="M12 17v.01"/>
+                      </svg>
+                    }
+                    @default {
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                           stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+                      </svg>
+                    }
+                  }
+                  {{ sit(v).rotulo }}
+                </span>
+
+                <span class="cli-ir">ver histórico →</span>
+              </a>
+            }
+          }
+
+        </div>
+      }
+    </div>
+
+    <div class="panel panel-rodape">
       <div class="tbl-foot">
         <span>
           Mostrando <b>{{ primeiroDaPagina() }}–{{ ultimoDaPagina() }}</b>
@@ -139,7 +190,11 @@
           Anterior
         </button>
         <span>página <b>{{ pagina() }}</b> de {{ totalPaginas() }}</span>
-        <button type="button" class="btn btn-s" (click)="proxima()" [disabled]="lista().length < 50">
+        <!-- Era `lista().length < 50`, numero cravado: numa ultima pagina com
+             exatamente 50 o botao avancava para uma pagina vazia que dizia
+             "a base esta vazia". Agora usa o total, que a tela ja tem. -->
+        <button type="button" class="btn btn-s" (click)="proxima()"
+                [disabled]="pagina() >= totalPaginas()">
           Próxima
         </button>
       </div>
