@@ -35,7 +35,11 @@ function handlerDeErro(err, req, res, _next) {
 
   const status = err.status || 500;
   res.status(status).json({
-    erro: status < 500 && err.publico ? err.message : 'Erro interno.'
+    /* So mostra a mensagem se ela foi ESCRITA para o usuario (publico = true).
+       Vale tambem para 5xx: e o caso da IA ("a chave foi recusada", "o Google
+       nao respondeu") — antes virava "Erro interno." e ninguem sabia o motivo.
+       Erro inesperado (sem publico) continua sempre "Erro interno.". */
+    erro: err.publico ? err.message : 'Erro interno.'
   });
 }
 

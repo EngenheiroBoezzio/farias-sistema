@@ -1,109 +1,30 @@
-/* Integração com a API Google Gemini (Google AI Studio).
- * Utiliza o modelo rápido e gratuito (gemini-1.5-flash / gemini-2.0-flash).
- * Zero dependências externas: usa o fetch nativo do Node.js 18+.
+/* Perguntas de IA do sistema (litragem, filtros, mensagens da Comunidade).
+ * Quem chama a IA de fato é o revezamento em provedores-ia.js.
  */
 'use strict';
-const { q, um } = require('../db');
 
-const GEMINI_API_KEY = () => (process.env.GEMINI_API_KEY || '').trim();
-const GEMINI_MODEL = () => (process.env.GEMINI_MODEL || 'gemini-1.5-flash').trim();
+const ia = require('./provedores-ia');
 
 // Cache em memória para evitar chamadas repetidas
 const cacheMemoria = new Map();
 
+/* As chamadas agora passam pelo REVEZAMENTO (provedores-ia.js): o Gemini é o
+   primeiro da fila, e se ele falhar a mesma pergunta vai para o próximo
+   provedor configurado no .env. O nome do arquivo ficou "gemini.js" para não
+   mexer em quem já importa daqui. */
 function estaConfigurado() {
-  return Boolean(GEMINI_API_KEY());
+  return ia.ativos().length > 0;
 }
 
-/** Executa chamada direta à API REST do Google Gemini */
-async function chamarGemini(prompt, { systemInstruction, json = true, timeoutMs = 20000 } = {}) {
-  const chave = GEMINI_API_KEY();
-  if (!chave) {
-    throw new Error('Chave do Google Gemini não configurada. Defina GEMINI_API_KEY no arquivo .env da API.');
-  }
-
-  const modelo = GEMINI_MODEL();
-  /* A chave vai no CABECALHO, nao na URL.
-     Com ?key= na querystring, a chave aparece inteira em qualquer log que
-     registre a URL — proxy da rede, log do Google, um man-in-the-middle de
-     empresa. No cabecalho x-goog-api-key (forma documentada pelo Google) ela
-     fica fora do caminho que os logs guardam. */
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`;
-
-  const bodyReq = {
-    contents: [
-      {
-        role: 'user',
-        parts: [{ text: prompt }]
-      }
-    ],
-    generationConfig: {
-      temperature: 0.2,
-      maxOutputTokens: 2048
-    }
-  };
-
-  if (systemInstruction) {
-    bodyReq.systemInstruction = {
-      parts: [{ text: systemInstruction }]
-    };
-  }
-
-  if (json) {
-    bodyReq.generationConfig.responseMimeType = 'application/json';
-  }
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': chave },
-      body: JSON.stringify(bodyReq),
-      signal: controller.signal
-    });
-
-    clearTimeout(timer);
-
-    if (!res.ok) {
-      const errTexto = await res.text().catch(() => '');
-      let detalhe = '';
-      try {
-        const parsed = JSON.parse(errTexto);
-        detalhe = parsed?.error?.message || errTexto;
-      } catch {
-        detalhe = errTexto;
-      }
-      throw new Error(`Erro na API do Gemini (${res.status}): ${detalhe}`);
-    }
-
-    const jsonRes = await res.json();
-    const textoSaida = jsonRes?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!textoSaida) {
-      throw new Error('O Gemini não retornou resposta.');
-    }
-
-    if (json) {
-      try {
-        return JSON.parse(textoSaida);
-      } catch {
-        // Tenta extrair json de bloco markdown ```json ... ```
-        const match = textoSaida.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-        if (match) return JSON.parse(match[1]);
-        throw new Error('Falha ao interpretar resposta estruturada da IA.');
-      }
-    }
-
-    return textoSaida;
-  } catch (err) {
-    clearTimeout(timer);
-    if (err.name === 'AbortError') {
-      throw new Error('A consulta ao Google Gemini excedeu o tempo limite (timeout).');
-    }
-    throw err;
-  }
+/** Texto curto para a tela: "Gemini (gemini-3.6-flash) + 2 reservas". */
+function modeloAtual() {
+  const s = ia.situacao().filter(p => p.configurado);
+  if (!s.length) return 'nenhuma IA configurada';
+  const extra = s.length > 1 ? ` + ${s.length - 1} reserva${s.length > 2 ? 's' : ''}` : '';
+  return `${s[0].nome} (${s[0].modelo})${extra}`;
 }
+
+const chamarGemini = (prompt, opc) => ia.chamarIA(prompt, opc);
 
 /**
  * Consulta a capacidade exata do cárter em litros e viscosidade recomendada
@@ -201,6 +122,8 @@ Tema / Assunto desejado: ${tema || 'A importância de trocar o óleo e os filtro
 
 module.exports = {
   estaConfigurado,
+  modeloAtual,
+  situacaoIA: ia.situacao,
   consultarCapacidadeOleo,
   identificarFiltrosVeiculo,
   gerarMensagemComunidade,

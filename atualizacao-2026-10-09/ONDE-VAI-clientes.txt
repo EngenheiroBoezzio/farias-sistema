@@ -1,0 +1,14 @@
+ONDE VAI CADA ARQUIVO (aba Clientes: editar, adicionar carro, excluir)
+======================================================================
+Estes arquivos ja estao no seu projeto (farias-app). O zip e so copia.
+
+  src/app/partes/modal-cliente/   -> NOVO (janela Editar cliente + Excluir)
+  src/app/partes/modal-carro/     -> NOVO (janela Adicionar carro)
+  src/app/telas/clientes/clientes.component.ts   -> substitui
+  src/app/telas/clientes/clientes.component.html -> substitui
+  src/app/partes/modal-servico/modal-servico.component.html -> substitui
+      (corrige o botao Salvar da janela "Editar atendimento")
+  src/styles.css                  -> substitui
+
+Depois: gerar a versao nova do app como sempre (npm run empacotar / publicar).
+NAO precisa mexer na API: ela ja tinha tudo que estas telas usam.

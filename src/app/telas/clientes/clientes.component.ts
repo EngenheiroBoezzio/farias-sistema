@@ -3,10 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DadosService } from '../../nucleo/dados.service';
-import { CarroDoCliente, Cliente, Painel } from '../../nucleo/tipos';
+import { CarroDoCliente, Cliente, Painel, Veiculo } from '../../nucleo/tipos';
 import { ErroApi } from '../../nucleo/api.service';
 import { telefone, data, inteiro, km, placa as fPlaca, haQuanto } from '../../nucleo/formato';
 import { SinoComponent } from '../../partes/sino/sino.component';
+import { SeloComponent } from '../../partes/selo/selo.component';
+import { ModalClienteComponent } from '../../partes/modal-cliente/modal-cliente.component';
+import { ModalCarroComponent } from '../../partes/modal-carro/modal-carro.component';
 
 /* Quantos cabem numa página. Estava escrito 50 em dois lugares e o rodapé
    dizia "50 de 1284" sem dizer QUAIS 50. */
@@ -15,7 +18,7 @@ const POR_PAGINA = 50;
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [FormsModule, RouterLink, SinoComponent],
+  imports: [FormsModule, RouterLink, SinoComponent, SeloComponent, ModalClienteComponent, ModalCarroComponent],
   templateUrl: './clientes.component.html'
 })
 export class ClientesComponent implements OnInit {
@@ -106,6 +109,51 @@ export class ClientesComponent implements OnInit {
   quando(v: CarroDoCliente): string {
     if (v.ultima_troca == null) return 'nunca passou aqui';
     return this.haQuanto(v.dias);
+  }
+
+  /* ---------- editar cliente ---------- */
+  editando = signal<number | null>(null);
+  selo = signal<{ titulo: string; linha: string } | null>(null);
+
+  editar(c: Cliente): void { this.editando.set(c.id); }
+
+  /* Atualiza só o cartão que mudou, sem recarregar a lista inteira: a pessoa
+     continua na mesma página e na mesma posição da rolagem. */
+  aoSalvarCliente(novo: Cliente): void {
+    this.lista.update(l => l.map(c => c.id === novo.id
+      ? { ...c, nome: novo.nome, telefone: novo.telefone, tel_inferido: novo.tel_inferido,
+          aceita_aviso: novo.aceita_aviso, nascimento: novo.nascimento, obs: novo.obs }
+      : c));
+    this.editando.set(null);
+    this.selo.set({ titulo: 'Cliente atualizado', linha: novo.nome });
+  }
+
+  /* O cliente saiu da base: some da lista e o total desce, sem recarregar. */
+  aoExcluirCliente(e: { id: number; nome: string }): void {
+    this.lista.update(l => l.filter(c => c.id !== e.id));
+    this.total.update(t => Math.max(0, t - 1));
+    this.editando.set(null);
+    this.selo.set({ titulo: 'Cliente excluído', linha: e.nome });
+  }
+
+  /* ---------- adicionar carro a cliente existente ---------- */
+  addCarroPara = signal<Cliente | null>(null);
+
+  aoAdicionarCarro(v: Veiculo): void {
+    const dono = this.addCarroPara();
+    if (!dono) return;
+    const novo: CarroDoCliente = {
+      id: v.id, cliente_id: dono.id, placa: v.placa,
+      marca: v.marca ?? null, modelo: v.modelo ?? null, ano: v.ano ?? null,
+      ultima_troca: null, ultimo_km: null, ultimo_oleo: null,
+      situacao: null, visitas: 0, dias: null
+    };
+    this.lista.update(l => l.map(c => c.id === dono.id
+      ? { ...c, carros: [...(c.carros ?? []), novo],
+          veiculos: typeof c.veiculos === 'number' ? c.veiculos + 1 : c.veiculos }
+      : c));
+    this.addCarroPara.set(null);
+    this.selo.set({ titulo: 'Carro adicionado', linha: `${fPlaca(v.placa)} · ${dono.nome}` });
   }
 
   proxima(): void { this.pagina.update(p => p + 1); this.buscar(); }

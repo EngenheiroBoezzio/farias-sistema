@@ -1,4 +1,4 @@
-<div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-edit-servico" (click)="$event.target === $event.currentTarget && fechar()">
+<div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-edit-servico" (click)="$event.target === $event.currentTarget ? fechar() : null">
   <div class="modal-box" style="max-width: 520px; padding: 24px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
       <div>

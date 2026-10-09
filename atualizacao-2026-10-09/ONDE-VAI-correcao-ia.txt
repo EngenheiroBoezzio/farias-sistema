@@ -1,0 +1,25 @@
+ONDE VAI CADA ARQUIVO (IA: correcao + revezamento de provedores)
+================================================================
+Copie mantendo as pastas, por cima dos arquivos da API na VPS:
+
+  api/src/meio/provedores-ia.js  -> NOVO (o revezamento)
+  api/src/meio/gemini.js         -> substitui
+  api/src/rotas/ia.js            -> substitui
+  api/src/meio/erros.js          -> substitui
+  api/.env.example               -> modelo das chaves (NAO e o .env de verdade)
+  api/sql/2026-09-26-configuracoes.sql -> so para rodar no banco
+
+Depois:
+  1) Abra o .env da VPS e acrescente as chaves das IAs que quiser usar
+     (copie o bloco "Inteligencia Artificial — REVEZAMENTO" do .env.example).
+     So entra no revezamento quem tiver chave. O GEMINI_API_KEY que ja esta
+     la continua valendo.
+  2) Reinicie a API.
+  3) Rode no banco, como root (pode rodar mais de uma vez, nao apaga nada):
+       mariadb -u root -p NOME_DO_BANCO < api/sql/2026-09-26-configuracoes.sql
+  4) Nao precisa recompilar o app para isto: so mudou a API.
+
+Conferir: GET /api/ia/status (logado) mostra quem esta no revezamento,
+o modelo de cada um e quem esta pausado. Nunca mostra chave.
+No log da API aparece "[ia] Groq falhou: ..." quando uma IA cai e a
+proxima assume.

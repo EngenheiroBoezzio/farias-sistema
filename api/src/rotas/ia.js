@@ -17,7 +17,9 @@ r.use(exigeLogin);
 r.get('/status', rota(async (_req, res) => {
   res.json({
     configurado: gemini.estaConfigurado(),
-    modelo: process.env.GEMINI_MODEL || 'gemini-1.5-flash'
+    modelo: gemini.modeloAtual(),
+    /* Quem está no revezamento e quem está pausado. Nunca inclui chave. */
+    provedores: gemini.situacaoIA()
   });
 }));
 
@@ -197,9 +199,17 @@ r.post('/comunidade/gerar', rota(async (req, res) => {
   const tema = txt(req.body?.tema);
   const tipo = txt(req.body?.tipo || 'campanha');
 
-  // Obtém o nome da loja
-  const cfg = await um("SELECT valor FROM configuracoes WHERE chave = 'nomeLoja'");
-  const nomeLoja = cfg?.valor || 'Farias Troca de Óleo';
+  /* Nome da loja: é só enfeite do texto. Se o banco falhar aqui (ex.: tabela
+     configuracoes ainda não criada no servidor), NÃO derruba a geração —
+     antes isso aparecia na tela como "Confira os dados enviados.". */
+  let nomeLoja = 'Farias Troca de Óleo';
+  try {
+    const cfg = await um("SELECT valor FROM configuracoes WHERE chave = 'nomeLoja'");
+    if (cfg?.valor) nomeLoja = cfg.valor;
+  } catch (e) {
+    console.warn('[ia] não consegui ler nomeLoja de configuracoes:', e.code || e.message,
+                 '— rode api/sql/2026-09-26-configuracoes.sql no banco.');
+  }
 
   const ideia = await gemini.gerarMensagemComunidade({ tema, tipo, nomeLoja });
   res.json({ ok: true, ideia });

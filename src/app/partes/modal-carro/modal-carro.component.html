@@ -1,0 +1,58 @@
+<!-- "? fechar() : null" e não "&& fechar()": com &&, clicar DENTRO da janela
+     devolve false, o Angular cancela o clique e o botão Salvar não envia. -->
+<div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tit-add-carro"
+     (click)="$event.target === $event.currentTarget ? fechar() : null" (keydown.escape)="fechar()">
+  <div class="modal-box" style="max-width: 520px; padding: 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+      <div>
+        <h2 id="tit-add-carro" style="margin:0 0 4px;">Adicionar carro</h2>
+        <p style="margin:0; font-size:13px; color:var(--tx-2)">
+          @if (clienteNome()) { Para <b>{{ clienteNome() }}</b>. }
+          Os filtros você confirma depois, na ficha do carro.
+        </p>
+      </div>
+      <button type="button" class="btn btn-s" style="padding:4px 8px; font-size:16px; line-height:1; min-height:auto"
+              (click)="fechar()" aria-label="Fechar">✕</button>
+    </div>
+
+    @if (erro(); as err) {
+      @for (k of [tremer()]; track k) {
+        <div class="falha erro-treme" role="alert" style="margin-bottom:14px; padding:10px 14px;">
+          <b>{{ err.mensagem }}</b>
+          @if (err.detalhe) { <p style="margin:4px 0 0">{{ err.detalhe }}</p> }
+        </div>
+      }
+    }
+
+    <form (ngSubmit)="salvar()" novalidate>
+      <label class="f">
+        <span>Placa *</span>
+        <span class="campo-placa">
+          <input name="placa" [(ngModel)]="f.placa" maxlength="8" autocapitalize="characters"
+                 placeholder="ABC1D23" autofocus autocomplete="off">
+          @if (f.placa) { <app-placa-mercosul [placa]="placaLimpa()" tamanho="sm" /> }
+        </span>
+      </label>
+
+      <div class="f-row c2 respiro" style="margin-top:12px">
+        <label class="f"><span>Marca</span>
+          <input name="marca" [(ngModel)]="f.marca" maxlength="40" placeholder="ex.: Chevrolet"></label>
+        <label class="f"><span>Modelo</span>
+          <input name="modelo" [(ngModel)]="f.modelo" maxlength="80" placeholder="ex.: Onix LT"></label>
+      </div>
+      <div class="f-row c2 respiro" style="margin-top:12px">
+        <label class="f"><span>Ano</span>
+          <input name="ano" [(ngModel)]="f.ano" inputmode="numeric" maxlength="4" placeholder="ex.: 2019"></label>
+        <label class="f"><span>Motor</span>
+          <input name="cil" [(ngModel)]="f.cilindrada" maxlength="3" placeholder="ex.: 1.0"></label>
+      </div>
+
+      <div class="modal-acoes" style="margin-top:20px">
+        <button type="button" class="btn btn-s" (click)="fechar()" [disabled]="enviando()">Cancelar</button>
+        <button type="submit" class="btn btn-p" [disabled]="enviando()">
+          {{ enviando() ? 'Salvando…' : 'Adicionar carro' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

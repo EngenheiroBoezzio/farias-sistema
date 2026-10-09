@@ -1975,3 +1975,19 @@ th .sub{font-weight:400;color:var(--tx-3);font-size:11px;text-transform:none;
   .cli-ir{margin-left:0;width:100%}
   .cli-quando,.cli-modelo{min-width:0}
 }
+
+/* ===========================================================
+   Erro que "treme": o mesmo padrão do selo de erro aprovado no design.
+   Chama a atenção para a mensagem sem precisar de alert() do navegador.
+   =========================================================== */
+@keyframes treme{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-7px)} 30%{transform:translateX(6px)}
+  45%{transform:translateX(-5px)} 60%{transform:translateX(4px)}
+  75%{transform:translateX(-2px)}
+}
+.erro-treme{animation:treme .42s cubic-bezier(.36,.07,.19,.97) both}
+@media (prefers-reduced-motion: reduce){ .erro-treme{animation:none} }
+
+/* Adicionar carro a cliente que já existe: discreto, embaixo da lista de carros. */
+.cli-add-carro{padding:6px 14px 10px;display:flex;justify-content:flex-end}
