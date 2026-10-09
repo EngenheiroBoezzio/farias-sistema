@@ -960,27 +960,33 @@ button.placa-mercosul:hover {
   box-shadow: 0 0 0 4px var(--b-100);
 }
 
-/* Transição suave de telas */
+/* Transição suave de telas: apenas opacidade, sem transform,
+   para não criar containing block que prenda elementos position:fixed dentro do <main>. */
 .fade-in {
-  animation: telaFadeIn .22s cubic-bezier(.16,1,.3,1) both;
+  animation: telaFadeIn .2s ease-out;
 }
 @keyframes telaFadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ===========================================================
-   Modal de Definição de Senha
+   Modais do Sistema
    =========================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(15,14,14,.72);
   backdrop-filter: blur(4px);
-  display: grid;
-  place-items: center;
-  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
   padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
   animation: telaFadeIn .2s ease-out;
 }
 .modal-box {
@@ -990,6 +996,9 @@ button.placa-mercosul:hover {
   box-shadow: var(--e-pop);
   max-width: 420px;
   width: 100%;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  margin: auto;
   padding: 28px 26px;
   animation: pop .28s cubic-bezier(.2,.9,.3,1.2) both;
 }
@@ -1991,3 +2000,110 @@ th .sub{font-weight:400;color:var(--tx-3);font-size:11px;text-transform:none;
 
 /* Adicionar carro a cliente que já existe: discreto, embaixo da lista de carros. */
 .cli-add-carro{padding:6px 14px 10px;display:flex;justify-content:flex-end}
+
+/* ===========================================================
+   Botões e Indicadores Circulares Modernos (Ações Rápidas)
+   Estilo icônico, redondo e com cores dedicadas
+   =========================================================== */
+.btn-circulo {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: var(--r-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--bd-strong);
+  background: var(--surface);
+  color: var(--tx-2);
+  cursor: pointer;
+  padding: 0;
+  transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease, color .16s ease;
+  position: relative;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.btn-circulo:hover {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 4px 12px rgba(26,21,18,.12);
+}
+.btn-circulo:active {
+  transform: translateY(0) scale(.95);
+}
+.btn-circulo:focus-visible {
+  outline: 2px solid var(--b-500);
+  outline-offset: 2px;
+}
+
+/* Botão de Edição Circular */
+.btn-circulo-editar {
+  color: var(--b-700);
+  background: var(--surface);
+  border-color: var(--bd-strong);
+}
+.btn-circulo-editar:hover {
+  background: var(--b-50);
+  border-color: var(--b-500);
+  color: var(--b-700);
+  box-shadow: 0 4px 14px rgba(176, 12, 19, 0.2);
+}
+
+/* Botão de WhatsApp Circular */
+.btn-circulo-zap {
+  background: #25D366;
+  border-color: #1EBE5D;
+  color: #fff;
+}
+.btn-circulo-zap:hover {
+  background: #20BA5A;
+  border-color: #189849;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+}
+
+/* Botão Fechar Modal Circular */
+.btn-circulo-fechar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tx-3);
+  font-size: 15px;
+  line-height: 1;
+}
+.btn-circulo-fechar:hover {
+  background: var(--surface-2);
+  color: var(--tx);
+  border-color: var(--bd);
+  transform: scale(1.06);
+}
+
+/* Badges e Pílulas de Status com Ícone Circular */
+.badge-circulo {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: var(--r-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .15s ease;
+}
+.badge-circulo:hover {
+  transform: scale(1.08);
+}
+.badge-circulo-pos {
+  background: var(--pos-bg);
+  color: var(--pos);
+  border: 1.5px solid var(--pos-bd);
+}
+.badge-circulo-mute {
+  background: var(--surface-2);
+  color: var(--tx-3);
+  border: 1.5px solid var(--bd);
+}

@@ -23,6 +23,7 @@ export class ModalClienteComponent implements OnInit {
   readonly ehAdmin = inject(AuthService).ehAdmin;
 
   clienteId = input.required<number>();
+  clienteInicial = input<Cliente | null>(null);
   fechou = output<void>();
   salvou = output<Cliente>();
   excluiu = output<{ id: number; nome: string }>();
@@ -39,21 +40,40 @@ export class ModalClienteComponent implements OnInit {
   private original = { ...this.f };
 
   ngOnInit(): void {
+    const ini = this.clienteInicial();
+    if (ini) {
+      this.f = {
+        nome: ini.nome || '',
+        telefone: ini.telefone ? fTelefone(ini.telefone) : '',
+        aceita_aviso: ini.aceita_aviso !== undefined ? !!ini.aceita_aviso : true,
+        nascimento: ini.nascimento ? String(ini.nascimento).slice(0, 10) : '',
+        obs: ini.obs || ''
+      };
+      this.original = { ...this.f };
+      this.telInferido.set(!!ini.tel_inferido);
+      this.carregando.set(false);
+    }
+
     this.dados.cliente(this.clienteId()).subscribe({
       next: r => {
         const c = r.cliente;
         this.f = {
-          nome: c.nome || '',
-          telefone: c.telefone ? fTelefone(c.telefone) : '',
-          aceita_aviso: !!c.aceita_aviso,
-          nascimento: c.nascimento ? String(c.nascimento).slice(0, 10) : '',
-          obs: c.obs || ''
+          nome: c.nome || this.f.nome,
+          telefone: c.telefone ? fTelefone(c.telefone) : this.f.telefone,
+          aceita_aviso: c.aceita_aviso !== undefined ? !!c.aceita_aviso : this.f.aceita_aviso,
+          nascimento: c.nascimento ? String(c.nascimento).slice(0, 10) : this.f.nascimento,
+          obs: c.obs ?? this.f.obs
         };
         this.original = { ...this.f };
         this.telInferido.set(!!c.tel_inferido);
         this.carregando.set(false);
       },
-      error: (e: ErroApi) => { this.erro.set(e); this.carregando.set(false); }
+      error: (e: ErroApi) => {
+        if (!ini) {
+          this.erro.set(e);
+          this.carregando.set(false);
+        }
+      }
     });
   }
 

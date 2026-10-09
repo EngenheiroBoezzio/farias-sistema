@@ -112,10 +112,10 @@ export class ClientesComponent implements OnInit {
   }
 
   /* ---------- editar cliente ---------- */
-  editando = signal<number | null>(null);
+  editando = signal<Cliente | null>(null);
   selo = signal<{ titulo: string; linha: string } | null>(null);
 
-  editar(c: Cliente): void { this.editando.set(c.id); }
+  editar(c: Cliente): void { this.editando.set(c); }
 
   /* Atualiza só o cartão que mudou, sem recarregar a lista inteira: a pessoa
      continua na mesma página e na mesma posição da rolagem. */
