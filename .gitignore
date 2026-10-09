@@ -5,6 +5,7 @@ instalador/
 *.log
 public/assets/fontes/
 *.zip
+*.tgz
 *.xlsx
 *.xls
 api/publico/

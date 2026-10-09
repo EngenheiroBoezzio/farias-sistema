@@ -2107,3 +2107,81 @@ th .sub{font-weight:400;color:var(--tx-3);font-size:11px;text-transform:none;
   color: var(--tx-3);
   border: 1.5px solid var(--bd);
 }
+
+/* ===========================================================
+   HISTÓRICO DO CARRO — linha do tempo (partes/historico)
+   Usa container query: a mesma peça serve a ficha (largura cheia) e a
+   consulta de placa (meia coluna) sem cortar nada para fora.
+   =========================================================== */
+.hist{container-type:inline-size}
+.hist-vazio{padding:28px 18px;text-align:center;display:flex;flex-direction:column;gap:4px;color:var(--tx-2);font-size:13px}
+.hist-vazio b{color:var(--tx);font-size:14px}
+
+.hist-resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  border-bottom:1px solid var(--bd);background:var(--surface-2)}
+.hist-resumo>div{padding:13px 17px;border-left:1px solid var(--bd);min-width:0}
+.hist-resumo>div:first-child{border-left:0}
+.hr-v{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.hr-l{display:block;font-size:12px;color:var(--tx-2);margin-top:3px}
+
+.hist-linha{list-style:none;margin:0;padding:6px 0 10px;position:relative}
+/* o trilho vertical */
+.hist-linha::before{content:"";position:absolute;left:31px;top:0;bottom:0;width:2px;background:var(--bd)}
+
+.hist-ano{position:relative;padding:14px 0 4px 52px}
+.hist-ano span{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--tx-3);
+  background:var(--surface);padding:2px 0}
+
+.hist-item{position:relative;display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:6px 16px;
+  align-items:start;padding:12px 17px 12px 52px;transition:background .15s}
+.hist-item:hover{background:var(--surface-2)}
+.hist-ponto{position:absolute;left:26px;top:19px;width:12px;height:12px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--bd-strong)}
+.hist-item.ultima .hist-ponto{background:var(--b-700);border-color:var(--b-700);
+  box-shadow:0 0 0 4px var(--b-100)}
+
+.hq-data{display:block;font-size:13px;color:var(--tx-2);text-transform:uppercase;letter-spacing:.04em;line-height:1.1}
+.hq-data b{display:block;font-size:24px;color:var(--tx);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.hq-ha{display:block;font-size:11.5px;color:var(--tx-3);margin-top:4px}
+.hist-item.ultima .hq-ha{color:var(--b-700);font-weight:600}
+
+.hist-km{display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap}
+.hk-v{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.hk-rodou{font-size:12.5px;color:var(--tx-2);font-variant-numeric:tabular-nums}
+
+.hist-itens{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.hi{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;line-height:1;padding:6px 9px;
+  border-radius:var(--r-full);background:var(--surface-2);border:1px solid var(--bd);color:var(--tx)}
+.hi-cod{font-family:var(--code);font-size:11.5px;color:var(--tx-2);padding-left:6px;border-left:1px solid var(--bd-strong)}
+.hi-ar{background:var(--pos-bg);border-color:var(--pos-bd);color:var(--pos);font-weight:600}
+.hi-ar .hi-cod{color:var(--pos);border-left-color:var(--pos-bd)}
+.hi-falta{background:transparent;border-style:dashed;border-color:var(--warn-bd);color:var(--warn)}
+
+.hist-fim{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.hf-total{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hist-editar{display:inline-flex;align-items:center;gap:5px}
+
+.hist-nota{margin:0;padding:10px 17px 14px 52px;font-size:12px;color:var(--tx-3)}
+
+/* Meia coluna (consulta de placa) ou tela estreita: data e valor dividem a
+   primeira linha, o resto desce. O botão vira só o lápis. */
+@container (max-width: 560px){
+  .hist-item{grid-template-columns:minmax(0,1fr) auto;padding-left:46px;padding-right:12px}
+  .hist-linha::before{left:25px}
+  .hist-ponto{left:20px}
+  .hist-ano{padding-left:46px}
+  .hist-quando{grid-column:1;display:flex;align-items:baseline;gap:8px}
+  .hq-data b{display:inline;font-size:18px;margin-right:3px}
+  .hq-ha{margin-top:0;white-space:nowrap}
+  .hist-fim{grid-column:2;grid-row:1;flex-direction:row;align-items:center}
+  .hist-corpo{grid-column:1 / -1}
+  .hist-editar span{display:none}
+  .hist-resumo>div{padding:11px 13px}
+  .hist-nota{padding-left:46px}
+}
+@media (prefers-reduced-motion: reduce){ .hist-item{transition:none} }
+
+/* Faixa de 6 números da ficha do carro: cabe numa linha só a partir de ~950px. */
+.strip-6{grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}
+.strip-6 .stat{padding:14px 15px;min-width:0}
+.strip-6 .stat-v{font-size:22px;overflow-wrap:anywhere}

@@ -12,12 +12,13 @@ import { SeloComponent } from '../../partes/selo/selo.component';
 import { SinoComponent } from '../../partes/sino/sino.component';
 import { ModalServicoComponent } from '../../partes/modal-servico/modal-servico.component';
 import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
+import { HistoricoComponent } from '../../partes/historico/historico.component';
 import { EtiquetaService, INTERVALOS_COMUNS } from '../../nucleo/etiqueta.service';
 
 @Component({
   selector: 'app-ficha',
   standalone: true,
-  imports: [FormsModule, RouterLink, SeloComponent, SinoComponent, ModalServicoComponent, PlacaMercosulComponent],
+  imports: [FormsModule, RouterLink, SeloComponent, SinoComponent, ModalServicoComponent, PlacaMercosulComponent, HistoricoComponent],
   templateUrl: './ficha.component.html'
 })
 export class FichaComponent implements OnInit {
@@ -111,7 +112,7 @@ export class FichaComponent implements OnInit {
     this.dados.excluirVeiculo(this.id, true).subscribe({
       next: () => {
         this.excluindo.set(false);
-        this.router.navigate(['/clientes', v.cliente_id]);
+        this.router.navigate(['/clientes']);  // /clientes/:id não existe: caía no '**' e voltava ao painel
       },
       error: (e: ErroApi) => {
         this.excluindo.set(false);

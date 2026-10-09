@@ -22,13 +22,14 @@ import { SinoComponent } from '../../partes/sino/sino.component';
 import { SeloComponent } from '../../partes/selo/selo.component';
 import { ModalServicoComponent } from '../../partes/modal-servico/modal-servico.component';
 import { PlacaMercosulComponent } from '../../partes/placa-mercosul/placa-mercosul.component';
+import { HistoricoComponent } from '../../partes/historico/historico.component';
 
 import { EtiquetaService } from '../../nucleo/etiqueta.service';
 
 @Component({
   selector: 'app-placa',
   standalone: true,
-  imports: [FormsModule, RouterLink, SinoComponent, SeloComponent, ModalServicoComponent, PlacaMercosulComponent],
+  imports: [FormsModule, RouterLink, SinoComponent, SeloComponent, ModalServicoComponent, PlacaMercosulComponent, HistoricoComponent],
   templateUrl: './placa.component.html'
 })
 export class PlacaComponent implements OnInit {

@@ -1,0 +1,94 @@
+@if (linhas().length === 0) {
+  <div class="hist-vazio">
+    <b>Nenhuma troca registrada ainda</b>
+    <span>Quando lançar a primeira ordem deste carro, ela aparece aqui.</span>
+  </div>
+} @else {
+  <div class="hist">
+    @if (resumo(); as r) {
+      <div class="hist-resumo">
+        <div><span class="hr-v">{{ r.trocas }}</span>
+          <span class="hr-l">{{ r.trocas === 1 ? 'troca' : 'trocas' }}@if (r.desde) { desde {{ r.desde }} }</span></div>
+        @if (r.kmMedio) {
+          <div><span class="hr-v">{{ km(r.kmMedio) }}</span>
+            <span class="hr-l">roda entre uma troca e outra</span></div>
+        }
+        @if (r.mesesMedio) {
+          <div><span class="hr-v">{{ r.mesesMedio }} {{ r.mesesMedio === 1 ? 'mês' : 'meses' }}</span>
+            <span class="hr-l">volta, em média</span></div>
+        }
+        @if (r.ticket) {
+          <div><span class="hr-v">{{ dinheiro(r.ticket) }}</span>
+            <span class="hr-l">gasta por visita</span></div>
+        }
+      </div>
+    }
+
+    <ol class="hist-linha">
+      @for (l of linhas(); track l.s.id; let primeira = $first) {
+        @if (l.novoAno && l.ano) {
+          <li class="hist-ano" aria-hidden="true"><span>{{ l.ano }}</span></li>
+        }
+        <li class="hist-item" [class.ultima]="primeira">
+          <span class="hist-ponto" aria-hidden="true"></span>
+
+          <div class="hist-quando">
+            <span class="hq-data"><b>{{ l.dia }}</b> {{ l.mes }}</span>
+            <span class="hq-ha">{{ primeira ? 'última · ' : '' }}{{ l.haQuanto }}</span>
+          </div>
+
+          <div class="hist-corpo">
+            <div class="hist-km">
+              @if (l.s.km != null) {
+                <span class="hk-v">{{ km(l.s.km) }}</span>
+              } @else {
+                <span class="pill p-warn">km não anotado</span>
+              }
+              @if (l.rodou != null) {
+                <span class="hk-rodou">+{{ km(l.rodou) }}@if (l.meses) { em {{ l.meses }} {{ l.meses === 1 ? 'mês' : 'meses' }} }</span>
+              }
+              @if (l.kmEstranho) {
+                <span class="pill p-warn" title="O km desta troca é menor que o da troca anterior. Pode ter sido digitado errado.">km menor que a anterior · conferir</span>
+              }
+            </div>
+
+            <ul class="hist-itens">
+              @for (it of l.itens; track it.rotulo) {
+                <li class="hi" [class.hi-ar]="it.destaque">
+                  @if (it.destaque) {
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                         stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3.5 8.5 6.5 11.5 12.5 5"/></svg>
+                  }
+                  {{ it.rotulo }}
+                  @if (it.codigo) { <span class="hi-cod">{{ it.codigo }}</span> }
+                </li>
+              }
+              @if (primeira && l.semFiltroAr) {
+                <li class="hi hi-falta" title="O filtro de ar não foi trocado na última visita">filtro de ar não trocado</li>
+              }
+              @if (l.itens.length === 0) {
+                <li class="hi hi-falta">itens não anotados</li>
+              }
+            </ul>
+          </div>
+
+          <div class="hist-fim">
+            <span class="hf-total">{{ dinheiro(l.s.total) }}</span>
+            <button type="button" class="btn btn-s btn-sm hist-editar" (click)="editar.emit(l.s)"
+                    [attr.aria-label]="'Editar a troca de ' + l.dia + ' ' + l.mes + ' ' + l.ano"
+                    title="Editar este atendimento (dá para anotar o km depois)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span>Editar</span>
+            </button>
+          </div>
+        </li>
+      }
+    </ol>
+
+    @if (linhas().length >= limite()) {
+      <p class="hist-nota">Mostrando as {{ limite() }} trocas mais recentes.</p>
+    }
+  </div>
+}

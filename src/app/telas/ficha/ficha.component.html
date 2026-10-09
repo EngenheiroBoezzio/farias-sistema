@@ -46,7 +46,9 @@
       </div>
     }
 
-    <div class="grid">
+    <!-- Era class="grid" (uma coluna só): os seis números saíam empilhados,
+         um por linha, ocupando a tela inteira. "strip" é a faixa do painel. -->
+    <div class="strip strip-6">
       <div class="stat"><span class="stat-l">Última troca</span>
         <span class="stat-v">{{ data(d.ultima_troca) }}</span>
         <span class="stat-d">{{ haQuanto(d.dias) }}</span></div>
@@ -148,80 +150,8 @@
     </div>
 
     <div class="panel">
-      <div class="panel-h">
-        <h2>Histórico</h2>
-        <span class="meta">
-          {{ historico().length }} {{ historico().length === 1 ? 'troca' : 'trocas' }}
-          @if (mediaPorTroca(); as m) {
-            · roda <b>{{ km(m.media) }}</b> entre uma troca e outra
-          }
-        </span>
-      </div>
-      <div class="panel-b sem-respiro">
-        @if (historico().length === 0) {
-          <p class="vazio"><b>Sem trocas registradas</b></p>
-        } @else {
-          <div class="tbl-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Data</th><th class="num">Km</th><th class="num">Rodou desde a anterior</th>
-                  <th>Óleo</th><th>Filtro de ar</th><th class="num">Total</th>
-                  <th class="acao-col">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (h of historicoComIntervalo(); track h.id) {
-                  <tr>
-                    <td class="mono">{{ data(h.data) }}</td>
-                    <td class="num">
-                      @if (h.km == null) {
-                        <span class="pill p-warn">sem km</span>
-                      } @else {
-                        {{ km(h.km) }}
-                      }
-                    </td>
-                    <!-- Só aparece quando as duas pontas têm km anotado: metade
-                         do histórico antigo veio da planilha sem quilometragem,
-                         e um número inventado aqui viraria etiqueta errada. -->
-                    <td class="num">
-                      @if (h.rodou != null) {
-                        <span class="forte">{{ km(h.rodou) }}</span>
-                        @if (h.meses) { <span class="sub">em {{ h.meses }} {{ h.meses === 1 ? 'mês' : 'meses' }}</span> }
-                      } @else {
-                        <span class="tx-3">—</span>
-                      }
-                    </td>
-                    <td>{{ h.oleo || '—' }} <small class="tx-3">{{ litros(h.litros) }}</small></td>
-                    <td>
-                      @if (trocouFiltroAr(h)) {
-                        <span class="pill p-pos">{{ dinheiro(h.valor_filtro_ar) }}</span>
-                        @if (h.cod_filtro_ar) { <span class="sub mono">{{ h.cod_filtro_ar }}</span> }
-                      } @else {
-                        <span class="tx-3">não trocado</span>
-                      }
-                    </td>
-                    <td class="num forte">{{ dinheiro(h.total) }}</td>
-                    <td class="acao-col">
-                      <button type="button" class="btn btn-s btn-sm" (click)="abrirEdicao(h)"
-                              title="Editar este atendimento — dá para acrescentar o km depois">
-                        Editar
-                      </button>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-          @if (mediaPorTroca(); as m) {
-            <p class="nota-medida">
-              Medido em {{ m.amostra }} {{ m.amostra === 1 ? 'intervalo' : 'intervalos' }} com km
-              anotado nas duas pontas. Quanto mais o balcão anota o km, melhor o
-              adesivo do vidro acerta a próxima data.
-            </p>
-          }
-        }
-      </div>
+      <div class="panel-h"><h2>Histórico</h2></div>
+      <app-historico [historico]="historico()" (editar)="abrirEdicao($event)" />
     </div>
   }
   }

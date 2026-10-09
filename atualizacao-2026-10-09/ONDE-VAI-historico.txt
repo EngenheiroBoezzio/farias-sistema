@@ -1,0 +1,16 @@
+ONDE VAI CADA ARQUIVO (historico do carro - visual novo)
+========================================================
+Copie mantendo as pastas, por cima do projeto farias-app:
+
+  src/app/partes/historico/                 -> NOVO (a linha do tempo)
+  src/app/telas/ficha/ficha.component.html  -> substitui
+  src/app/telas/ficha/ficha.component.ts    -> substitui
+  src/app/telas/placa/placa.component.html  -> substitui
+  src/app/telas/placa/placa.component.ts    -> substitui
+  src/styles.css                            -> substitui
+
+Os arquivos foram feitos em cima da copia do projeto tirada hoje as 14:18.
+Se mexeu em algum deles depois disso, me avise antes de copiar.
+
+Depois: gerar a versao nova do app (npm run empacotar / publicar).
+Nao precisa mexer na API.
